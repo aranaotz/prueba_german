@@ -1,0 +1,249 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports usuario_alumno
+Imports synpin_code
+Imports print_docs
+Imports System.IO
+
+Partial Class updata
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            Try
+                llena_ddls()
+                Session("gcum") = gcu(Session("gcu"))
+            Catch ex As Exception
+                Response.Redirect("~/glogin.aspx")
+            End Try
+        End If
+    End Sub
+
+    Protected Sub Page_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+        Try
+            llena_nombre()
+            rdata(session("gcum"))
+        Catch ex As Exception
+
+        End Try
+        mv_generales.ActiveViewIndex = 2
+    End Sub
+
+    Private Sub llena_ddls()
+        With ddl_sexo
+            .DataSource = ddlsexo(Application("str"))
+            .DataValueField = "idsexo"
+            .DataTextField = "sexo"
+            .DataBind()
+            .Items.Insert(0, "Selecciona uno")
+        End With
+        With ddl_sangre
+            .DataSource = ddlsangre(Application("str"))
+            .DataValueField = "idtipos"
+            .DataTextField = "tipoyfactor"
+            .DataBind()
+        End With
+        With ddl_ecivil
+            .DataSource = ddlcivil(Application("str"))
+            .DataValueField = "id_edocivil"
+            .DataTextField = "edocivil"
+            .DataBind()
+            .Items.Insert(0, "Selecciona uno")
+        End With
+    End Sub
+
+    Protected Sub ib_go_Click(sender As Object, e As ImageClickEventArgs) Handles ib_go.Click
+        gv_resultados.DataSource = busqueda_alumno(tbx_buscar.Text, Application("str"))
+        gv_resultados.DataBind()
+        mv_generales.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub lb_thisis_Click(sender As Object, e As EventArgs)
+        'fv_generales.DataSource = retrieve_data(sender.CommandArgument.ToString, Application("str"))
+        'fv_generales.DataBind()
+        mv_generales.ActiveViewIndex = 2
+    End Sub
+
+    Protected Sub ib_back_Click(sender As Object, e As ImageClickEventArgs) Handles ib_back.Click
+        mv_generales.ActiveViewIndex = 0
+    End Sub
+
+    Private Function uploadfile(ByVal enviador As FileUpload, ByVal codigo_unico As String) As Boolean
+        If enviador.HasFile Then
+            'Try
+            If enviador.PostedFile.ContentType = "image/jpeg" Or enviador.PostedFile.ContentType = "image/png" Or enviador.PostedFile.ContentType = "image/gif" Or enviador.PostedFile.ContentType = "image/jpg" Then
+                If enviador.PostedFile.ContentLength < 2048000 Then '***mide en kb el limite son 2 mb, pero se solicita que sea 1.5
+                    Dim nombre_archivo As String = codigo_unico & Right(enviador.FileName, 4)
+                    enviador.SaveAs(Server.MapPath("~\syncesc\photo\") & nombre_archivo)
+
+                    uploadfile = True
+                Else
+                    'lbl_error.Text = "Para la mejor ejecucuión de winmex.com no se permite la carga de archivos mayores a 1.5 Mb."
+                    uploadfile = False
+                End If
+            Else
+                'lbl_error.Text = "El archivo parece no ser imagen permitida: jpg, png y gif."
+                uploadfile = False
+            End If
+        Else
+            'Catch ex As Exception
+            'lbl_error.Text = "El siguiente error ha ocurrido: " + ex.Message
+            'lbl_error.Text = "El siguiente error ha ocurrido: DESCONOCIDO"
+            uploadfile = False
+            'End Try
+        End If
+    End Function
+
+    Private Function fecha(ByVal fecha_cal As String) As String
+        fecha = Right(fecha_cal, 4) & "-" & fecha_cal.Substring(3, 2) & "-" & Left(fecha_cal, 2)
+    End Function
+
+    ' Protected Sub fv_generales_DataBound(sender As Object, e As EventArgs) Handles fv_generales.DataBound
+    ' Dim valores As DataTable = valoresddl(CType(fv_generales.FindControl("lb_guardar"), LinkButton).CommandArgument.ToString, Application("str"))
+    ' Dim ddlse As DropDownList = fv_generales.FindControl("ddl_sexo")
+    ' Dim ddlsa As DropDownList = fv_generales.FindControl("ddl_sangre")
+    '     With ddlse
+    '         .DataSource = tabla_sexo(Application("str"))
+    '         .DataTextField = "sexo"
+    '         .DataValueField = "idsexo"
+    '         .DataBind()
+    '         Try
+    '             .SelectedIndex = ddlse.Items.IndexOf(ddlse.Items.FindByValue(valores.Rows(0).Item(0).ToString))
+    '         Catch ex As Exception
+    '             .SelectedIndex = 0
+    '         End Try
+    '     End With
+    '     With ddlsa
+    '         .DataSource = tabla_sangre(Application("str"))
+    '         .DataTextField = "tipoyfactor"
+    '         .DataValueField = "idtipos"
+    '         .DataBind()
+    '         Try
+    '             .SelectedIndex = ddlsa.Items.IndexOf(ddlsa.Items.FindByValue(valores.Rows(0).Item(1).ToString))
+    '         Catch ex As Exception
+    '             .SelectedIndex = 0
+    '         End Try
+    '     End With
+    ' End Sub
+
+    'Protected Sub fv_generales_ItemCommand(sender As Object, e As FormViewCommandEventArgs) Handles fv_generales.ItemCommand
+    'If e.CommandName = "guardar" Then
+    'Dim i1 As String = CType(fv_generales.FindControl("fu_imagen"), FileUpload).FileName.ToString 'foto
+
+    Private Sub llena_nombre()
+        Dim dt As DataTable = retrieve_data(session("gcum"), Application("str"))
+        tbx_nombres.Text = dt.Rows(0).Item(7).ToString
+        tbx_amaterno.Text = dt.Rows(0).Item(6).ToString
+        tbx_apaterno.Text = dt.Rows(0).Item(5).ToString
+        tbx_carrera.Text = dt.Rows(0).Item(10).ToString
+        tbx_especialidad.Text = dt.Rows(0).Item(11).ToString
+    End Sub
+
+
+    Private Sub guardar(ByVal codigo_unico As String)
+
+        Dim i2 As String = tbx_apaterno.Text
+        Dim i3 As String = tbx_amaterno.Text
+        Dim i4 As String = tbx_nombres.Text
+        Dim i5 As String = tbx_curp.Text
+        Dim i6 As String = tbx_domicilio.Text
+        Dim i7 As String = tbx_colonia.Text
+        Dim i8 As String = tbx_municipio.Text
+        Dim i9 As String = tbx_telefono.Text
+        Dim i10 As String = tbx_movil.Text
+        Dim i11 As String = tbx_carrera.Text
+        Dim i12 As String = tbx_especialidad.Text
+        Dim i13 As String = tbx_mail.Text
+        Dim i14 As String = ddl_sangre.SelectedValue.ToString
+        Dim i16 As String = ddl_sexo.SelectedValue.ToString
+        'Dim i15 As FileUpload = CType(fv_generales.FindControl("fu_imagen"), FileUpload)
+        Dim i17 As String = tbx_cp.Text
+        Dim i18 As String = fecha(tbx_fnac.Text)
+        Dim i23 As String = ddl_ecivil.SelectedValue.ToString
+        Dim i19 As String = tbx_ldn.Text
+        Dim i20 As String = tbx_instmail.Text
+        Dim i21 As String = tbx_ndt.Text
+        Dim i22 As String = tbx_tocup.Text
+        Dim i24 As String = tbx_tdt.Text
+        Dim i25 As String = tbx_bachillerato.Text
+        Dim i26 As String = tbx_promedio.Text
+        Dim i27 As String = tbx_ddt.Text
+
+        Dim icf As Boolean = existefamiliares(codigo_unico, Application("str"))
+        Dim icg As Boolean = existegenerales(codigo_unico, Application("str"))
+        Dim icp As Boolean = existeprocedencia(codigo_unico, Application("str"))
+        'uploadfile(i15, e.CommandArgument)
+        perfilsave_al(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i16, codigo_unico, Application("str"), icf, icg, icp, i17, i18, i19, i20, i21, i22, i23, i24, i25, i26, i27)
+        'fv_generales.DataSource = retrieve_data(session("gcum"), Application("str"))
+        'fv_generales.DataBind()
+        mv_generales.ActiveViewIndex = 2
+
+        'End If
+    End Sub
+
+    Protected Sub lb_guardar_Click(sender As Object, e As EventArgs) Handles lb_guardar.Click
+        guardar(session("gcum"))
+    End Sub
+
+    Protected Sub lb_print_Click(sender As Object, e As EventArgs) Handles lb_print.Click
+        Try
+            ccei002(session("gcum"), tbx_domicilio.Text, tbx_colonia.Text, session("gcum"), Application("str"))
+            getdoc(session("gcum"))
+        Catch ex As Exception
+            tbx_domicilio.Focus()
+        End Try
+    End Sub
+
+    Private Sub getdoc(ByVal nrep As String)
+        Response.Redirect("~/synstu/downdoc.aspx?file=" & nrep & "&type=cce-i002" & "&ext=.pdf")
+    End Sub
+
+    Private Sub rdata(ByVal codigo_unico As String)
+        Select Case existegenerales(codigo_unico, Application("str"))
+            Case True
+                Dim source As DataTable = llena_alumno(codigo_unico, Application("str"))
+                tbx_curp.Text = source.Rows(0).Item(14).ToString
+                tbx_domicilio.Text = source.Rows(0).Item(8).ToString
+                tbx_colonia.Text = source.Rows(0).Item(9).ToString
+                tbx_municipio.Text = source.Rows(0).Item(10).ToString
+                tbx_telefono.Text = source.Rows(0).Item(16).ToString
+                tbx_movil.Text = source.Rows(0).Item(17).ToString
+                tbx_mail.Text = source.Rows(0).Item(18).ToString
+                tbx_cp.Text = source.Rows(0).Item(12).ToString
+                tbx_fnac.Text = source.Rows(0).Item(6).ToString
+                tbx_ldn.Text = source.Rows(0).Item(13).ToString
+                tbx_instmail.Text = source.Rows(0).Item(19).ToString
+                tbx_ndt.Text = source.Rows(0).Item(21).ToString
+                tbx_tocup.Text = source.Rows(0).Item(23).ToString
+                tbx_tdt.Text = source.Rows(0).Item(24).ToString
+                tbx_bachillerato.Text = source.Rows(0).Item(25).ToString
+                tbx_promedio.Text = source.Rows(0).Item(26).ToString
+                tbx_ddt.Text = source.Rows(0).Item(22).ToString
+
+                ddl_sangre.SelectedIndex = ddl_sangre.Items.IndexOf(ddl_sangre.Items.FindByText(source.Rows(0).Item(15).ToString))
+                ddl_sexo.SelectedIndex = ddl_sexo.Items.IndexOf(ddl_sexo.Items.FindByText(source.Rows(0).Item(5).ToString))
+                ddl_ecivil.SelectedIndex = ddl_ecivil.Items.IndexOf(ddl_ecivil.Items.FindByText(source.Rows(0).Item(7).ToString))
+        End Select
+    End Sub
+
+
+    'Protected Sub lb_lista_Click(sender As Object, e As EventArgs) Handles lb_lista.Click
+    'Dim cs As New SqlConnection(Application("str"))
+    'Dim dt As New DataTable
+    'Dim gm As New SqlDataAdapter("select codigo_unico,foto from base_gendataal", cs)
+    '    cs.Open()
+    '    gm.Fill(dt)
+    '    cs.Close()
+    'Dim i As Integer
+    '    For i = 0 To dt.Rows.Count - 1
+    'Dim path As String = HttpContext.Current.Server.MapPath("\utsyn\syncesc\photo\" & dt.Rows(i).Item(0).ToString & ".jpg")
+    'Dim file As System.IO.FileInfo = New System.IO.FileInfo(Path)
+    '        If Not (file.Exists) Then
+    'Dim nss As New SqlCommand("INSERT INTO historial_icu_reg (matricula) VALUES ('" + dt.Rows(i).Item(0).ToString + "')", cs)
+    '            cs.Open()
+    '            nss.ExecuteNonQuery()
+    '            cs.Close()
+    '        End If
+    '    Next
+    'End Sub
+End Class

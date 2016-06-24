@@ -1,0 +1,51 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/syncesc/syncesc.master" AutoEventWireup="false" CodeFile="kardexview.aspx.vb" Inherits="kardexview" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div>
+        <table style="width: 100%;"><tr><td style="font-size: 1.5em; padding: 0px 0px 20px 0px;">
+            Kardex del Estudiante
+                   </td></tr><tr><td><table class="centrado" style="font-size: 1.2em;"><tr><td style="padding: 0px 10px 0px 0px;">Matrícula</td><td>
+                       <asp:TextBox ID="tbx_cadena" runat="server" CssClass="tbxlogin_fill" MaxLength="10"></asp:TextBox>
+                       <asp:TextBoxWatermarkExtender ID="tbx_cadena_wme" runat="server" Enabled="True" TargetControlID="tbx_cadena" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                       <asp:FilteredTextBoxExtender ID="tbx_cadena_tbxe" runat="server" Enabled="True" TargetControlID="tbx_cadena" ValidChars="0123456789" />
+                       <asp:RequiredFieldValidator ID="rfv_cadena" runat="server" ControlToValidate="tbx_cadena" Display="None" ErrorMessage="¡La matrícula es necesaria!" InitialValue="..." SetFocusOnError="True"></asp:RequiredFieldValidator>
+                       <asp:ValidatorCalloutExtender ID="vco_cadena" TargetControlID="rfv_cadena" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                   </td><td class="campos_derecha"><asp:Button ID="cmd_buscar" runat="server" Text="Buscar" style="height: 26px"/></td></tr></table></td></tr><tr><td>
+
+            <asp:FormView ID="fv_generales" runat="server">
+                <ItemTemplate>
+                    <table><tr><td style="padding: 5px"><asp:image ID="img_alumno" runat="server" Width="100" imageurl='<%# DataBinder.Eval(Container.DataItem, "foto")%>'/></td><td><table><tr><td>
+                        <table class="cell_spa_0"><tr><td>Matricula</td><td><asp:Label ID="lbl_matricula" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "matricula")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td>Codigo único</td><td><asp:Label ID="lbl_codigounico" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "codigo_unico")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td>Nombre</td><td><asp:Label ID="lbl_apaterno" runat="server"  Text='<%# DataBinder.Eval(Container.DataItem, "apellido_paterno")%>'/></td><td><asp:Label ID="lbl_amaterno" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "apellido_materno")%>'/></td><td><asp:Label ID="lbl_nombre" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td>Carrera</td><td><asp:Label ID="lbl_carrera" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "ncarrera")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td>Especialidad</td><td><asp:Label ID="lbl_especialidad" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nespecialidad")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td>Situación</td><td><asp:Label ID="lbl_status" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "status")%>'/></td></tr></table>
+                    </td></tr></table></td></tr></table>
+                </ItemTemplate>
+            </asp:FormView>
+
+            </td></tr><tr><td>
+        <asp:DataList ID="dl_kardex" runat="server" HorizontalAlign="Center" CellPadding="10">
+            <ItemTemplate>
+                <table class="folder_view"><tr><td style="padding: 10px; font-size: 1.5em;">Ciclo <asp:Label ID="lbl_ciclo" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "ciclo")%>'></asp:Label>
+                           </td></tr><tr><td style="border-radius: 0px 0px 5px 5px; padding: 5px;">
+                    <asp:GridView ID="gv_calificaciones" runat="server" style="background: rgba(0,168,144,1); width: 100%;" AutoGenerateColumns="False" GridLines="None" CellPadding="5" RowStyle-CssClass="gvrow" ShowHeader="false">
+                        <Columns>
+                            <asp:BoundField DataField="materia" ItemStyle-HorizontalAlign="Left"/>
+                            <asp:BoundField DataField="calificacion" />
+                            <asp:BoundField DataField="descripcion" />
+                            <asp:BoundField DataField="tipocalificacion" />
+                        </Columns>
+                    </asp:GridView>
+                </td></tr></table>
+            </ItemTemplate>
+        </asp:DataList></td></tr></table>
+
+    </div>
+</asp:Content>
+

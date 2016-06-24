@@ -1,0 +1,76 @@
+﻿<%@ Page Title="Encuesta de Aplicacion de Examen Electrónico" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="moodle_quiz.aspx.vb" Inherits="moodle_quiz" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #333333; vertical-align: middle; text-align: center">
+        <table style="width:100%; vertical-align: middle; text-align: center;">
+            <tr>
+                <td style="font-weight: bold; padding: 10px; background-color: #CCCCCC; border: 1px solid #999999">
+                    ENCUESTA DE APLICACIÓN DE EXAMEN ELECTRÓNICO</td>
+            </tr>
+            <tr>
+                <td style="color: #003366; padding: 10px">
+                    Por favor contesta las preguntas que se enlistan a continuación</td>
+            </tr>
+            <tr>
+                <td>
+                    ¿Realizaste examen electrónico via Moodle en alguna de tus asignaturas?</td>
+            </tr>
+            <tr>
+                <td style="margin: auto; vertical-align: middle; text-align: center">
+                    <table align="center">
+                        <tr>
+                            <td>
+                    <asp:RadioButtonList ID="rbl_q1" runat="server" RepeatDirection="Horizontal">
+                        <asp:ListItem>SI</asp:ListItem>
+                        <asp:ListItem>NO</asp:ListItem>
+                    </asp:RadioButtonList>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                                    ControlToValidate="rbl_q1" ErrorMessage="Selecciona una Opcion"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ¿Preferirías que los exámenes parciales o finales se aplicaran vía Moodle?</td>
+            </tr>
+            <tr>
+                <td>
+                    <table align="center">
+                        <tr>
+                            <td>
+                    <asp:RadioButtonList ID="rbl_q2" runat="server" RepeatDirection="Horizontal">
+                        <asp:ListItem>SI</asp:ListItem>
+                        <asp:ListItem>NO</asp:ListItem>
+                    </asp:RadioButtonList>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                                    ControlToValidate="rbl_q2" ErrorMessage="Selecciona una opcion"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Cuentanos un poco la razón de tu respuesta anterior...</td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:TextBox ID="tbx_q3" runat="server" Rows="10" TextMode="MultiLine" 
+                        Width="500px"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
+                        ControlToValidate="tbx_q3" ErrorMessage="Cuentanos algo por favor!"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Button ID="cmd_send" runat="server" Text="Enviar encuesta" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</asp:Content>
+

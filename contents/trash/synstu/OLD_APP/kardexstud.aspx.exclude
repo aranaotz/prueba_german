@@ -1,0 +1,83 @@
+﻿<%@ Page Title="Kardex del Estudiante" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="kardexstud.aspx.vb" Inherits="kardexstud" %>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <div>
+        <table style="width:100%;">
+            <tr>
+                <td colspan="3" 
+                    
+                    style="padding: 10px; font-family: verdana; font-size: 7.5pt; color: #000066; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #666666;">
+                    SADIN guarda toda la información académica que generas en tu colegio a partir 
+                    del ciclo 2009C.<br />
+                    A continuación se muestra tu Kardex con tus calificaciones.</td>
+            </tr>
+            <tr>
+                <td colspan="3" 
+                    
+                    style="padding: 10px; font-family: verdana; font-size: 7.5pt; color: #000066; font-weight: bold;">
+                    Kardex del Estudiante</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: left; padding: 10px">
+                    <asp:DataList ID="dl_kardex" runat="server" Width="85%">
+                        <ItemTemplate>
+                            <div>
+                                <table style="font-family: verdana; font-size: 7.5pt; color: #000066; width: 100%;"><tr>
+                                    <td style="padding: 10px 10px 5px 10px">
+                                        <table cellpadding="3" cellspacing="3">
+                                            <tr>
+                                                <td style="padding: 4px 15px 4px 15px; background-position: center center; background-image: url('img/backyel.gif'); background-repeat: repeat-x; font-family: verdana; font-size: 7.5pt; color: #FFFFFF; font-weight: bold; text-align: center;">
+                                                    Ciclo</td>
+                                                <td class="top_rkrdx">
+                                                    <asp:Label ID="lbl_ciclo" runat="server" 
+                                                        Text='<%# DataBinder.Eval(Container.DataItem,"ciclo") %>'></asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                </td></tr>
+                                    <tr>
+                                        <td style="padding-left: 10px; padding-bottom: 10px">
+                                            <asp:GridView ID="gv_calif" runat="server" AutoGenerateColumns="False" 
+                                                BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" 
+                                                GridLines="Horizontal" Width="80%">
+                                                <RowStyle BackColor="White" Height="19px" />
+                                                <Columns>
+                                                    <asp:BoundField DataField="materia" HeaderText="Materia" />
+                                                    <asp:BoundField DataField="bol" HeaderText="Calificacion">
+                                                        <ItemStyle HorizontalAlign="Center" />
+                                                    </asp:BoundField>
+                                                    <asp:BoundField DataField="typcal" HeaderText="Tipo" />
+                                                </Columns>
+                                                <HeaderStyle BackColor="#666666" CssClass="header-gvrep" ForeColor="White" 
+                                                    Height="22px" />
+                                                <AlternatingRowStyle BackColor="#FFFFCE" />
+                                            </asp:GridView>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </ItemTemplate>
+                    </asp:DataList>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+        </table>
+    </div>
+</asp:Content>
+

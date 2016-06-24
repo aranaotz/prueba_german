@@ -1,0 +1,5 @@
+﻿
+Partial Class pwdmn
+    Inherits System.Web.UI.Page
+
+End Class

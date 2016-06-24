@@ -1,0 +1,127 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class synprof_profworking
+    Inherits System.Web.UI.MasterPage
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            pvalidacion()
+            carga_menu()
+            'deudor(gc(Session("usrcgi200Xstr")))
+        End If
+        hidepanel()
+    End Sub
+
+    Private Sub deudor(ByVal usr As String)
+        Dim sc As New SqlConnection(Application("str"))
+        Dim cuantas As New SqlCommand("SELECT COUNT(*) AS cuantas FROM dbo.future_inf_icu INNER JOIN dbo.eval_reportes_future ON " + _
+                                      "dbo.future_inf_icu.icu = dbo.eval_reportes_future.icu INNER JOIN dbo.eval_asreportes_future ON " + _
+                                      "dbo.future_inf_icu.icu = dbo.eval_asreportes_future.icu WHERE (dbo.eval_reportes_future.estado <> 2) AND (dbo.eval_asreportes_future.estado <> 2) " + _
+                                    "AND (dbo.future_inf_icu.prof = '" + usr + "') AND (dbo.eval_reportes_future.fecha < CONVERT(DATETIME, '2010-01-17 00:00:00', 102)) AND " + _
+                                    "(dbo.eval_asreportes_future.fecha < CONVERT(DATETIME, '2010-01-17 00:00:00', 102))", sc)
+        sc.Open()
+        Dim jy As String = cuantas.ExecuteScalar
+        sc.Close()
+        Select Case jy
+            Case Is <> "0"
+                lbl_msg.Text = "Los registros se SADIN cuentan con un retraso en sus reportes de Asistencia como en Evaluacion Continua. Por favor actualice sus registros lo mas pronto posible para evitar la reduccion en su evaluación de desempeño."
+                hf_msg_mpe.Show()
+        End Select
+    End Sub
+
+    Private Sub carga_menu()
+        Dim sc As New SqlConnection(Application("str"))
+        Dim cm As New SqlCommand("SELECT imgurl,command,descrip,tooltip FROM menus WHERE enable4=1 ORDER BY orden", sc)
+        Dim cmda As New SqlDataAdapter(cm)
+        Dim cmdt As New DataTable
+        sc.Open()
+        cmda.Fill(cmdt)
+        sc.Close()
+        dl_items.DataSource = cmdt
+        dl_items.DataBind()
+    End Sub
+
+    Protected Sub docommand(ByVal sender As Object, ByVal e As System.EventArgs)
+        If IsNothing(Request.QueryString("ein_neir")) Then
+            Response.Redirect(geturl(sender.commandname) & "?aywystb=" & Request.QueryString("aywystb"))
+        Else
+            Response.Redirect(geturl(sender.commandname) & "?aywystb=" & Request.QueryString("aywystb") & "&uuro=" & Request.QueryString("uuro") & "&ein_neir=" & Request.QueryString("ein_neir"))
+        End If
+    End Sub
+
+    Private Function geturl(ByVal command As String) As String
+        Dim sc As New SqlConnection(Application("str"))
+        Dim guc As New SqlCommand("SELECT link FROM menus WHERE command='" + command + "'", sc)
+        sc.Open()
+        geturl = guc.ExecuteScalar
+        sc.Close()
+    End Function
+
+    Private Function validates(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT usr_string FROM users_strings WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        validates = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+    Private Sub pvalidacion()
+        If Request.QueryString("aywystb") <> "" Then
+            If Session("usrcgi200Xstr") <> "" Then
+                Select Case Request.QueryString("aywystb") = validates(get_code(Session("usrcgi200Xstr")))
+                    Case True
+                        lbl_prof.Text = gn(Session("usrcgi200Xstr"))
+                        hf_prof.Value = gc(Session("usrcgi200Xstr"))
+                    Case Else
+                        Response.Redirect("~/glogin.aspx")
+                End Select
+            Else
+                Response.Redirect("~/glogin.aspx")
+            End If
+        Else
+            Response.Redirect("~/glogin.aspx")
+        End If
+    End Sub
+
+    Private Function get_code(ByVal id_user As String) As String
+        Dim o As New SqlConnection(Application("str"))
+        Dim igc As New SqlCommand("SELECT c_user FROM users WHERE id_usr = '" + id_user + "'", o)
+        o.Open()
+        get_code = igc.ExecuteScalar
+        o.Close()
+    End Function
+
+    Private Function gn(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT names + ' ' + lastnames as names FROM users WHERE id_usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gn = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT c_user FROM users WHERE id_usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Protected Sub ib_closesession_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ib_closesession.Click
+        Session.Clear()
+        Response.Redirect("~/glogin.aspx")
+    End Sub
+
+    Protected Sub lb_return_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lb_return.Click
+        Session("usrcgi200Xstr") = Request.QueryString("uuro")
+        Response.Redirect("~/sadmin/queryst.aspx" & "?aywystb=" & Request.QueryString("ein_neir"))
+    End Sub
+
+    Private Sub hidepanel()
+        If IsNothing(Request.QueryString("ein_neir")) Then
+            p_return.Visible = False
+            'dl_items.Visible = False
+        End If
+    End Sub
+
+End Class
+

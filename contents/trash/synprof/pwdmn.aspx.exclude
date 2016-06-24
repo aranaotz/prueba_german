@@ -1,0 +1,7 @@
+﻿<%@ Page Title="Mantenimiento de datos de Académicos - UTSyn 2015" Language="VB" MasterPageFile="~/synprof/profworking.master" AutoEventWireup="false" CodeFile="pwdmn.aspx.vb" Inherits="pwdmn" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+</asp:Content>
+

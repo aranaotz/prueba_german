@@ -1,0 +1,154 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports usuario_alumno
+Imports synpin_code
+Imports System.IO
+
+Partial Class studata
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Dim c As New SqlConnection(Application("str"))
+        'Dim dt As New SqlDataAdapter("select 'http://200.52.200.111/utsyn/qrcodes/' + CONVERT(VARCHAR,codigo_unico) + '.jpg' qrcode ,codigo_unico,'http://200.52.200.111/utsyn/photo_tumb/' + CONVERT(VARCHAR,codigo_unico) + '.jpg' foto from user_generales where curp<>''", c)
+        'Dim dtt As New DataTable
+        'c.Open()
+        'dt.Fill(dtt)
+        'c.Close()
+        mv_generales.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub ib_go_Click(sender As Object, e As ImageClickEventArgs) Handles ib_go.Click
+        gv_resultados.DataSource = busqueda_alumno(tbx_buscar.Text, Application("str"))
+        gv_resultados.DataBind()
+        mv_generales.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub lb_thisis_Click(sender As Object, e As EventArgs)
+        savedqr(Application("str"), sender.CommandArgument.ToString)
+        fv_generales.DataSource = retrieve_data(sender.CommandArgument.ToString, Application("str"))
+        fv_generales.DataBind()
+        mv_generales.ActiveViewIndex = 2
+    End Sub
+
+    Protected Sub ib_back_Click(sender As Object, e As ImageClickEventArgs) Handles ib_back.Click
+        mv_generales.ActiveViewIndex = 0
+    End Sub
+
+    Private Function uploadfile(ByVal enviador As FileUpload, ByVal codigo_unico As String) As Boolean
+        If enviador.HasFile Then
+            'Try
+            If enviador.PostedFile.ContentType = "image/jpeg" Or enviador.PostedFile.ContentType = "image/png" Or enviador.PostedFile.ContentType = "image/gif" Or enviador.PostedFile.ContentType = "image/jpg" Then
+                If enviador.PostedFile.ContentLength < 2048000 Then '***mide en kb el limite son 2 mb, pero se solicita que sea 1.5
+                    Dim nombre_archivo As String = codigo_unico & Right(enviador.FileName, 4)
+                    enviador.SaveAs(Server.MapPath("~\syncesc\photo\") & nombre_archivo)
+
+                    uploadfile = True
+                Else
+                    'lbl_error.Text = "Para la mejor ejecucuión de winmex.com no se permite la carga de archivos mayores a 1.5 Mb."
+                    uploadfile = False
+                End If
+            Else
+                'lbl_error.Text = "El archivo parece no ser imagen permitida: jpg, png y gif."
+                uploadfile = False
+            End If
+        Else
+            'Catch ex As Exception
+            'lbl_error.Text = "El siguiente error ha ocurrido: " + ex.Message
+            'lbl_error.Text = "El siguiente error ha ocurrido: DESCONOCIDO"
+            uploadfile = False
+            'End Try
+        End If
+    End Function
+
+    Protected Sub fv_generales_DataBound(sender As Object, e As EventArgs) Handles fv_generales.DataBound
+        Dim valores As DataTable = valoresddl(CType(fv_generales.FindControl("lb_guardar"), LinkButton).CommandArgument.ToString, Application("str"))
+        Dim ddlse As DropDownList = fv_generales.FindControl("ddl_sexo")
+        Dim ddlsa As DropDownList = fv_generales.FindControl("ddl_sangre")
+        With ddlse
+            .DataSource = tabla_sexo(Application("str"))
+            .DataTextField = "sexo"
+            .DataValueField = "idsexo"
+            .DataBind()
+            Try
+                .SelectedIndex = ddlse.Items.IndexOf(ddlse.Items.FindByValue(valores.Rows(0).Item(0).ToString))
+            Catch ex As Exception
+                .SelectedIndex = 0
+            End Try
+        End With
+        With ddlsa
+            .DataSource = tabla_sangre(Application("str"))
+            .DataTextField = "tipoyfactor"
+            .DataValueField = "idtipos"
+            .DataBind()
+            Try
+                .SelectedIndex = ddlsa.Items.IndexOf(ddlsa.Items.FindByValue(valores.Rows(0).Item(1).ToString))
+            Catch ex As Exception
+                .SelectedIndex = 0
+            End Try
+        End With
+    End Sub
+
+    Protected Sub fv_generales_ItemCommand(sender As Object, e As FormViewCommandEventArgs) Handles fv_generales.ItemCommand
+        If e.CommandName = "guardar" Then
+            Dim i1 As String = CType(fv_generales.FindControl("fu_imagen"), FileUpload).FileName.ToString 'foto
+            Dim i2 As String = CType(fv_generales.FindControl("tbx_apaterno"), TextBox).Text 'apellido_paterno
+            Dim i3 As String = CType(fv_generales.FindControl("tbx_amaterno"), TextBox).Text 'apellido_materno
+            Dim i4 As String = CType(fv_generales.FindControl("tbx_nombres"), TextBox).Text 'nombre
+            Dim i5 As String = CType(fv_generales.FindControl("tbx_curp"), TextBox).Text 'curp
+            Dim i6 As String = CType(fv_generales.FindControl("tbx_domicilio"), TextBox).Text 'domicilio
+            Dim i7 As String = CType(fv_generales.FindControl("tbx_colonia"), TextBox).Text '*********************
+            Dim i8 As String = CType(fv_generales.FindControl("tbx_municipio"), TextBox).Text '*********************
+            Dim i9 As String = CType(fv_generales.FindControl("tbx_telefono"), TextBox).Text 'telefono
+            Dim i10 As String = CType(fv_generales.FindControl("tbx_movil"), TextBox).Text 'celular
+            Dim i11 As String = CType(fv_generales.FindControl("tbx_carrera"), TextBox).Text 'carrera
+            Dim i12 As String = CType(fv_generales.FindControl("tbx_especialidad"), TextBox).Text 'especialidad
+            Dim i13 As String = CType(fv_generales.FindControl("tbx_mail"), TextBox).Text 'correo
+            Dim i14 As String = CType(fv_generales.FindControl("ddl_sangre"), DropDownList).SelectedValue.ToString 'factor_rh
+            Dim i16 As String = CType(fv_generales.FindControl("ddl_sexo"), DropDownList).SelectedValue.ToString 'sexo
+            Dim i15 As FileUpload = CType(fv_generales.FindControl("fu_imagen"), FileUpload)
+            Dim icf As Boolean = existefamiliares(e.CommandArgument.ToString, Application("str"))
+            Dim icg As Boolean = existegenerales(e.CommandArgument.ToString, Application("str"))
+            Dim icp As Boolean = existeprocedencia(e.CommandArgument.ToString, Application("str"))
+            uploadfile(i15, e.CommandArgument)
+            'perfilsave(i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i16, e.CommandArgument.ToString, Application("str"), icf, icg, icp)
+            fv_generales.DataSource = retrieve_data(e.CommandArgument.ToString, Application("str"))
+            fv_generales.DataBind()
+            mv_generales.ActiveViewIndex = 2
+        End If
+    End Sub
+
+    'Protected Sub lb_lista_Click(sender As Object, e As EventArgs) Handles lb_lista.Click
+    ' Dim cs As New SqlConnection(Application("str"))
+    ' Dim dt As New DataTable
+    ' Dim gm As New SqlDataAdapter("select codigo_unico,foto from base_gendataal", cs)
+    '     cs.Open()
+    '     gm.Fill(dt)
+    '     cs.Close()
+    ' Dim i As Integer
+    '     For i = 0 To dt.Rows.Count - 1
+    ' Dim path As String = HttpContext.Current.Server.MapPath("\utsyn\syncesc\photo\" & dt.Rows(i).Item(0).ToString & ".jpg")
+    ' Dim file As System.IO.FileInfo = New System.IO.FileInfo(Path)
+    '         If Not (file.Exists) Then
+    ' Dim nss As New SqlCommand("INSERT INTO historial_icu_reg (matricula) VALUES ('" + dt.Rows(i).Item(0).ToString + "')", cs)
+    '             cs.Open()
+    '             nss.ExecuteNonQuery()
+    '             cs.Close()
+    '         End If
+    '     Next
+    ' End Sub
+
+
+    Private Sub culista()
+        'Dim c As New SqlConnection(Application("str"))
+        'Dim cul As New SqlDataAdapter("SELECT codigo_unico FROM user_generales where curp<>''", c)
+        'Dim cult As New DataTable
+        'c.Open()
+        'cul.Fill(cult)
+        'c.Close()
+        'Dim t As Integer
+        'For t = 0 To cult.Rows.Count - 1
+        savedqr_full(Application("str"), "1090909090")
+        'Next
+    End Sub
+
+End Class

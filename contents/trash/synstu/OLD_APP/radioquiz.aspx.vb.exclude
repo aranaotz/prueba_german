@@ -1,0 +1,460 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class radioquiz
+    Inherits System.Web.UI.Page
+
+    Private Function getcod() As String
+        getcod = gc(Session("usrcgi200Xstr"))
+    End Function
+
+    Private Function getactualcycle() As String
+        Dim v As New SqlConnection(Application("str"))
+        Dim cycle As New SqlCommand("SELECT ciclo FROM general_ciclos WHERE active=1", v)
+        v.Open()
+        getactualcycle = cycle.ExecuteScalar
+        v.Close()
+    End Function
+
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT reference FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            mv_encuesta.ActiveViewIndex = 0
+            mv_partes.ActiveViewIndex = 0
+            mv_nacimiento.ActiveViewIndex = 0
+            mv_colonia.ActiveViewIndex = 0
+            mv_municipio.ActiveViewIndex = 0
+            carga_municipios()
+            carga_colonia()
+            carga_paises()
+            carga_mexico()
+            carga_localidad()
+        End If
+    End Sub
+
+    Private Sub carga_colonia()
+        ddl_colonia.Items.Insert(0, "Otra")
+    End Sub
+
+    Private Sub carga_paises()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT pais FROM cow ORDER BY pais", v)
+        Dim dtc As New DataTable
+        v.Open()
+        cp.Fill(dtc)
+        v.Close()
+        With ddl_pais
+            .DataSource = dtc
+            .DataTextField = "pais"
+            .DataValueField = "pais"
+            .DataBind()
+            .SelectedIndex = ddl_pais.Items.IndexOf(ddl_pais.Items.FindByText("Mexico"))
+        End With
+    End Sub
+
+    Private Sub carga_mexico()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT CVE_ENT, NOM_ENT  FROM inegi2005 ORDER BY NOM_ENT", v)
+        Dim dtc1 As New DataTable
+        v.Open()
+        cp.Fill(dtc1)
+        v.Close()
+        With ddl_estado
+            .DataSource = dtc1
+            .DataTextField = "NOM_ENT"
+            .DataValueField = "CVE_ENT"
+            .DataBind()
+            .SelectedIndex = ddl_estado.Items.IndexOf(ddl_estado.Items.FindByText("Jalisco"))
+        End With
+    End Sub
+
+    Private Sub carga_municipios()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT CVE_MUN, NOM_MUN  FROM inegi2005 WHERE CVE_ENT='14' ORDER BY NOM_MUN", v)
+        Dim dtc3 As New DataTable
+        v.Open()
+        cp.Fill(dtc3)
+        v.Close()
+        With cbx_municipio
+            .DataSource = dtc3
+            .DataTextField = "NOM_MUN"
+            .DataValueField = "CVE_MUN"
+            .DataBind()
+            .Items.Insert(0, "Otro")
+        End With
+    End Sub
+
+    Protected Sub cbx_municipio_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles cbx_municipio.SelectedIndexChanged
+        Select Case cbx_municipio.SelectedItem.Text
+            Case "Otro"
+                mv_municipio.ActiveViewIndex = 1
+                mv_colonia.ActiveViewIndex = 1
+            Case Else
+                carga_colonia(cbx_municipio.SelectedValue.ToString)
+        End Select
+    End Sub
+
+    Private Sub carga_colonia(ByVal mun As String)
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT CVE_COL, NOM_COL  FROM inegi2005 WHERE CVE_MUN='" + mun + "' ORDER BY NOM_COL", v)
+        Dim dtc4 As New DataTable
+        v.Open()
+        cp.Fill(dtc4)
+        v.Close()
+        With ddl_colonia
+            .DataSource = dtc4
+            .DataTextField = "NOM_COL"
+            .DataValueField = "CVE_COL"
+            .DataBind()
+            .Items.Insert(0, "Otra")
+        End With
+    End Sub
+
+    Protected Sub ImageButton2_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles cmd_next1.Click
+        mv_partes.ActiveViewIndex = 1
+        carga_conocimientos()
+        'carga_inspiracion()
+        '    carga_estaciones()
+        '   carga_diarios()
+        '  carga_canalestv()
+    End Sub
+
+    Private Sub carga_conocimientos()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT id_formas,formas  FROM formas_captura ORDER BY id_formas", v)
+        Dim dtc5 As New DataTable
+        v.Open()
+        cp.Fill(dtc5)
+        v.Close()
+        With rbl_entera
+            .DataSource = dtc5
+            .DataTextField = "formas"
+            .DataValueField = "id_formas"
+            .DataBind()
+        End With
+    End Sub
+
+    'Private Sub carga_inspiracion()
+    'Dim v As New SqlConnection(Application("strsta"))
+    'Dim cp As New SqlDataAdapter("SELECT id_inspir,inspir  FROM formas_inspiracion ORDER BY id_inspir", v)
+    'Dim dtc6 As New DataTable
+    '   v.Open()
+    '  cp.Fill(dtc6)
+    ' v.Close()
+    'With rbl_inspir
+    '   .DataSource = dtc6
+    '  .DataTextField = "inspir"
+    ' .DataValueField = "id_inspir"
+    '.DataBind()
+    ' End With
+    ' End Sub
+
+    '    Private Sub carga_estaciones()
+    'Dim v As New SqlConnection(Application("strsta"))
+    'Dim cp As New SqlDataAdapter("SELECT id_radio,radio  FROM radios ORDER BY id_radio", v)
+    'Dim dtc7 As New DataTable
+    '   v.Open()
+    '  cp.Fill(dtc7)
+    ' v.Close()
+    'With ddl_r1
+    '   .DataSource = dtc7
+    '  .DataTextField = "radio"
+    ' .DataValueField = "id_radio"
+    '.DataBind()
+    '  End With
+    '  With ddl_r2
+    '      .DataSource = dtc7
+    '       .DataTextField = "radio"
+    '      .DataValueField = "id_radio"
+    '      .DataBind()
+    '   End With
+    '   With ddl_r3
+    '      .DataSource = dtc7
+    '       .DataTextField = "radio"
+    '       .DataValueField = "id_radio"
+    '       .DataBind()
+    '   End With
+    '   With ddl_r4
+    '       .DataSource = dtc7
+    '       .DataTextField = "radio"
+    '       .DataValueField = "id_radio"
+    '       .DataBind()
+    '   End With
+    '   With ddl_r5
+    '       .DataSource = dtc7
+    '       .DataTextField = "radio"
+    '       .DataValueField = "id_radio"
+    '       .DataBind()
+    '   End With
+    'End Sub
+
+    Protected Sub ImageButton3_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles cmd_next2.Click
+        Select Case rbl_work.SelectedValue.ToString
+            Case "SI"
+                mv_partes.ActiveViewIndex = 2
+            Case Else
+                Try
+                    guardar_todo()
+                    mv_partes.ActiveViewIndex = 3
+                Catch ex As Exception
+                    guardar_casi_todo()
+                    mv_partes.ActiveViewIndex = 3
+                End Try
+        End Select
+    End Sub
+
+    ' Private Sub carga_diarios()
+    ' Dim v As New SqlConnection(Application("strsta"))
+    ' Dim cp As New SqlDataAdapter("SELECT id_diario,diario  FROM periodicos ORDER BY diario", v)
+    ' Dim dtc8 As New DataTable
+    '     v.Open()
+    '     cp.Fill(dtc8)
+    '     v.Close()
+    '    With ddl_p1
+    '        .DataSource = dtc8
+    '        .DataTextField = "diario"
+    '      .DataValueField = "id_diario"
+    '        .DataBind()
+    '     End With
+    '     With ddl_p2
+    '       .DataSource = dtc8
+    '         .DataTextField = "diario"
+    '         .DataValueField = "id_diario"
+    '          .DataBind()
+    '      End With
+    '      With ddl_p3
+    '          .DataSource = dtc8
+    '          .DataTextField = "diario"
+    '         .DataValueField = "id_diario"
+    '         .DataBind()
+    '     End With
+    ''     With ddl_p4
+    '         .DataSource = dtc8
+    '         .DataTextField = "diario"
+    '         .DataValueField = "id_diario"
+    '         .DataBind()
+    '     End With
+    '     With ddl_p5
+    '        .DataSource = dtc8
+    '         .DataTextField = "diario"
+    '         .DataValueField = "id_diario"
+    '         .DataBind()
+    '     End With
+    ' End Sub
+
+    'Private Sub carga_canalestv()
+    ' Dim v As New SqlConnection(Application("strsta"))
+    ' Dim cp As New SqlDataAdapter("SELECT canales,id_canal  FROM television ORDER BY canales", v)
+    '  Dim dtc9 As New DataTable
+    '     v.Open()
+    '      cp.Fill(dtc9)
+    '      v.Close()
+    '      With ddl_tv1
+    '        .DataSource = dtc9
+    '          .DataTextField = "canales"
+    '          .DataValueField = "id_canal"
+    '          .DataBind()
+    '      End With
+    '      With ddl_tv2
+    '          .DataSource = dtc9
+    '          .DataTextField = "canales"
+    '          .DataValueField = "id_canal"
+    ''          .DataBind()
+    '      End With
+    '      With ddl_tv3
+    '          .DataSource = dtc9
+    '          .DataTextField = "canales"
+    '         .DataValueField = "id_canal"
+    ''         .DataBind()
+    '     End With
+    '     With ddl_tv4
+    '        .DataSource = dtc9
+    '        .DataTextField = "canales"
+    ''        .DataValueField = "id_canal"
+    '        .DataBind()
+    '    End With
+    '   With ddl_tv5
+    ''       .DataSource = dtc9
+    '       .DataTextField = "canales"
+    '       .DataValueField = "id_canal"
+    '      .DataBind()
+    ' End With
+    'End Sub
+
+    Protected Sub ImageButton4_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles cmd_next3.Click
+        Try
+            guardar_todo()
+            mv_partes.ActiveViewIndex = 3
+        Catch ex As Exception
+            guardar_casi_todo()
+            mv_partes.ActiveViewIndex = 3
+        End Try
+    End Sub
+
+    Protected Sub rbl_auto_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles rbl_auto.SelectedIndexChanged
+        Select Case rbl_auto.SelectedValue
+            Case "SI"
+                mv_auto.ActiveViewIndex = 0
+                carga_automarcas()
+            Case Else
+                mv_auto.ActiveViewIndex = -1
+        End Select
+    End Sub
+
+    Private Sub carga_automarcas()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT id_marca,marca  FROM carros ORDER BY marca", v)
+        Dim dtc9 As New DataTable
+        v.Open()
+        cp.Fill(dtc9)
+        v.Close()
+        With ddl_automarca
+            .DataSource = dtc9
+            .DataTextField = "marca"
+            .DataValueField = "id_marca"
+            .DataBind()
+        End With
+    End Sub
+
+    Private Sub carga_submarcas()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT submarca  FROM carros WHERE id_marca='" + ddl_automarca.SelectedValue.ToString + "' ORDER BY submarca", v)
+        Dim dtc9 As New DataTable
+        v.Open()
+        cp.Fill(dtc9)
+        v.Close()
+        With ddl_submarca
+            .DataSource = dtc9
+            .DataTextField = "submarca"
+            .DataValueField = "submarca"
+            .DataBind()
+        End With
+    End Sub
+
+    Private Sub carga_modelos()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT id_modelo,modelo  FROM carros WHERE submarca='" + ddl_submarca.SelectedItem.ToString + "' ORDER BY modelo", v)
+        Dim dtc9 As New DataTable
+        v.Open()
+        cp.Fill(dtc9)
+        v.Close()
+        With ddl_model
+            .DataSource = dtc9
+            .DataTextField = "modelo"
+            .DataValueField = "id_modelo"
+            .DataBind()
+        End With
+    End Sub
+
+    Protected Sub ddl_automarca_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_automarca.SelectedIndexChanged
+        carga_submarcas()
+    End Sub
+
+    Protected Sub ddl_submarca_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_submarca.SelectedIndexChanged
+        carga_modelos()
+    End Sub
+
+    Protected Sub ddl_ciudad_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_ciudad.SelectedIndexChanged
+        Select Case ddl_ciudad.SelectedItem.Text
+            Case "Otra"
+                mv_nacimiento.ActiveViewIndex = 1
+        End Select
+    End Sub
+
+    Private Sub guardar_todo()
+        Dim v As New SqlConnection(Application("strsta"))
+
+        Dim store As New SqlCommand("INSERT INTO radio_quiz (matr,q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11,q12,q13,q14,q15,q16,q17,q18,q19,q20,q21,q22," + _
+                                    "q23,q24,q25,q26,q27,q28,q29,q30,q31,q32,q33,q34,q35,q36,q37,q38,q39) VALUES ('" + getcod() + "'," + _
+                                    "'" + tbx_email.Text + "','" + tbx_telcasa.Text + "','" + tbx_telmovil.Text + "','" + ddl_pais.SelectedItem.Text + "','" + ddl_estado.SelectedItem.Text + "'," + _
+                                    "'" + ddl_ciudad.SelectedItem.Text + "','" + tbx_ciudad.Text + "','" + ddl_edad.SelectedItem.Text + "','" + ddl_sexo.SelectedItem.Text + "'," + _
+                                    "'" + cbx_municipio.SelectedItem.Text + "','" + tbx_municipio.Text + "','" + ddl_colonia.SelectedItem.Text + "','" + tbx_coloniac.Text + "'," + _
+                                    "'" + tbx_address.Text + "','" + tbx_op.Text + "','" + tbx_om.Text + "','" + rbl_entera.SelectedItem.Text + "','" + tbx_inspiracion.Text + "'," + _
+                                    "'" + rbl_oescuelas.SelectedItem.Text + "','" + tbx_radio1.Text + "','" + tbx_radio2.Text + "','" + tbx_radio3.Text + "','" + tbx_p1.Text + "'," + _
+                                    "'" + tbx_p2.Text + "','" + tbx_p3.Text + "','" + tbx_t1.Text + "','" + tbx_t2.Text + "','" + tbx_t3.Text + "','" + ddl_programacion.SelectedItem.Text + "'," + _
+                                    "'" + rbl_work.SelectedItem.Text + "','" + rbl_auto.SelectedItem.Text + "','" + ddl_automarca.SelectedItem.Text + "','" + ddl_submarca.SelectedItem.Text + "'," + _
+                                    "'" + ddl_model.SelectedItem.Text + "','" + tbx_otrocarro.Text + "','" + ddl_ramoempresa.SelectedItem.Text + "'," + _
+                                    "'" + tbx_empresa.Text + "','" + ddl_puestonivel.SelectedItem.Text + "','" + tbx_hdt.Text + "')", v)
+        Dim store_one As New SqlCommand("INSERT INTO radio_quiz (matr,q40) VALUES ('" + getcod() + "','" + rbl_areas.SelectedItem.Text & " -+- " & tbx_comentario.Text + "')", v)
+        v.Open()
+        store.ExecuteNonQuery()
+        store_one.ExecuteNonQuery()
+        v.Close()
+    End Sub
+
+    Private Sub guardar_casi_todo()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim store As New SqlCommand("INSERT INTO radio_quiz (matr,q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11,q12,q13,q14,q15,q16,q17,q18,q19,q20,q21,q22," + _
+                                    "q23,q24,q25,q26,q27,q28,q29,q30,q31,q36,q37,q38,q39) VALUES ('" + getcod() + "'," + _
+                                    "'" + tbx_email.Text + "','" + tbx_telcasa.Text + "','" + tbx_telmovil.Text + "','" + ddl_pais.SelectedItem.Text + "','" + ddl_estado.SelectedItem.Text + "'," + _
+                                    "'" + ddl_ciudad.SelectedItem.Text + "','" + tbx_ciudad.Text + "','" + ddl_edad.SelectedItem.Text + "','" + ddl_sexo.SelectedItem.Text + "'," + _
+                                    "'" + cbx_municipio.SelectedItem.Text + "','" + tbx_municipio.Text + "','" + ddl_colonia.SelectedItem.Text + "','" + tbx_coloniac.Text + "'," + _
+                                    "'" + tbx_address.Text + "','" + tbx_op.Text + "','" + tbx_om.Text + "','" + rbl_entera.SelectedItem.Text + "','" + tbx_inspiracion.Text + "'," + _
+                                    "'" + rbl_oescuelas.SelectedItem.Text + "','" + tbx_radio1.Text + "','" + tbx_radio2.Text + "','" + tbx_radio3.Text + "','" + tbx_p1.Text + "'," + _
+                                    "'" + tbx_p2.Text + "','" + tbx_p3.Text + "','" + tbx_t1.Text + "','" + tbx_t2.Text + "','" + tbx_t3.Text + "','" + ddl_programacion.SelectedItem.Text + "'," + _
+                                    "'" + rbl_work.SelectedItem.Text + "','" + rbl_auto.SelectedItem.Text + "','" + ddl_ramoempresa.SelectedItem.Text + "'," + _
+                                    "'" + tbx_empresa.Text + "','" + ddl_puestonivel.SelectedItem.Text + "','" + tbx_hdt.Text + "')", v)
+        Dim store_one As New SqlCommand("INSERT INTO radio_quiz (matr,q40) VALUES ('" + getcod() + "','" + rbl_areas.SelectedItem.Text & " -+- " & tbx_comentario.Text + "')", v)
+        v.Open()
+        store.ExecuteNonQuery()
+        store_one.ExecuteNonQuery()
+        v.Close()
+    End Sub
+
+    Protected Sub ddl_colonia_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_colonia.SelectedIndexChanged
+        Select Case ddl_colonia.SelectedItem.Text
+            Case "Otra"
+                mv_colonia.ActiveViewIndex = 1
+        End Select
+    End Sub
+
+    Protected Sub ib_back1_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ib_back1.Click
+        mv_partes.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub ib_back2_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ib_back2.Click
+        mv_partes.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub ddl_pais_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_pais.SelectedIndexChanged
+        Select Case ddl_pais.SelectedItem.ToString
+            Case "Mexico"
+                carga_mexico()
+                'mv_nacimiento.ActiveViewIndex = 1
+            Case Else
+                ddl_estado.Items.Clear()
+                ddl_estado.Items.Insert(0, "Otro")
+                mv_nacimiento.ActiveViewIndex = 1
+                tbx_ciudad.Focus()
+        End Select
+    End Sub
+
+    Private Sub carga_localidad()
+        Dim v As New SqlConnection(Application("strsta"))
+        Dim cp As New SqlDataAdapter("SELECT DISTINCT CVE_LOC, NOM_LOC  FROM inegi2005 WHERE CVE_ENT='" + ddl_estado.SelectedValue.ToString + "' ORDER BY NOM_LOC", v)
+        Dim dtc2 As New DataTable
+        v.Open()
+        cp.Fill(dtc2)
+        v.Close()
+        With ddl_ciudad
+            .DataSource = dtc2
+            .DataTextField = "NOM_LOC"
+            .DataValueField = "CVE_LOC"
+            .DataBind()
+            .Items.Insert(0, "Otra")
+            .SelectedIndex = ddl_ciudad.Items.IndexOf(ddl_ciudad.Items.FindByText("Guadalajara"))
+        End With
+        mv_nacimiento.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub ddl_estado_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddl_estado.SelectedIndexChanged
+        carga_localidad()
+    End Sub
+End Class

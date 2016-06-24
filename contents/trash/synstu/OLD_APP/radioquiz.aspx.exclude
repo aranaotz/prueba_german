@@ -1,0 +1,724 @@
+﻿<%@ Page Title="Radio Encuensta - CGI" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="radioquiz.aspx.vb" Inherits="radioquiz" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<%@ Register assembly="AjaxControls" namespace="AjaxControls" tagprefix="cc2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<link href="general.css" rel="stylesheet" type="text/css" />
+    <div style="font-family: verdana; font-size: 8pt">
+        <table style="width:100%;">
+            <tr>
+                <td>
+                <asp:UpdatePanel ID="up_radioquiz" runat="server"><ContentTemplate>
+                    <asp:MultiView ID="mv_encuesta" runat="server">
+                        <asp:View ID="v_encuesta" runat="server">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td colspan="3" 
+                                        
+                                        style="font-size: 9pt; font-family: verdana; font-weight: bold; color: #003366; padding-bottom: 7px;"><asp:ToolkitScriptManager ID="sm_radioencuesta" runat="server"></asp:ToolkitScriptManager>
+                                        <table align="center">
+                                            <tr>
+                                                <td>
+                                                    <asp:Image ID="Image7" runat="server" ImageUrl="~/img/cgilogod.gif" />
+                                                </td>
+                                                <td>
+                                                    Encuesta de Presencia - Colegio Gastronómico Internacional</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                    <asp:MultiView ID="mv_partes" runat="server"><asp:View ID="v_p1" runat="server">
+                                        <table align="center" 
+                                            
+                                            style="border: 1px solid #DADADA; margin: auto; font-family: verdana; font-size: 8pt; width: 80%;">
+                                            <tr>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Correo Electrónico</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Tel. Casa</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Tel. Movil</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <asp:TextBox ID="tbx_email" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                </td>
+                                                <td>
+                                                    <asp:TextBox ID="tbx_telcasa" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                    <asp:TextBoxWatermarkExtender ID="tbx_telcasa_wme" runat="server" 
+                                                        Enabled="True" TargetControlID="tbx_telcasa" WatermarkText="10 digitos" 
+                                                        WatermarkCssClass="textbox_wm">
+                                                    </asp:TextBoxWatermarkExtender>
+                                                </td>
+                                                <td>
+                                                    <asp:TextBox ID="tbx_telmovil" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                    <asp:TextBoxWatermarkExtender ID="tbx_telmovil_wme" runat="server" 
+                                                        Enabled="True" TargetControlID="tbx_telmovil" WatermarkText="10 Digitos" 
+                                                        WatermarkCssClass="textbox_wm">
+                                                    </asp:TextBoxWatermarkExtender>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Pais de Origen</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Estado</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Ciudad</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                Elija el Pais</td>
+                                                            <td>
+                                                                <asp:DropDownList ID="ddl_pais" runat="server" class="dropdown8" 
+                                                                    AutoPostBack="True">
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                            <td>
+                                                                &nbsp;</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                Elija el Estado
+                                                            </td>
+                                                            <td>
+                                                                <asp:DropDownList ID="ddl_estado" runat="server" class="dropdown8" 
+                                                                    AutoPostBack="True">
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                            <td>
+                                                                &nbsp;</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <asp:MultiView ID="mv_nacimiento" runat="server">
+                                                        <asp:View ID="v_ciudad_combo" runat="server">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        Elija la Ciudad</td>
+                                                                    <td>
+                                                                        <asp:DropDownList ID="ddl_ciudad" runat="server" AutoPostBack="True" 
+                                                                            class="dropdown8">
+                                                                        </asp:DropDownList>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </asp:View>
+                                                        <asp:View ID="v_ciudad_texto" runat="server">
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        Ciudad</td>
+                                                                    <td>
+                                                                        <asp:TextBox ID="tbx_ciudad" runat="server" CssClass="textboxes" Width="200px"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </asp:View>
+                                                    </asp:MultiView>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Edad</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Sexo</td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table align="center">
+                                                        <tr>
+                                                            <td>
+                                                                <asp:DropDownList ID="ddl_edad" runat="server" CssClass="dropdown8">
+                                                                    <asp:ListItem>17</asp:ListItem>
+                                                                    <asp:ListItem>18</asp:ListItem>
+                                                                    <asp:ListItem>19</asp:ListItem>
+                                                                    <asp:ListItem>20</asp:ListItem>
+                                                                    <asp:ListItem>21</asp:ListItem>
+                                                                    <asp:ListItem>22</asp:ListItem>
+                                                                    <asp:ListItem>23</asp:ListItem>
+                                                                    <asp:ListItem>24</asp:ListItem>
+                                                                    <asp:ListItem>25</asp:ListItem>
+                                                                    <asp:ListItem>26</asp:ListItem>
+                                                                    <asp:ListItem>27</asp:ListItem>
+                                                                    <asp:ListItem>28</asp:ListItem>
+                                                                    <asp:ListItem>29</asp:ListItem>
+                                                                    <asp:ListItem>30</asp:ListItem>
+                                                                    <asp:ListItem>31</asp:ListItem>
+                                                                    <asp:ListItem>32</asp:ListItem>
+                                                                    <asp:ListItem>33</asp:ListItem>
+                                                                    <asp:ListItem>34</asp:ListItem>
+                                                                    <asp:ListItem>35</asp:ListItem>
+                                                                </asp:DropDownList>
+                                                            </td>
+                                                            <td>
+                                                                Años</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <asp:DropDownList ID="ddl_sexo" runat="server" CssClass="dropdown8">
+                                                        <asp:ListItem>Hombre</asp:ListItem>
+                                                        <asp:ListItem>Mujer</asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Municipio en que Radica</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B" 
+                                                    colspan="2">
+                                                    Colonia</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <asp:MultiView ID="mv_municipio" runat="server">
+                                                        <asp:View ID="v_selector" runat="server">
+                                                            <asp:DropDownList ID="cbx_municipio" runat="server" AutoPostBack="True" 
+                                                                CssClass="dropdown8">
+                                                            </asp:DropDownList>
+                                                        </asp:View>
+                                                        <asp:View ID="v_texbox" runat="server">
+                                                            <asp:TextBox ID="tbx_municipio" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                        </asp:View>
+                                                    </asp:MultiView>
+                                                </td>
+                                                <td colspan="2">
+                                                    <asp:MultiView ID="mv_colonia" runat="server">
+                                                        <asp:View ID="v_selectorc" runat="server">
+                                                            <asp:DropDownList ID="ddl_colonia" runat="server" CssClass="dropdown8" 
+                                                                AutoPostBack="True">
+                                                            </asp:DropDownList>
+                                                        </asp:View>
+                                                        <asp:View ID="v_textboxc" runat="server">
+                                                            <asp:TextBox ID="tbx_coloniac" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                        </asp:View>
+                                                    </asp:MultiView>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" 
+                                                    style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Dirección</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <asp:TextBox ID="tbx_address" runat="server" CssClass="tbx_big" 
+                                                        style="margin-top: 0px"></asp:TextBox>
+                                                    <asp:TextBoxWatermarkExtender ID="tbx_address_wme" runat="server" 
+                                                        Enabled="True" TargetControlID="tbx_address" WatermarkCssClass="textbox_wm" 
+                                                        WatermarkText="Calle y numero externo e interno">
+                                                    </asp:TextBoxWatermarkExtender>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B">
+                                                    Ocupación del Padre</td>
+                                                <td style="background-color: #9CC64F; color: #003300; border: 1px solid #65842B" 
+                                                    colspan="2">
+                                                    Ocupación de la Madre</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <asp:TextBox ID="tbx_op" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                    <asp:TextBoxWatermarkExtender ID="tbx_op_wme" runat="server" Enabled="True" 
+                                                        TargetControlID="tbx_op" WatermarkCssClass="textbox_wm" 
+                                                        WatermarkText="Breve descripcion de la actividad que realiza">
+                                                    </asp:TextBoxWatermarkExtender>
+                                                </td>
+                                                <td colspan="2">
+                                                    <asp:TextBox ID="tbx_om" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                    <asp:TextBoxWatermarkExtender ID="tbx_om_wme" runat="server" Enabled="True" 
+                                                        TargetControlID="tbx_om" WatermarkCssClass="textbox_wm" 
+                                                        WatermarkText="Breve descripcion de la actividad de realiza">
+                                                    </asp:TextBoxWatermarkExtender>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <table align="right">
+                                                        <tr>
+                                                            <td>
+                                                                Siguiente</td>
+                                                            <td>
+                                                                <asp:ImageButton ID="cmd_next1" runat="server" 
+                                                                    ImageUrl="~/sadin_stu/img/arrow.png" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        </asp:View>
+                                        <asp:View ID="v_p2" runat="server">
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Por favor escriba alguna opinion que tenga sobre el colegio o sobre algun área 
+                                                        específica del mismo. Recuerde que sus respuestas son completamente anónimas.</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table style="width:100%;" align="center">
+                                                            <tr>
+                                                                <td colspan="3">
+                                                                    Su comentario va dirigido a:</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                                <td>
+                                                                    <asp:RadioButtonList ID="rbl_areas" runat="server" style="text-align:left;" 
+                                                                        ForeColor="#993366">
+                                                                        <asp:ListItem Selected="True">Dirección Administrativa</asp:ListItem>
+                                                                        <asp:ListItem>Direccion Académica</asp:ListItem>
+                                                                        <asp:ListItem>Direccion General</asp:ListItem>
+                                                                        <asp:ListItem>Area de Almacen</asp:ListItem>
+                                                                        <asp:ListItem>Area de Recepcion</asp:ListItem>
+                                                                        <asp:ListItem>Area de Mantenimiento</asp:ListItem>
+                                                                        <asp:ListItem>Area de Vinculacion</asp:ListItem>
+                                                                    </asp:RadioButtonList>
+                                                                </td>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                                <td>
+                                                                    Por favor, redacte su comentario:</td>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                                <td style="padding-bottom: 10px">
+                                                                    <asp:TextBox ID="tbx_comentario" runat="server" MaxLength="1000" Rows="10" 
+                                                                        TextMode="MultiLine" Width="542px"></asp:TextBox>
+                                                                </td>
+                                                                <td>
+                                                                    &nbsp;</td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Cómo se enteró del Colegio Gastronómico Internacional?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:RadioButtonList ID="rbl_entera" runat="server" RepeatColumns="4" 
+                                                            RepeatDirection="Horizontal">
+                                                        </asp:RadioButtonList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Qué le inspiró elegir al Colegio Gastronómico Internacional?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:TextBox ID="tbx_inspiracion" runat="server" CssClass="tbx_big"></asp:TextBox>
+                                                        <asp:TextBoxWatermarkExtender ID="tbx_inspiracion_wme" runat="server" 
+                                                            Enabled="True" TargetControlID="tbx_inspiracion" WatermarkCssClass="textbox_wm" 
+                                                            WatermarkText="Por favor sea sincero y claro">
+                                                        </asp:TextBoxWatermarkExtender>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Se informó de ofrecimientos de otras escuelas?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:RadioButtonList ID="rbl_oescuelas" runat="server" RepeatColumns="4" 
+                                                            RepeatDirection="Horizontal">
+                                                            <asp:ListItem Selected="True">SI</asp:ListItem>
+                                                            <asp:ListItem>NO</asp:ListItem>
+                                                        </asp:RadioButtonList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Que estaciones de Radio por orden de preferencia escucha?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    1.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_radio1" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    2.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_radio2" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    3.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_radio3" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Que Periódicos lee usted por orden de preferencia?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    1.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_p1" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    2.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_p2" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    3.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_p3" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Que canales de Televisión ve usted por orden de preferencia?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    1.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_t1" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    2.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_t2" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    3.-</td>
+                                                                <td style="padding-left: 10px; text-align: left;">
+                                                                    <asp:TextBox ID="tbx_t3" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Generalmente en que horario usted ve la televisión?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:DropDownList ID="ddl_programacion" runat="server" CssClass="dropdown8">
+                                                            <asp:ListItem>6:00 - 9:00</asp:ListItem>
+                                                            <asp:ListItem>9:00 - 15:00</asp:ListItem>
+                                                            <asp:ListItem>15:00 - 20:00</asp:ListItem>
+                                                            <asp:ListItem>20:00 - 23:59</asp:ListItem>
+                                                            <asp:ListItem>00:00 - 6:00</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Usted Trabaja?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:RadioButtonList ID="rbl_work" runat="server" RepeatColumns="4" 
+                                                            RepeatDirection="Horizontal">
+                                                            <asp:ListItem Selected="True">SI</asp:ListItem>
+                                                            <asp:ListItem>NO</asp:ListItem>
+                                                        </asp:RadioButtonList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Tiene automovil propio?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:RadioButtonList ID="rbl_auto" runat="server" AutoPostBack="True" 
+                                                            RepeatColumns="4" RepeatDirection="Horizontal">
+                                                            <asp:ListItem>SI</asp:ListItem>
+                                                            <asp:ListItem Selected="True">NO</asp:ListItem>
+                                                        </asp:RadioButtonList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left; padding-top: 7px;">
+                                                        <asp:MultiView ID="mv_auto" runat="server">
+                                                            <asp:View ID="opcion" runat="server">
+                                                                <table style="border: 1px solid #E4E4E4; background-color: #EFEFEF;" 
+                                                                    align="left">
+                                                                    <tr>
+                                                                        <td style="padding: 5px; background-color: #CCCCCC">
+                                                                            Seleccione Marca, Submarca y modelo.</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <table>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        Marca</td>
+                                                                                    <td>
+                                                                                        <asp:DropDownList ID="ddl_automarca" runat="server" AutoPostBack="True" 
+                                                                                            CssClass="dropdown8">
+                                                                                        </asp:DropDownList>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        Submarca</td>
+                                                                                    <td>
+                                                                                        <asp:DropDownList ID="ddl_submarca" runat="server" AutoPostBack="True" 
+                                                                                            CssClass="dropdown8">
+                                                                                        </asp:DropDownList>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        Modelo</td>
+                                                                                    <td>
+                                                                                        <asp:DropDownList ID="ddl_model" runat="server" CssClass="dropdown8">
+                                                                                        </asp:DropDownList>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <asp:TextBox ID="tbx_otrocarro" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                                            <asp:TextBoxWatermarkExtender ID="tbx_otrocarro_wme" runat="server" 
+                                                                                Enabled="True" TargetControlID="tbx_otrocarro" WatermarkCssClass="textbox_wm" 
+                                                                                WatermarkText="Utilice este cuadro si el modelo no se encuentra en la lista.">
+                                                                            </asp:TextBoxWatermarkExtender>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </asp:View>
+                                                        </asp:MultiView>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        &nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: right;">
+                                                        <table align="right">
+                                                            <tr>
+                                                                <td>
+                                                                    <asp:ImageButton ID="ib_back1" runat="server" 
+                                                                        ImageUrl="~/img/backminiarrow.png" />
+                                                                </td>
+                                                                <td style="padding-right: 40px">
+                                                                    Atras</td>
+                                                                <td>
+                                                                    Siguiente</td>
+                                                                <td>
+                                                                    <asp:ImageButton ID="cmd_next2" runat="server" 
+                                                                        ImageUrl="~/sadin_stu/img/arrow.png" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </asp:View>
+                                        <asp:View ID="v_p3" runat="server">
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Que ramo de la industria es la empresa en que usted trabaja?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:DropDownList ID="ddl_ramoempresa" runat="server" CssClass="dropdown8">
+                                                            <asp:ListItem>Automotriz</asp:ListItem>
+                                                            <asp:ListItem>Restaurantera</asp:ListItem>
+                                                            <asp:ListItem>Educacion</asp:ListItem>
+                                                            <asp:ListItem>Servicios</asp:ListItem>
+                                                            <asp:ListItem>Gobierno</asp:ListItem>
+                                                            <asp:ListItem>Salud</asp:ListItem>
+                                                            <asp:ListItem>Comercio</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Cual es el nombre de la empresa en que usted labora?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:TextBox ID="tbx_empresa" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Que nivel de puesto tiene en la empresa?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:DropDownList ID="ddl_puestonivel" runat="server" CssClass="dropdown8">
+                                                            <asp:ListItem>Gerencial</asp:ListItem>
+                                                            <asp:ListItem>Direccion</asp:ListItem>
+                                                            <asp:ListItem>Jefe de Area</asp:ListItem>
+                                                            <asp:ListItem>Encargado de Proceso</asp:ListItem>
+                                                            <asp:ListItem>Supervisor</asp:ListItem>
+                                                            <asp:ListItem>Operativo</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border: 1px solid #49B7BC; padding-left: 10px; text-align: left; background-color: #9ACADC; padding-top: 2px; padding-bottom: 2px;">
+                                                        ¿Cual es su Horario de Trabajo?</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-left: 10px; text-align: left;">
+                                                        <asp:TextBox ID="tbx_hdt" runat="server" CssClass="tbx_big" Width="300px"></asp:TextBox>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table align="right">
+                                                            <tr>
+                                                                <td>
+                                                                    <asp:ImageButton ID="ib_back2" runat="server" 
+                                                                        ImageUrl="~/img/backminiarrow.png" />
+                                                                </td>
+                                                                <td style="padding-right: 40px">
+                                                                    Atras</td>
+                                                                <td>
+                                                                    Finalizar</td>
+                                                                <td>
+                                                                    <asp:ImageButton ID="cmd_next3" runat="server" 
+                                                                        ImageUrl="~/sadin_stu/img/arrow.png" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </asp:View>
+                                        <asp:View ID="v_final" runat="server">
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                    <td>
+                                                        Gracias por participar en la encuesta.</td>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                    <td>
+                                                        &nbsp;</td>
+                                                </tr>
+                                            </table>
+                                        </asp:View></asp:MultiView>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="padding-top: 10px">
+                                        <table style="width:100%;">
+                                            <tr>
+                                                <td>
+                                                     <cc2:ModalUpdateProgress ID="mup_this" runat="server" 
+                        AssociatedUpdatePanelID="up_radioquiz" 
+                        BackgroundCssClass="modalBackground_gris" CancelControlID="lb_cancel" 
+                        DisplayAfter="100"><ProgressTemplate>
+                        <table align="center" style="border: 1px solid #666666; width:100%; background-color: #FFFFFF;"><tr><td style="vertical-align: middle; text-align: center">
+                            <asp:Image ID="im_progress" runat="server" ImageUrl="~/sadin_stock/img/sadin_loading.gif" />
+                            </td></tr>
+                        <tr><td style="vertical-align: middle; text-align: center">
+                            <asp:LinkButton ID="lb_cancel" runat="server" style="text-decoration:none; white-space:nowrap;">Cancelar carga...</asp:LinkButton>
+                            </td></tr></table>
+                        </ProgressTemplate>
+                    </cc2:ModalUpdateProgress></td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td>
+                                        &nbsp;</td>
+                                </tr>
+                            </table>
+                        </asp:View>
+                        <asp:View ID="v_error" runat="server"></asp:View>
+                    </asp:MultiView>
+                    </ContentTemplate></asp:UpdatePanel>
+                </td>
+            </tr>
+        </table>
+    </div>
+</asp:Content>
+

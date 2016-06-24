@@ -1,0 +1,266 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports usuario_alumno
+Imports synpin_code
+Imports escolar
+Imports downdocument
+Imports print_docs
+Imports wimage
+Imports System.IO
+
+Partial Class gatepass
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Dim c As New SqlConnection(Application("str"))
+        'Dim dt As New SqlDataAdapter("select 'http://200.52.200.111/utsyn/qrcodes/' + CONVERT(VARCHAR,codigo_unico) + '.jpg' qrcode ,codigo_unico,'http://200.52.200.111/utsyn/photo_tumb/' + CONVERT(VARCHAR,codigo_unico) + '.jpg' foto from user_generales where curp<>''", c)
+        'Dim dtt As New DataTable
+        'c.Open()
+        'dt.Fill(dtt)
+        'c.Close()
+        mv_generales.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub ib_go_Click(sender As Object, e As ImageClickEventArgs) Handles ib_go.Click
+        Dim tdsb As DataTable = escolar.busqueda_alumno(tbx_buscar.Text)
+        gv_resultados.DataSource = tdsb
+        Select Case tdsb.Rows.Count
+            Case Is > 0
+                If tdsb.Rows.Count = 1 Then
+                    lbl_rotate.Text = "1 resultado"
+                Else
+                    lbl_rotate.Text = tdsb.Rows.Count & " resultados"
+                End If
+            Case Else
+                lbl_rotate.Text = ""
+        End Select
+        gv_resultados.DataBind()
+        mv_generales.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub lb_thisis_Click(sender As Object, e As EventArgs)
+        fv_generales.DataSource = escolar.retrieve_data(sender.CommandArgument.ToString, Application("str"))
+        fv_generales.DataBind()
+        mv_generales.ActiveViewIndex = 2
+    End Sub
+
+    Private Function uploadfile(ByVal enviador As FileUpload, ByVal codigo_unico As String) As Boolean
+        If enviador.HasFile Then
+            'Try
+            If enviador.PostedFile.ContentType = "image/jpeg" Or enviador.PostedFile.ContentType = "image/png" Or enviador.PostedFile.ContentType = "image/gif" Or enviador.PostedFile.ContentType = "image/jpg" Then
+                If enviador.PostedFile.ContentLength < 4096000 Then '***mide en kb el limite son 2 mb, pero se solicita que sea 1.5
+                    Dim nombre_archivo As String = codigo_unico & Right(enviador.FileName, 4)
+                    enviador.SaveAs(Server.MapPath("\utsyn\photo\") & nombre_archivo)
+                    uploadfile = True
+                Else
+                    'lbl_error.Text = "Para la mejor ejecucuión de winmex.com no se permite la carga de archivos mayores a 1.5 Mb."
+                    uploadfile = False
+                End If
+            Else
+                'lbl_error.Text = "El archivo parece no ser imagen permitida: jpg, png y gif."
+                uploadfile = False
+            End If
+        Else
+            'Catch ex As Exception
+            'lbl_error.Text = "El siguiente error ha ocurrido: " + ex.Message
+            'lbl_error.Text = "El siguiente error ha ocurrido: DESCONOCIDO"
+            uploadfile = False
+            'End Try
+        End If
+    End Function
+
+    Protected Sub fv_generales_DataBound(sender As Object, e As EventArgs) Handles fv_generales.DataBound
+        Dim codigo_unico As String = CType(fv_generales.FindControl("lb_guardar"), LinkButton).CommandArgument.ToString
+        Dim valores As DataTable = escolar.valoresddl(codigo_unico)
+        Dim ddlse As DropDownList = fv_generales.FindControl("ddl_sexo")
+        Dim ddlsa As DropDownList = fv_generales.FindControl("ddl_sangre")
+        Dim cbxdocs As CheckBoxList = fv_generales.FindControl("cbx_documentos")
+        Dim ddlprepa As DropDownList = fv_generales.FindControl("ddl_preparatoria")
+        Dim ddlnacimiento As DropDownList = fv_generales.FindControl("ddl_nacimiento")
+        With ddlse
+            .DataSource = tabla_sexo(Application("str"))
+            .DataTextField = "sexo"
+            .DataValueField = "idsexo"
+            .DataBind()
+            Try
+                .SelectedIndex = ddlse.Items.IndexOf(ddlse.Items.FindByValue(valores.Rows(0).Item(0).ToString))
+            Catch ex As Exception
+                .SelectedIndex = 0
+            End Try
+        End With
+        With ddlsa
+            .DataSource = tabla_sangre(Application("str"))
+            .DataTextField = "tipoyfactor"
+            .DataValueField = "idtipos"
+            .DataBind()
+            Try
+                .SelectedIndex = ddlsa.Items.IndexOf(ddlsa.Items.FindByText(valores.Rows(0).Item(1).ToString))
+            Catch ex As Exception
+                .SelectedIndex = 0
+            End Try
+        End With
+        Dim docstable As DataTable = tabla_documentos(codigo_unico)
+        With cbxdocs
+            .DataSource = tabla_documentos(codigo_unico)
+            .DataValueField = "iddoc"
+            .DataTextField = "documento"
+            .DataBind()
+            For t = 0 To cbxdocs.Items.Count - 1
+                cbxdocs.Items(t).Selected = CBool(docstable.Rows(t).Item(2).ToString)
+            Next
+        End With
+        With ddlprepa
+            .DataSource = tabla_prepas()
+            .DataValueField = "nombre_ct"
+            .DataTextField = "nombre_ct"
+            .DataBind()
+        End With
+        With ddlnacimiento
+            .DataSource = tabla_lnacimiento()
+            .DataValueField = "l_nacimiento"
+            .DataTextField = "l_nacimiento"
+            .DataBind()
+        End With
+    End Sub
+
+    Protected Sub fv_generales_ItemCommand(sender As Object, e As FormViewCommandEventArgs) Handles fv_generales.ItemCommand
+        If e.CommandName = "guardar" Then
+            Dim datamatrix(56, 2) As String
+            datamatrix(0, 0) = CType(fv_generales.FindControl("fu_imagen"), FileUpload).FileName.ToString 'foto
+            datamatrix(1, 0) = CType(fv_generales.FindControl("tbx_apaterno"), TextBox).Text 'apellido_paterno
+            datamatrix(2, 0) = CType(fv_generales.FindControl("tbx_amaterno"), TextBox).Text 'apellido_materno
+            datamatrix(3, 0) = CType(fv_generales.FindControl("tbx_nombres"), TextBox).Text 'nombre
+            datamatrix(4, 0) = CType(fv_generales.FindControl("tbx_curp"), TextBox).Text 'curp
+            datamatrix(5, 0) = CType(fv_generales.FindControl("tbx_domicilio"), TextBox).Text 'domicilio
+            datamatrix(6, 0) = CType(fv_generales.FindControl("tbx_colonia"), TextBox).Text 'colonia
+            datamatrix(7, 0) = CType(fv_generales.FindControl("tbx_municipio"), TextBox).Text 'municipio
+            datamatrix(8, 0) = CType(fv_generales.FindControl("tbx_telefono"), TextBox).Text 'telefono
+            datamatrix(9, 0) = CType(fv_generales.FindControl("tbx_movil"), TextBox).Text 'celular
+            datamatrix(10, 0) = CType(fv_generales.FindControl("tbx_carrera"), TextBox).Text 'carrera
+            datamatrix(11, 0) = CType(fv_generales.FindControl("tbx_especialidad"), TextBox).Text 'especialidad
+            datamatrix(12, 0) = CType(fv_generales.FindControl("tbx_mail"), TextBox).Text 'correo
+            datamatrix(13, 0) = CType(fv_generales.FindControl("ddl_sangre"), DropDownList).SelectedValue.ToString 'factor_rh
+            datamatrix(14, 0) = CType(fv_generales.FindControl("ddl_sexo"), DropDownList).SelectedValue.ToString 'sexo
+            datamatrix(15, 0) = fecha(CType(fv_generales.FindControl("tbx_fnac"), TextBox).Text) 'Fecha de nacimiento
+            datamatrix(16, 0) = rw_civil(CType(fv_generales.FindControl("tbx_civil"), TextBox).Text) 'Estado Civil
+            datamatrix(17, 0) = CType(fv_generales.FindControl("tbx_sede"), TextBox).Text 'Sede
+            datamatrix(18, 0) = CType(fv_generales.FindControl("tbx_imss"), TextBox).Text 'Numero de Seguridad social
+            datamatrix(19, 0) = CType(fv_generales.FindControl("tbx_enfermedades"), TextBox).Text 'Padecimientos cronicos
+            datamatrix(20, 0) = CType(fv_generales.FindControl("tbx_padre"), TextBox).Text 'Nombre del tutor
+            datamatrix(21, 0) = CType(fv_generales.FindControl("tbx_telpadre"), TextBox).Text 'Telefono del tutor
+            datamatrix(22, 0) = CType(fv_generales.FindControl("hf_carrera"), HiddenField).Value 'carrera
+            datamatrix(23, 0) = CType(fv_generales.FindControl("hf_ciclo"), HiddenField).Value 'ciclo
+            datamatrix(24, 0) = datamatrix(1, 0) & " " & datamatrix(2, 0) & " " & datamatrix(3, 0) 'nombre_completo
+            datamatrix(25, 0) = CType(fv_generales.FindControl("hf_programa"), HiddenField).Value 'programa
+            datamatrix(26, 0) = IIf(CType(fv_generales.FindControl("cbx_trabaja"), CheckBox).Checked, "Si", "No") 'trabaja?
+            datamatrix(27, 0) = CType(fv_generales.FindControl("tbx_donde"), TextBox).Text 'donde_trabaja
+            datamatrix(28, 0) = CType(fv_generales.FindControl("tbx_tocupacion"), TextBox).Text 'tutor_ocupacion
+            datamatrix(29, 0) = CType(fv_generales.FindControl("tbx_tdireccion"), TextBox).Text 'tutor_direccion
+            datamatrix(30, 0) = CType(fv_generales.FindControl("ddl_preparatoria"), DropDownList).SelectedValue.ToString 'preparatoria
+            datamatrix(31, 0) = CType(fv_generales.FindControl("ddl_mesde"), DropDownList).SelectedValue.ToString 'prepa_mes_desde
+            datamatrix(32, 0) = CType(fv_generales.FindControl("ddl_anode"), DropDownList).SelectedValue.ToString 'prepa_año_desde
+            datamatrix(33, 0) = CType(fv_generales.FindControl("ddl_meshasta"), DropDownList).SelectedValue.ToString 'prepa_mes_hasta
+            datamatrix(34, 0) = CType(fv_generales.FindControl("ddl_anohasta"), DropDownList).SelectedValue.ToString 'prepa_año_hasta
+            datamatrix(35, 0) = CType(fv_generales.FindControl("tbx_promedio"), TextBox).Text 'promedio
+            datamatrix(36, 0) = CType(fv_generales.FindControl("lb_guardar"), LinkButton).CommandArgument.ToString 'numero de registro
+            datamatrix(39, 0) = CType(fv_generales.FindControl("ddl_turno"), DropDownList).SelectedItem.Text 'Turno
+            datamatrix(40, 0) = CType(fv_generales.FindControl("hf_fecha"), HiddenField).Value 'fecha
+            datamatrix(41, 0) = IIf(CType(fv_generales.FindControl("ddl_sexo"), DropDownList).SelectedValue.ToString = "1", "Masculino", "Femenino") 'sexo_cadena
+            datamatrix(42, 0) = CType(fv_generales.FindControl("ddl_sangre"), DropDownList).SelectedItem.Text 'factor_rh_cadena
+            datamatrix(43, 0) = CType(fv_generales.FindControl("tbx_civil"), TextBox).Text 'Estado Civil
+            datamatrix(44, 0) = CType(fv_generales.FindControl("ddl_nacimiento"), DropDownList).SelectedItem.Text 'lugar_De_nacimiento
+            datamatrix(45, 0) = dateprint(fecha(CType(fv_generales.FindControl("tbx_fnac"), TextBox).Text)) ' Fecha de nacimiento impresion
+
+            Dim tablaprepa As DataTable = datos_prepa(CType(fv_generales.FindControl("ddl_preparatoria"), DropDownList).SelectedValue.ToString)
+            datamatrix(46, 0) = tablaprepa.Rows(0).Item(0).ToString
+            datamatrix(47, 0) = tablaprepa.Rows(0).Item(1).ToString
+            datamatrix(48, 0) = tablaprepa.Rows(0).Item(2).ToString
+            datamatrix(49, 0) = tablaprepa.Rows(0).Item(3).ToString
+
+            datamatrix(50, 0) = CType(fv_generales.FindControl("tbx_cp"), TextBox).Text 'Codigo_postal_aspirante
+            datamatrix(51, 0) = CType(fv_generales.FindControl("tbx_tcolonia"), TextBox).Text 'colonia_tutor
+            datamatrix(52, 0) = CType(fv_generales.FindControl("tbx_tmnpio"), TextBox).Text 'municipio_tutor
+            datamatrix(53, 0) = CType(fv_generales.FindControl("tbx_testado"), TextBox).Text 'estado_tutor
+            datamatrix(54, 0) = CType(fv_generales.FindControl("tbx_tcp"), TextBox).Text 'codigo_postal_tutor
+
+            Dim cbxdoc As CheckBoxList = CType(fv_generales.FindControl("cbx_documentos"), CheckBoxList)
+            For t = 0 To cbxdoc.Items.Count - 1
+                datamatrix(t, 1) = IIf(cbxdoc.Items(t).Selected, "1", "0")
+            Next
+
+            datamatrix(5, 1) = Format(Now, "dddd, dd MMMM, yyyy") 'fecha actual
+            datamatrix(6, 1) = datamatrix(24, 0)
+            datamatrix(7, 1) = datamatrix(10, 0)
+            datamatrix(9, 1) = Format(Now, "dddd, dd MMMM, yyyy") 'fecha actual
+            datamatrix(10, 1) = datamatrix(24, 0)
+
+            Dim i15 As FileUpload = CType(fv_generales.FindControl("fu_imagen"), FileUpload)
+
+            Dim nvamatricula As String = escolar.matricula(datamatrix(23, 0), datamatrix(22, 0))
+            Dim codigo_unico As String = CDbl(Right(nvamatricula, 8)) * 51
+            Dim referencia As String = verificador(nvamatricula)
+
+            datamatrix(37, 0) = nvamatricula
+            datamatrix(38, 0) = codigo_unico
+            datamatrix(8, 1) = nvamatricula
+            datamatrix(55, 1) = referencia
+
+            Select Case uploadfile(i15, codigo_unico)
+                Case True
+                    SaveImageFile(Server.MapPath("\utsyn\photo\") & codigo_unico & ".jpg", Server.MapPath("\utsyn\photo\mini\") & codigo_unico & ".jpg", tampho("imagei005"))
+            End Select
+
+            perfilsave(datamatrix, nvamatricula, codigo_unico, referencia, cbxdoc.Items.Count)
+            savedqr(Application("str"), codigo_unico)
+            SaveImageFile(Server.MapPath("\utsyn\qrcodes\") & codigo_unico & ".jpg", Server.MapPath("\utsyn\qrcodes\mini\") & codigo_unico & ".jpg", tampho("imagei006"))
+            mv_generales.ActiveViewIndex = 2
+            ccei005(nvamatricula, datamatrix)
+            'lbl_matricula.Text = nvamatricula
+            'lbl_cu.Text = codigo_unico
+            'lb_comprobante.CommandArgument = nvamatricula
+            'mv_generales.ActiveViewIndex = 3
+            descarga("cce-i005", nvamatricula, ".pdf")
+        End If
+    End Sub
+
+
+
+
+    'Protected Sub lb_lista_Click(sender As Object, e As EventArgs) Handles lb_lista.Click
+    ' Dim cs As New SqlConnection(Application("str"))
+    ' Dim dt As New DataTable
+    ' Dim gm As New SqlDataAdapter("select codigo_unico,foto from base_gendataal", cs)
+    '     cs.Open()
+    '     gm.Fill(dt)
+    '     cs.Close()
+    ' Dim i As Integer
+    '     For i = 0 To dt.Rows.Count - 1
+    ' Dim path As String = HttpContext.Current.Server.MapPath("\utsyn\syncesc\photo\" & dt.Rows(i).Item(0).ToString & ".jpg")
+    ' Dim file As System.IO.FileInfo = New System.IO.FileInfo(Path)
+    '         If Not (file.Exists) Then
+    ' Dim nss As New SqlCommand("INSERT INTO historial_icu_reg (matricula) VALUES ('" + dt.Rows(i).Item(0).ToString + "')", cs)
+    '             cs.Open()
+    '             nss.ExecuteNonQuery()
+    '             cs.Close()
+    '         End If
+    '     Next
+    ' End Sub
+
+
+    Private Sub culista()
+        'Dim c As New SqlConnection(Application("str"))
+        'Dim cul As New SqlDataAdapter("SELECT codigo_unico FROM user_generales where curp<>''", c)
+        'Dim cult As New DataTable
+        'c.Open()
+        'cul.Fill(cult)
+        'c.Close()
+        'Dim t As Integer
+        'For t = 0 To cult.Rows.Count - 1
+        savedqr_full(Application("str"), "1090909090")
+        'Next
+    End Sub
+
+    Protected Sub lb_comprobante_Click(sender As Object, e As EventArgs) Handles lb_comprobante.Click
+        descarga("cce-i005", sender.commandargument.ToString, ".pdf")
+    End Sub
+End Class

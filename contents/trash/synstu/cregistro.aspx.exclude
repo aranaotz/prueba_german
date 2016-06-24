@@ -1,0 +1,313 @@
+﻿<%@ Page Title="Registro de Alumnos a cursos de la oferta académica - UTSyn 2014" Language="VB" MasterPageFile="~/synstu/synstu.master" AutoEventWireup="false" CodeFile="cregistro.aspx.vb" Inherits="cregistro" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div class="cell_spa_0">
+        <table class="cell_spa_0" style="width: 100%;">
+            <tr>
+                <td style="padding: 7px; font-size: 1.5em;">Registro de Cursos en tu Horario</td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:UpdatePanel ID="up_mom" runat="server"><ContentTemplate>
+                        <table class="cell_spa_0" style="width: 100%;">
+                            <tr>
+                                        <td style="padding: 10px; font-size: 1.0em;">
+                                            Introduce los ICUs que deseas registrar y haz click en
+                                            <span style="color: #CC0000"><strong>RegistrarICUs</strong></span>. Al 
+                                            terminar haz click en <span style="color: #CC0000"><strong>Finalizar 
+                                            Pre-Registro</strong></span> ubicado abajo de tu lista de cursos.
+                                         </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 100px 10px 100px">
+                                <asp:UpdatePanel ID="up_nrcs" runat="server"><ContentTemplate>
+                                    <table class="cell_spa_0" style="width: 100%;">
+                                        <tr>
+                                            <td style="padding: 12px">
+                                                <asp:TextBox ID="tbx_i1" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i1_ftbe" runat="server" Enabled="True" 
+                                                    TargetControlID="tbx_i1" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 12px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i2" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i2_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i2" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 12px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i3" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i3_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i3" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 12px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i4" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i4_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i4" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 12px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i5" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i5_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i5" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0px 12px 12px 12px">
+                                                <asp:TextBox ID="tbx_i6" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i6_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i6" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 0px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i7" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i7_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i7" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 0px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i8" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i8_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i8" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 0px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i9" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i9_FilteredTextBoxExtender" runat="server" 
+                                                    Enabled="True" TargetControlID="tbx_i9" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                            <td style="padding: 0px 12px 12px 0px">
+                                                <asp:TextBox ID="tbx_i10" runat="server" MaxLength="5" CssClass="tbx_registro"></asp:TextBox>
+                                                <asp:FilteredTextBoxExtender ID="tbx_i10_FilteredTextBoxExtender" 
+                                                    runat="server" Enabled="True" TargetControlID="tbx_i10" ValidChars="0123456789">
+                                                </asp:FilteredTextBoxExtender>
+                                            </td>
+                                        </tr>
+                                    </table></ContentTemplate>
+                                                <Triggers>
+                                                    <asp:AsyncPostBackTrigger ControlID="cmd_registrar" EventName="Click" />
+                                                </Triggers>
+                                                </asp:UpdatePanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-bottom: 10px">
+                                    <asp:Button ID="cmd_registrar" runat="server" Text="Registrar ICUs" Enabled="False" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:UpdatePanel ID="up_list" runat="server"><ContentTemplate>
+                                                            <asp:HiddenField ID="hf_list" runat="server" />
+                                                            <asp:ModalPopupExtender ID="hf_list_mpe" runat="server" 
+                                                                BackgroundCssClass="mbgg" CancelControlID="ib_close" DynamicServicePath="" 
+                                                                Enabled="True" PopupControlID="p_list" TargetControlID="hf_list">
+                                                            </asp:ModalPopupExtender>
+                                            <asp:Panel ID="p_list" runat="server" style="display: none;">
+                                                <table>
+                                                    <tr>
+                                                        <td style="padding: 5px; vertical-align: middle; text-align: right;">
+                                                            <asp:ImageButton ID="ib_close" runat="server" 
+                                                                ImageUrl="~/log.usr/img/noyetb.png" />
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <table style="border: 1px solid #666666; background-color: #EBEBEB;">
+                                                                <tr>
+                                                                    <td style="background-color: #333333; color: #FFFFFF; font-weight: bold; padding: 10px">
+                                                                        RESUMEN DE PRE-REGISTRO</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td style="padding: 10px">
+                                                                        <asp:GridView ID="gv_list" runat="server" AutoGenerateColumns="False" 
+                                                                            GridLines="None" HorizontalAlign="Center" ShowHeader="False">
+                                                                            <Columns>
+                                                                                <asp:BoundField DataField="nrc" HeaderText="NRC" >
+                                                                                <ItemStyle Font-Bold="True" ForeColor="#003366" HorizontalAlign="Left" 
+                                                                                    VerticalAlign="Middle" />
+                                                                                </asp:BoundField>
+                                                                                <asp:BoundField DataField="causa" HeaderText="MENSAJE" >
+                                                                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" />
+                                                                                </asp:BoundField>
+                                                                                <asp:TemplateField>
+                                                                                    <ItemTemplate>
+                                                                                        <asp:Image ID="img_status" runat="server" 
+                                                                                            ImageUrl='<%# DataBinder.Eval(Container.DataItem,"img") %>' />
+                                                                                    </ItemTemplate>
+                                                                                </asp:TemplateField>
+                                                                            </Columns>
+                                                                        </asp:GridView>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </asp:Panel>
+                                        </ContentTemplate>
+                                            <Triggers>
+                                                <asp:AsyncPostBackTrigger ControlID="cmd_registrar" EventName="Click" />
+                                            </Triggers>
+                                            </asp:UpdatePanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 10px">
+                                    
+                <asp:UpdatePanel ID="up_gv" runat="server"><ContentTemplate>
+                    
+                        <table style="width:100%;">
+                            <tr>
+                                <td>
+                                    <asp:GridView ID="gv_registro" runat="server" AutoGenerateColumns="False" 
+                                        EmptyDataText="Sin cursos Registrados" HorizontalAlign="Center" 
+                                        Caption="Cursos Registrados" CellPadding="4" GridLines="None">
+                                        <Columns>
+                                            <asp:BoundField DataField="icu" HeaderText="ICU" />
+                                            <asp:BoundField DataField="MATERIA" HeaderText="MATERIA" 
+                                                ItemStyle-HorizontalAlign="Left" >
+                                            <ItemStyle Font-Bold="True" HorizontalAlign="Left" />
+                                            </asp:BoundField>
+                                            <asp:BoundField DataField="L" HeaderText="Lunes" />
+                                            <asp:BoundField DataField="M" HeaderText="Martes" />
+                                            <asp:BoundField DataField="I" HeaderText="Miercoles" />
+                                            <asp:BoundField DataField="J" HeaderText="Jueves" />
+                                            <asp:BoundField DataField="V" HeaderText="Viernes" />
+                                            <asp:BoundField DataField="S" HeaderText="Sábado" />
+                                            <asp:TemplateField>
+                                                <HeaderTemplate>
+                                                    Eliminar
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <table align="center" style="width:100%;">
+                                                        <tr>
+                                                            <td style="text-align: center">
+                                                                <asp:ImageButton ID="ib_delete" runat="server" 
+                                                                    CommandArgument='<%# DataBinder.Eval(Container.DataItem,"id") %>' 
+                                                                    ImageUrl="../img/close_coe.png" OnClick="delete_item" Enabled="false" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <HeaderStyle BackColor="#B30430" ForeColor="White" Height="40px" />
+                                        <RowStyle CssClass="gvrow" />
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Button ID="cmd_save" runat="server" Text="Finalizar Registro" CausesValidation="False" Enabled="False" Visible="False" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="cmd_registrar" EventName="Click" />
+                        </Triggers>
+                        </asp:UpdatePanel>
+                    
+                                    </td>
+                            </tr>
+                        </table></ContentTemplate></asp:UpdatePanel>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;</td>
+                                    <td><asp:UpdatePanel ID="up_ok_msg" runat="server"><ContentTemplate>
+                                    <asp:Panel ID="p_okmsg" runat="server" style="display:none;">
+                    <table style="font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #003366;">
+                        <tr>
+                            <td style="text-align: right; padding: 5px">
+                                <asp:HiddenField ID="hf_okmsg" runat="server" />
+                                <asp:ModalPopupExtender ID="hf_okmsg_mpe" runat="server" 
+                                    BackgroundCssClass="mbgg" CancelControlID="cmd_closeokwin" 
+                                    DynamicServicePath="" Enabled="True" PopupControlID="p_okmsg" 
+                                    TargetControlID="hf_okmsg">
+                                </asp:ModalPopupExtender>
+                                <asp:ImageButton ID="gotoorigin" runat="server" 
+                                    ImageUrl="~/img/noyetb.png" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table align="center" cellpadding="0" cellspacing="0" 
+                                    style="border: 1px solid #669900; background-color: #FFFFFF;">
+                                    <tr>
+                                        <td colspan="2" 
+                                            
+                                            style="padding: 10px; text-align: center; background-color: #80AA00; color: #FFFFFF; font-weight: bold;">
+                                            Se ha registrado correctamente tu Pre-Registro</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px 20px 10px 20px">
+                                            <asp:Imagebutton ID="cmd_closeokwin" runat="server" ImageUrl="~/img/paloma.png" 
+                                                CausesValidation="False" />
+                                        </td>
+                                        <td style="padding-right: 5px">
+                                            <asp:Label ID="lbl_okmsg" runat="server"></asp:Label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="padding: 3px 20px 3px 20px; text-align: center;">
+                                            <table style="width:100%;" align="center">
+                                                <tr>
+                                                    <td style="padding: 7px; text-align: center">
+                                                        <asp:ImageButton ID="cmd_print" runat="server" ImageUrl="~/img/print.png" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp;</td>
+                        </tr>
+                    </table>
+                </asp:Panel></ContentTemplate>
+                                        <Triggers>
+                                            <asp:AsyncPostBackTrigger ControlID="cmd_save" EventName="Click" />
+                                        </Triggers>
+                                        </asp:UpdatePanel></td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+            </table>
+
+        <asp:UpdateProgress ID="up_wait" runat="server" DisplayAfter="100">
+                                          <ProgressTemplate>
+                                          <div style="position:inherit; z-index:10; width: 100%; height: 100%; background-color: #FFFFFF; top: 4px; left: 3px; filter: alpha(opacity=70); opacity: 0.70"></div>
+                                          </ProgressTemplate>
+                                      </asp:UpdateProgress>
+                                      <asp:UpdatePanelAnimationExtender ID="up_prereg" runat="server" 
+                                          Enabled="True" TargetControlID="up_mom">
+                                          <Animations>
+                                              <OnUpdating>
+                                                  <Parallel duration="0.5" fps="30">
+                                                  <FadeOut AnimationTarget="up_mom" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                                  </Parallel>
+                                              </OnUpdating>
+                                              <OnUpdated>
+                                                  <Parallel duration="0.5" fps="30">
+                                                  <FadeIn Animationtarget="up_mom" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                                  </Parallel>
+                                              </OnUpdated>
+                                          </Animations>
+                                      </asp:UpdatePanelAnimationExtender>
+    </div>
+</asp:Content>
+

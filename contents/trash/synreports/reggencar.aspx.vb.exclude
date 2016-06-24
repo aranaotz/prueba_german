@@ -1,0 +1,47 @@
+﻿Imports synpin_code
+Imports dtciclos
+Imports reportes_querys
+Imports System.Data.SqlClient
+Imports System.Data
+Partial Class reggencar
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            carga_ddl()
+        End If
+    End Sub
+
+    Private Sub carga_ddl()
+        Dim dlc As New ListItem("Selecciona una carrera...", "0")
+        With ddl_carreras
+            .DataSource = tabla_carreras(Application("str"), "TSU")
+            .DataValueField = "cv_carrera"
+            .DataTextField = "carrera"
+            .DataBind()
+            .Items.Insert(0, dlc)
+        End With
+        Dim dlci As New ListItem("Selecciona una ciclo...", "0")
+        With ddl_ciclo
+            .DataSource = pi_todosciclos()
+            .DataValueField = "idciclo"
+            .DataTextField = "ciclo"
+            .DataBind()
+            .Items.Insert(0, dlci)
+        End With
+    End Sub
+
+    Protected Sub cmd_consulta_Click(sender As Object, e As EventArgs) Handles cmd_consulta.Click
+        gv_reporte.DataSource = carrera_ciclo(ddl_carreras.SelectedValue.ToString, ddl_ciclo.SelectedItem.Text)
+        gv_reporte.DataBind()
+        lbl_conteo.Text = conteo(gv_reporte)
+    End Sub
+
+    Private Function conteo(gv As GridView) As String
+        If gv.Rows.Count <> 0 Then
+            conteo = "Encontramos " & gv.Rows.Count.ToString & " registros."
+        Else
+            conteo = ""
+        End If
+    End Function
+End Class

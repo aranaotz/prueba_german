@@ -1,0 +1,127 @@
+﻿<%@ Master Language="VB" CodeFile="stuworking.master.vb" Inherits="synprof_profworking" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <link href="prof.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Synrate Profesores - UTZMG 2013</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:Panel ID="p_left" runat="server" Height="100%"><table class="barra_lateral"><tr><td style="vertical-align: top;"><img src="../img/utzmg_mini.png" alt="Universidad Tecnologica de la Zona Metropolitana de Guadalajara" /></td></tr>
+            <tr><td class="univertical">Universidad Tecnológica de la Zona Metropolitana de Guadalajara</td></tr></table></asp:Panel>
+        <asp:AlwaysVisibleControlExtender ID="av_p_left" runat="server" TargetControlID="p_left" HorizontalSide="Left" HorizontalOffset="0"></asp:AlwaysVisibleControlExtender>
+    <div class="centrado">
+        <table><tr><td><span class="sysratelogin">Synrate</span><br />Plataforma de trabajo</td></tr><tr><td>
+            <table style="margin: auto;" cellpadding="0" cellspacing="0">
+        <tr><td>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="titulo_medio">
+                            Bienvenid@
+                            <asp:Label ID="lbl_prof" runat="server"></asp:Label>
+                        </td>
+                        <td style="padding-left: 10px">
+                            <asp:ImageButton ID="ib_closesession" runat="server" 
+                                ImageUrl="img/close-alt_small.png" CausesValidation="False" Width="30px"/>
+                        </td>
+                        <td>
+                            <asp:HiddenField ID="hf_msg" runat="server" />
+                            <asp:modalpopupextender ID="hf_msg_mpe" runat="server" DynamicServicePath="" 
+                                        Enabled="True" TargetControlID="hf_msg" CancelControlID="ib_closewin" PopupControlID="p_msg" BackgroundCssClass="modalBackground_gris">
+                            </asp:modalpopupextender>
+                             <asp:Panel ID="p_msg" runat="server" style="display:none;">
+                                        <table style="text-align: center">
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td style="text-align: right; padding-right: 5px; padding-bottom: 5px;">
+                                                    <asp:ImageButton ID="ib_closewin" runat="server" 
+                                                        ImageUrl="~/img/closewin.png" />
+                                                </td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" 
+                                                        
+                                                        style="border: 1px solid #FF3300; background-color: #FFFFFF; width: 300px;">
+                                                        <tr>
+                                                            <td style="padding: 5px; background-color: #FF3300; color: #FFFFFF; font-weight: bold; font-family: verdana; font-size: 7.5pt;">
+                                                                Avisos SADIN</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color: #000066; padding: 5px">
+                                                                <asp:Label ID="lbl_msg" runat="server"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                            <asp:HiddenField ID="hf_prof" runat="server" />
+                        </td>
+                        <td style="padding-left:10px;">
+                            <asp:Panel ID="p_return" runat="server">
+                            <asp:LinkButton ID="lb_return" runat="server" Text="Regresar a su Sesion de Administador">
+                            </asp:LinkButton>
+                            </asp:Panel>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table style="width:100%;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                        <div><table style="width: 100%" cellpadding="0" cellspacing="0" class="background_blanco"><tr>
+                            <td style="padding: 5px 5px 5px 5px; background: rgba(252,249,249,1); border-radius: 8px 0px 0px 8px; vertical-align: top;">
+                             <asp:DataList ID="dl_items" runat="server">
+                        <ItemTemplate>
+                            <table style="width: 100%;">
+                                <tr><td style="padding-right: 5px; padding-left: 5px;" class="menu">
+                                        <asp:LinkButton ID="lb_detail" runat="server" CssClass="boton_texto"
+                                            CommandName='<%# DataBinder.Eval(Container.DataItem,"command") %>' 
+                                            OnClick="docommand" 
+                                            Text='<%# DataBinder.Eval(Container.DataItem,"descrip") %>' 
+                                            ToolTip='<%# DataBinder.Eval(Container.DataItem,"tooltip") %>' 
+                                            CausesValidation="False"></asp:LinkButton>
+                                    </td>
+                                </tr>
+                            </table>
+                        </ItemTemplate>
+                    </asp:DataList>
+                            </td><td style="width: 100%; vertical-align: top;">
+                         <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">       
+        </asp:ContentPlaceHolder>
+                        </td></tr></table></div>
+       
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </table></td></tr></table>
+    </div><%'<div class="piepage">Synrate v.2.1 - Universidad Tecnológica de la Zona Metropolitana de Guadalajara</div> %>
+    </form>
+</body>
+</html>

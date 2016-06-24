@@ -1,0 +1,416 @@
+﻿Imports synpin_code
+Imports print_docs
+Imports downdocument
+Imports System.Data
+
+
+Partial Class pinrev
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'mv_msgs.ActiveViewIndex = 0
+        If Not IsPostBack Then
+            llena_carrera()
+            llena_escuelas()
+            up_carreras.Update()
+        End If
+    End Sub
+
+    Private Sub llena_carrera()
+        ddl_carreras.DataSource = tabla_carreras(Application("str"), "TSU")
+        ddl_carreras.DataValueField = "cv_carrera"
+        ddl_carreras.DataTextField = "carrera"
+        ddl_carreras.DataBind()
+        Dim lit As New ListItem
+        lit.Text = "Elije la carrera de tu preferencia..."
+        lit.Value = "0"
+        ddl_carreras.Items.Insert(0, lit)
+        Dim lit2 As New ListItem
+        lit2.Text = "Selecciona una carrera..."
+        lit2.Value = "0"
+        ddl_turno.Items.Insert(0, lit2)
+
+    End Sub
+
+    Private Sub llena_escuelas()
+        ddl_68.DataSource = tabla_escuelas()
+        ddl_68.DataValueField = "id"
+        ddl_68.DataTextField = "escuela"
+        ddl_68.DataBind()
+        Dim lit3 As New ListItem
+        lit3.Text = "Selecciona..."
+        lit3.Value = "0"
+        ddl_68.Items.Insert(0, lit3)
+
+    End Sub
+
+    Private Sub llena_turno(ByVal carrera As String, ByVal carrerav As String)
+        ddl_turno.Items.Clear()
+        If carrerav = "0" Then
+            Dim dtclean As New DataTable
+            ddl_turno.DataSource = dtclean
+            ddl_turno.DataValueField = "id_turno"
+            ddl_turno.DataTextField = "turno"
+            ddl_turno.DataBind()
+            Dim lit As New ListItem
+            lit.Text = "Selecciona una carrera..."
+            lit.Value = "0"
+            ddl_turno.Items.Insert(0, lit)
+        Else
+            ddl_turno.DataSource = tabla_turnos(Application("str"), carrera)
+            ddl_turno.DataValueField = "id_turno"
+            ddl_turno.DataTextField = "turno"
+            ddl_turno.DataBind()
+            Dim lit As New ListItem
+            lit.Text = "Elije el turno..."
+            lit.Value = "0"
+            ddl_turno.Items.Insert(0, lit)
+        End If
+    End Sub
+
+    Protected Sub gv_poblacion_RowCommand(sender As Object, e As GridViewCommandEventArgs) Handles gv_poblacion.RowCommand
+        'tbx_10.Text = dame_lugar(e.CommandArgument)
+        tbx_10.Text = e.CommandArgument.ToString
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub gv_cps_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        Dim dt As DataTable = colonia_ciudad_estado(e.CommandArgument.ToString)
+        If dt.Rows.Count = 0 Then
+            tbx_13.Text = ""
+            tbx_14.Text = ""
+            tbx_15.Text = ""
+        Else
+            tbx_13.Text = dt.Rows(0).Item(0).ToString
+            tbx_14.Text = dt.Rows(0).Item(1).ToString
+            tbx_15.Text = dt.Rows(0).Item(2).ToString
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_buscar_poblacion_Click(sender As Object, e As EventArgs) Handles cmd_buscar_poblacion.Click
+        gv_poblacion.DataSource = muestra_ciudades(tbx_50.Text)
+        gv_poblacion.DataBind()
+    End Sub
+
+    Protected Sub cmd_bln_Click(sender As Object, e As EventArgs) Handles cmd_bln.Click
+        tbx_50.Text = ""
+        Dim dblank As New DataTable
+        gv_poblacion.DataSource = dblank
+        gv_poblacion.DataBind()
+        mv_msgs.ActiveViewIndex = 0
+        hf_popupo_mpe.Show()
+        p_test.Update()
+    End Sub
+
+    Protected Sub ib_bcp_Click(sender As Object, e As ImageClickEventArgs) Handles ib_bcp.Click
+        gv_cps.DataSource = muestra_lugares(tbx_12.Text)
+        gv_cps.DataBind()
+        mv_msgs.ActiveViewIndex = 1
+        hf_popupo_mpe.Show()
+        p_test.Update()
+    End Sub
+
+    Protected Sub ib_close_Click(sender As Object, e As ImageClickEventArgs) Handles ib_close.Click
+        hf_popupo_mpe.Hide()
+        p_test.Update()
+    End Sub
+
+    Protected Sub ddl_carreras_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_carreras.SelectedIndexChanged
+        If ddl_carreras.SelectedIndex <> 0 Then
+            llena_turno(ddl_carreras.SelectedValue.ToString, "1")
+        Else
+            llena_turno(ddl_carreras.SelectedValue.ToString, "0")
+        End If
+        up_carreras.Update()
+        up_calendario.Update()
+    End Sub
+
+    Protected Sub cmd_buscar_escuela_Click(sender As Object, e As EventArgs) Handles cmd_buscar_escuela.Click
+        gv_escuela.DataSource = tabla_prepa_escuela(Application("str"), tbx_bescuela.Text)
+        gv_escuela.DataBind()
+    End Sub
+
+    Protected Sub gv_escuela_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        tbx_23.Text = fullescuelas(e.CommandArgument.ToString)
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_besc_Click(sender As Object, e As EventArgs) Handles cmd_besc.Click
+        tbx_bescuela.Text = ""
+        Dim dblank As New DataTable
+        gv_escuela.DataSource = dblank
+        gv_escuela.DataBind()
+        mv_msgs.ActiveViewIndex = 2
+        hf_popupo_mpe.Show()
+        p_test.Update()
+    End Sub
+
+    Protected Sub ddl_32_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_32.SelectedIndexChanged
+        If ddl_32.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 3
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub ddl_33_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_33.SelectedIndexChanged
+        If ddl_33.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 4
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cmd_cancelarextra_Click(sender As Object, e As EventArgs) Handles cmd_cancelarextra.Click
+        If tbx_51.Text = "" Or tbx_52.Text = "" Or tbx_53.Text = "" Then
+            ddl_32.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelarcert_Click(sender As Object, e As EventArgs) Handles cmd_cancelarcert.Click
+        If tbx_54.Text = "" Then
+            ddl_33.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub ddl_39_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_39.SelectedIndexChanged
+        If ddl_39.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 5
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub ddl_40_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_40.SelectedIndexChanged
+        If ddl_40.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 6
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cmd_extraordinarios_Click(sender As Object, e As EventArgs) Handles cmd_extraordinarios.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_certificado_Click(sender As Object, e As EventArgs) Handles cmd_certificado.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cronicos_Click(sender As Object, e As EventArgs) Handles cmd_cronicos.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_psicologicos_Click(sender As Object, e As EventArgs) Handles cmd_psicologicos.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelarcronicos_Click(sender As Object, e As EventArgs) Handles cmd_cancelarcronicos.Click
+        If tbx_55.Text = "" Or ddl_56.SelectedIndex = 0 Then
+            ddl_39.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelarpsicologicos_Click(sender As Object, e As EventArgs) Handles cmd_cancelarpsicologicos.Click
+        If tbx_57.Text = "" Or ddl_58.SelectedIndex = 0 Then
+            ddl_40.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub ddl_41_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_41.SelectedIndexChanged
+        If ddl_41.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 7
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub ddl_42_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_42.SelectedIndexChanged
+        If ddl_42.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 8
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cmd_cancelarcasa_Click(sender As Object, e As EventArgs) Handles cmd_cancelarcasa.Click
+        If ddl_61.SelectedIndex = 0 Then
+            ddl_42.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelarhijos_Click(sender As Object, e As EventArgs) Handles cmd_cancelarhijos.Click
+        If tbx_60.Text = "" Or ddl_59.SelectedIndex = 0 Then
+            ddl_41.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_hijos_Click(sender As Object, e As EventArgs) Handles cmd_hijos.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_casa_Click(sender As Object, e As EventArgs) Handles cmd_casa.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_trabajo_Click(sender As Object, e As EventArgs) Handles cmd_trabajo.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelartrabajo_Click(sender As Object, e As EventArgs) Handles cmd_cancelartrabajo.Click
+        If tbx_62.Text = "" Or tbx_63.Text = "" Or tbx_64.Text = "" Or tbx_65.Text = "" Or ddl_66.SelectedIndex = 0 Or ddl_67.SelectedIndex = 0 Then
+            ddl_43.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub ddl_43_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_43.SelectedIndexChanged
+        If ddl_43.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 9
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cmd_registro_Click(sender As Object, e As EventArgs) Handles cmd_registro.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_cancelaregistro_Click(sender As Object, e As EventArgs) Handles cmd_cancelaregistro.Click
+        If ddl_68.SelectedIndex = 0 Or ddl_69.SelectedIndex = 0 Or ddl_70.SelectedIndex = 0 Or ddl_71.SelectedIndex = 0 Or tbx_72.Text = "" Then
+            ddl_45.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cal_48_SelectionChanged(sender As Object, e As EventArgs) Handles cal_48.SelectionChanged
+        rbl_49.DataSource = horas_noagenda(cal_48.SelectedDate.Year & "-" & cal_48.SelectedDate.Month & "-" & cal_48.SelectedDate.Day, "2015B", ddl_carreras.SelectedValue.ToString)
+        rbl_49.DataTextField = "hora"
+        rbl_49.DataBind()
+        up_calendario.Update()
+    End Sub
+
+    Protected Sub CheckIfCheckBoxListIsCheckedServer(ByVal source As Object, ByVal args As ServerValidateEventArgs) Handles cv_cbx_47.ServerValidate
+        If cbx_47.SelectedIndex = -1 Then
+            args.IsValid = False
+        Else
+            args.IsValid = True
+        End If
+    End Sub
+
+    Protected Sub CheckIfCheckBoxListIsCheckedServer2(ByVal source As Object, ByVal args As ServerValidateEventArgs) Handles cv_cbx_73.ServerValidate
+        If cbx_73.SelectedIndex = -1 Then
+            args.IsValid = False
+        Else
+            args.IsValid = True
+        End If
+    End Sub
+
+    Protected Sub ddl_45_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_45.SelectedIndexChanged
+        If ddl_45.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 10
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cal_day_DayRender(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DayRenderEventArgs) Handles cal_48.DayRender
+        Try
+            Dim siguiente_fecha As Date
+            'Dim local_dias_noagenda As DataTable = dias_noagenda("CITA_ENTREVISTA_CONTROL_ESCOLAR", ddl_carreras.SelectedValue.ToString, ddl_ciclo.SelectedValue.ToString)
+            Dim local_dias_noagenda As DataTable = dias_noagenda("CITA_ENTREVISTA_CONTROL_ESCOLAR", ddl_carreras.SelectedValue.ToString, "2015B")
+            If local_dias_noagenda.Rows.Count > 0 Then
+                Dim fd As Integer
+                For fd = 0 To local_dias_noagenda.Rows.Count - 1
+                    siguiente_fecha = CType(local_dias_noagenda.Rows(fd).Item(0).ToString, Date)
+                    If siguiente_fecha = e.Day.Date Then
+                        e.Cell.CssClass = local_dias_noagenda.Rows(fd).Item(2).ToString
+                        e.Day.IsSelectable = local_dias_noagenda.Rows(fd).Item(1).ToString
+                        Exit For
+                    Else
+                        e.Cell.CssClass = "dia_deshabilitado"
+                        e.Day.IsSelectable = False
+                        e.Cell.ToolTip = "Este día no puede agendar."
+                    End If
+                Next
+            Else
+                e.Cell.CssClass = "dia_deshabilitado"
+                e.Day.IsSelectable = False
+                e.Cell.ToolTip = "Este día no puede agendar."
+            End If
+        Catch ex As Exception
+            e.Cell.CssClass = "dia_deshabilitado"
+            e.Day.IsSelectable = False
+            e.Cell.ToolTip = "Este día no puede agendar."
+        End Try
+        'up_calendario.Update()
+    End Sub
+
+    Protected Sub cmd_save_Click(sender As Object, e As EventArgs) Handles cmd_save.Click
+        Session("idd") = idsol("2015B", ddl_carreras.SelectedValue.ToString)
+        'eventcode(0) = 2
+        salvapi(Session("idd"), Format(Now, "yyyy-MM-dd hh:mm"), "SSAFEIN", ddl_carreras.SelectedValue.ToString, "MOTIVO", _
+                tbx_1.Text, tbx_2.Text, tbx_3.Text, ddl_4.SelectedValue.ToString, "Mexicana", ddl_7.SelectedItem.Text & "-" & ddl_8.SelectedValue.ToString & "-" & ddl_9.SelectedItem.Text, _
+                tbx_11.Text, "No solicitado", ddl_6.SelectedValue.ToString, tbx_20.Text, tbx_16.Text, tbx_23.Text, tbx_23.Text, ddl_5.SelectedItem.ToString, ddl_39.SelectedItem.Text, _
+                tbx_15.Text, tbx_14.Text, tbx_13.Text, tbx_15.Text, tbx_14.Text, ddl_turno.SelectedValue.ToString, tbx_19.Text, "2015B", tbx_17.Text, _
+                cal_48.SelectedDate.Year & "-" & cal_48.SelectedDate.Month & "-" & cal_48.SelectedDate.Day, rbl_49.SelectedItem.Text, tbx_12.Text, "", tbx_17.Text)
+        lbl_ndreg.Text = Session("idd")
+        lbl_fyhe.Text = cal_48.SelectedDate.Day & " de " & nombremes(cal_48.SelectedDate.Month) & " de " & cal_48.SelectedDate.Year & " a las " & rbl_49.SelectedItem.Text & " hrs."
+        Try
+            Dim dttemp As DataTable = senderemail("1")
+            ccei001(Session("idd"))
+            send_mail(getemail(Session("idd")), Session("idd") & ".pdf", dttemp.Rows(0).Item(0).ToString, dttemp.Rows(0).Item(1).ToString)
+        Catch ex As Exception
+            lbl_ndreg.Text = ex.ToString
+        End Try
+        hf_popupok_mpe.Show()
+    End Sub
+
+    Protected Sub cmd_cancelar_Click(sender As Object, e As EventArgs) Handles cmd_cancelar.Click
+        'datosreportei001("2015B00000498")
+        Response.Redirect("http://siaaa.utj.edu.mx/siaaa/")
+    End Sub
+
+    Private Function enterado() As String
+        enterado = ""
+        For x = 0 To cbx_73.Items.Count - 1
+            If cbx_73.Items(x).Selected = True Then
+                enterado = enterado & ", " & cbx_73.Items(x).Text
+            End If
+        Next
+    End Function
+
+    Protected Sub cmd_descarga_Click(sender As Object, e As EventArgs) Handles cmd_descarga.Click
+        Try
+            descarga("cce-i001", Session("idd"), ".pdf")
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Protected Sub ddl_74_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_74.SelectedIndexChanged
+        If ddl_74.SelectedValue = 2 Then
+            mv_msgs.ActiveViewIndex = 11
+            hf_popupo_mpe.Show()
+            p_test.Update()
+        End If
+    End Sub
+
+    Protected Sub cmd_cancelarbachillerato_Click(sender As Object, e As EventArgs) Handles cmd_cancelarbachillerato.Click
+        If ddl_75.SelectedIndex = 0 Then
+            ddl_74.SelectedIndex = 0
+        End If
+        hf_popupo_mpe.Hide()
+    End Sub
+
+    Protected Sub cmd_bachillerato_Click(sender As Object, e As EventArgs) Handles cmd_bachillerato.Click
+        hf_popupo_mpe.Hide()
+    End Sub
+End Class

@@ -1,0 +1,22 @@
+﻿
+Partial Class downdoc
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Dim path As String = Server.MapPath("\utsyn\docstock\" + Request.QueryString("type") + "\" + Request.QueryString("file") + Request.QueryString("ext"))
+        Dim file As System.IO.FileInfo = New System.IO.FileInfo(path)
+
+        If (file.Exists) Then
+
+            Response.Clear()
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + file.Name)
+            Response.AddHeader("Content-Length", file.Length.ToString())
+            Response.ContentType = "application/octet-stream"
+            Response.WriteFile(file.FullName)
+            Response.End()
+        Else
+            'Response.Redirect("glogin.aspx")
+        End If
+    End Sub
+
+End Class

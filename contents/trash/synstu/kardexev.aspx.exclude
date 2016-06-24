@@ -1,0 +1,28 @@
+﻿<%@ Page Title="Kardex del Estudiante - UTSyn 2014 - UTZMG" Language="VB" MasterPageFile="~/synstu/synstu.master" AutoEventWireup="false" CodeFile="kardexev.aspx.vb" Inherits="kardexev" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div>
+        <table style="width: 100%;"><tr><td style="font-size: 1.5em; padding: 0px 0px 20px 0px;">
+            Kardex del Estudiante
+                   </td></tr><tr><td>
+        <asp:DataList ID="dl_kardex" runat="server" HorizontalAlign="Center" CellPadding="10">
+            <ItemTemplate>
+                <table class="folder_view"><tr><td style="padding: 10px; font-size: 1.5em;">Ciclo <asp:Label ID="lbl_ciclo" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "ciclo")%>'></asp:Label>
+                           </td></tr><tr><td style="border-radius: 0px 0px 5px 5px; padding: 5px;">
+                    <asp:GridView ID="gv_calificaciones" runat="server" style="background: rgba(0,168,144,1); width: 100%;" AutoGenerateColumns="False" GridLines="None" CellPadding="5" RowStyle-CssClass="gvrow" ShowHeader="false">
+                        <Columns>
+                            <asp:BoundField DataField="materia" ItemStyle-HorizontalAlign="Left"/>
+                            <asp:BoundField DataField="calificacion" />
+                            <asp:BoundField DataField="descripcion" />
+                            <asp:BoundField DataField="tipocalificacion" />
+                        </Columns>
+                    </asp:GridView>
+                </td></tr></table>
+            </ItemTemplate>
+        </asp:DataList></td></tr></table>
+
+    </div>
+</asp:Content>
+

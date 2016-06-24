@@ -1,0 +1,364 @@
+﻿Imports System.Data
+Imports System.String
+Imports synpin_code
+Imports print_docs
+Imports downdocument
+
+Partial Class synpin
+    Inherits System.Web.UI.Page
+    Shared eventcode(7) As Integer
+
+    Private Sub starteventcode()
+        eventcode(0) = 1
+        eventcode(1) = 0
+        eventcode(2) = -1
+        eventcode(3) = -1
+        eventcode(4) = -1
+        eventcode(5) = -1
+        eventcode(6) = 0
+        eventcode(7) = -1
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Response.Redirect("regpin.aspx")
+        'If Not IsPostBack Then
+        ' starteventcode()
+        ' principio_llenado_datos()
+        ' End If
+    End Sub
+
+    ' Protected Sub carga_inicio()
+    '     If Not ddl_sedes.SelectedIndex = 0 Then
+    '         ddl_carreras.Items.Clear()
+    '         With ddl_carreras
+    '             .DataSource = tabla_carrerasysedes(Application("str"), "TSU", ddl_sedes.SelectedValue.ToString)
+    '             .DataValueField = "id_carrera"
+    '             .DataTextField = "nombre"
+    '             .DataBind()
+    '         End With
+    '         'add_item(ddl_carreras)
+    '     End If
+    ' End Sub
+
+    Protected Sub Page_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+        chkchain(mv_ingreso, mv_nacionalidad, mv_municipio, mv_colonia, mv_pmunicipio, mv_pescuela, mv_padecimientos, eventcode)
+    End Sub
+
+    Protected Sub ib_siguiente_Click(sender As Object, e As ImageClickEventArgs) Handles ib_siguiente.Click
+        principio_llenado_datos()
+    End Sub
+
+    Private Sub principio_llenado_datos()
+        With ddl_carreras
+            .DataSource = tabla_carrerasysedes(Application("str"), "TSU", "")
+            .DataValueField = "cv_carrera"
+            .DataTextField = "nombre"
+            .DataBind()
+            .Items.Insert(0, "Selecciona tu nueva carrera...")
+        End With
+        '--------------------------------------------------------------------
+        add_item(ddl_sexo)
+        add_item(ddl_estado)
+        add_item(ddl_turno)
+        add_item(ddl_civil)
+        add_item(ddl_pestado)
+    End Sub
+
+    Protected Sub ddl_carreras_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_carreras.SelectedIndexChanged
+        If Not ddl_carreras.SelectedIndex = 0 Then
+            ddl_sexo.Items.Clear()
+            ddl_estado.Items.Clear()
+            ddl_turno.Items.Clear()
+            ddl_civil.Items.Clear()
+            ddl_pestado.Items.Clear()
+
+            llena_ddl(ddl_sexo, tabla_sexo(Application("str")), "idsexo", "sexo")
+            ddl_sexo.Items.Insert(0, "Selecciona tu sexo")
+            llena_ddl(ddl_estado, tabla_estados(Application("str")), "c_estado", "d_estado")
+            ddl_estado.Items.Insert(0, "Selecciona un estado...")
+            llena_ddl(ddl_turno, tabla_turnos(Application("str"), ddl_carreras.SelectedValue.ToString), "id_turno", "turno")
+            ddl_turno.Items.Insert(0, "Turno...")
+            llena_ddl(ddl_civil, tabla_edocivil(Application("str")), "id_edocivil", "edocivil")
+            ddl_civil.Items.Insert(0, "Selecciona tu estado civil")
+            llena_ddl(ddl_pestado, tabla_estados(Application("str")), "c_estado", "d_estado")
+            ddl_pestado.Items.Insert(0, "Selecciona un estado...")
+            eventcode(0) = 1
+        End If
+    End Sub
+
+    Protected Sub add_item(ByVal ddl As DropDownList)
+        ddl.Items.Insert(0, "Primero debes seleccionar una carrera")
+    End Sub
+
+    Protected Sub llena_ddl(ByVal ddl As DropDownList, ByVal tabla As DataTable, ByVal value As String, ByVal text As String)
+        ddl.DataSource = tabla
+        ddl.DataValueField = value
+        ddl.DataTextField = text
+        ddl.DataBind()
+    End Sub
+
+
+    Protected Sub ib_next4_Click(sender As Object, e As ImageClickEventArgs) Handles ib_next4.Click
+        'lbl_apodo2.Text = lbl_apodo3.Text
+        Session("idd") = idsol(ddl_ciclo.SelectedValue.ToString, "carrera")
+        eventcode(0) = 2
+        salvapi(Session("idd"), Format(Now, "yyyy-MM-dd hh:mm"), "SSAFEIN", ddl_carreras.SelectedValue.ToString, ddl_motivo.SelectedItem.Text, _
+                tbx_nombres.Text, tbx_paterno.Text, tbx_materno.Text, ddl_sexo.SelectedValue.ToString, nnldd(), fecha(tbx_fnac.Text), tbx_direccion.Text, _
+                tbx_tutor.Text, ddl_civil.SelectedValue.ToString, tbx_curp.Text, tbx_telefono.Text, pescuela(), pescuela(), ddl_tdsangre.SelectedValue.ToString, _
+                padecimientos(), ddl_estado.SelectedValue.ToString, ddl_municipio.SelectedValue.ToString, colonia(), ddl_pestado.SelectedValue.ToString, _
+                ddl_pmunicipio.SelectedValue.ToString, ddl_turno.SelectedValue.ToString, tbx_email.Text, ddl_ciclo.SelectedValue.ToString, tbx_ptelefono.Text, _
+                cal_day.SelectedDate.Year & "-" & cal_day.SelectedDate.Month & "-" & cal_day.SelectedDate.Day, rbl_hora.SelectedItem.Text, tbx_cp.Text, tbx_imss.Text, "telefonomovil")
+        lbl_registro.Text = Session("idd")
+        lbl_cita.Text = cal_day.SelectedDate.Day & "del" & cal_day.SelectedDate.Month & "de" & cal_day.SelectedDate.Year
+        Try
+            Dim dttemp As DataTable = senderemail("1")
+            ccei001(Session("idd"))
+            send_mail(getemail(Session("idd")), Session("idd") & ".pdf", dttemp.Rows(0).Item(0).ToString, dttemp.Rows(0).Item(1).ToString)
+        Catch ex As Exception
+            lbl_registro.Text = ex.ToString
+        End Try
+    End Sub
+
+    Private Function nnldd() As String
+        If tbx_nacionalidad.Text = "" Then
+            nnldd = ddl_nacionalidad.SelectedValue.ToString
+        Else
+            nnldd = tbx_nacionalidad.Text
+        End If
+    End Function
+
+    Private Function pescuela() As String
+        If tbx_pescuela.Text = "" Then
+            pescuela = ddl_pescuela.SelectedValue.ToString
+        Else
+            pescuela = tbx_pescuela.Text
+        End If
+    End Function
+
+    Private Function padecimientos() As String
+        If tbx_padecimientos.Text = "" Then
+            padecimientos = ddl_padecimientos.SelectedValue.ToString
+        Else
+            padecimientos = tbx_padecimientos.Text
+        End If
+    End Function
+
+    Private Function colonia() As String
+        If tbx_col.Text = "" Then
+            colonia = ddl_colonia.SelectedValue.ToString
+        Else
+            colonia = tbx_col.Text
+        End If
+    End Function
+
+    Private Function fecha(ByVal fecha_cal As String) As String
+        fecha = Right(fecha_cal, 4) & "-" & fecha_cal.Substring(3, 2) & "-" & Left(fecha_cal, 2)
+    End Function
+
+    Protected Sub lb_salir_Click(sender As Object, e As EventArgs) Handles lb_salir.Click
+        Response.Redirect("http://siaaa.utj.edu.mx/siaaa")
+    End Sub
+
+    Protected Sub lb_comprobante_Click(sender As Object, e As EventArgs) Handles lb_comprobante.Click
+        Try
+            descarga("cce-i001", Session("idd"), ".pdf")
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Protected Sub ddl_estado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_estado.SelectedIndexChanged
+        If Not ddl_estado.SelectedIndex = 0 Then
+            llena_ddl(ddl_municipio, tabla_municipios(Application("str"), ddl_estado.SelectedValue), "c_mnpio", "d_mnpio")
+            ddl_colonia.Items.Clear()
+            ddl_municipio.Items.Insert(0, "Mi municipio no aparece...")
+            ddl_municipio.Items.Insert(0, "Selecciona un municipio...")
+            eventcode(2) = 0
+            eventcode(3) = -1
+        Else
+            eventcode(2) = -1
+            eventcode(3) = -1
+        End If
+    End Sub
+
+    Protected Sub ddl_municipio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_municipio.SelectedIndexChanged
+        Select Case ddl_municipio.SelectedIndex
+            Case 0
+                eventcode(2) = -1
+                eventcode(3) = -1
+            Case 1
+                eventcode(2) = 1
+                eventcode(3) = 1
+                ib_bcol.Visible = False
+            Case Else
+                llena_ddl(ddl_colonia, tabla_ciudades(Application("str"), ddl_estado.SelectedValue.ToString, ddl_municipio.SelectedValue.ToString), "id_asenta_cpcons", "d_asenta")
+                ddl_colonia.Items.Insert(0, "Mi Colonia no aparece...")
+                ddl_colonia.Items.Insert(0, "Selecciona una Colonia...")
+                eventcode(3) = 0
+        End Select
+    End Sub
+
+    Protected Sub ddl_nacionalidad_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_nacionalidad.SelectedIndexChanged
+        If Not ddl_nacionalidad.SelectedIndex = 0 Then
+            eventcode(1) = 1
+            eventcode(0) = 1
+        End If
+    End Sub
+
+    'Protected Sub ib_back3_Click(sender As Object, e As ImageClickEventArgs) Handles ib_back3.Click
+    '    Session.Clear()
+    '    eventcode(0) = 0
+    'End Sub
+
+    Protected Sub ib_bnacionalidad_Click(sender As Object, e As ImageClickEventArgs) Handles ib_bnacionalidad.Click
+        eventcode(1) = 0
+        eventcode(0) = 1
+        ddl_nacionalidad.SelectedIndex = 0
+    End Sub
+
+    Protected Sub ddl_pestado_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_pestado.SelectedIndexChanged
+        If Not ddl_pestado.SelectedIndex = 0 Then
+            If ddl_pestado.SelectedItem.Text.ToUpper = "JALISCO" Then
+                llena_ddl(ddl_pmunicipio, tabla_prepas_municipios(Application("str"), ddl_pestado.SelectedItem.Text.ToUpper), "municipio", "municipio")
+                ddl_pescuela.Items.Clear()
+                ddl_pmunicipio.Items.Insert(0, "Mi municipio no aparece...")
+                ddl_pmunicipio.Items.Insert(0, "Selecciona un municipio...")
+                eventcode(4) = 0
+                eventcode(5) = -1
+            Else
+                llena_ddl(ddl_pmunicipio, tabla_municipios(Application("str"), ddl_pestado.SelectedValue), "c_mnpio", "d_mnpio")
+                ddl_pescuela.Items.Clear()
+                ddl_pmunicipio.Items.Insert(0, "Mi municipio no aparece...")
+                ddl_pmunicipio.Items.Insert(0, "Selecciona un municipio...")
+                eventcode(4) = 0
+                eventcode(5) = -1
+            End If
+        Else
+            eventcode(4) = -1
+            eventcode(5) = -1
+        End If
+    End Sub
+
+    Protected Sub ddl_pmunicipio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_pmunicipio.SelectedIndexChanged
+        Select Case ddl_pmunicipio.SelectedIndex
+            Case 0
+                eventcode(5) = -1
+            Case 1
+                eventcode(4) = 1
+                eventcode(5) = 1
+                ib_pescuela.Visible = False
+            Case Else
+                If ddl_pestado.SelectedItem.Text.ToUpper = "JALISCO" Then
+                    llena_ddl(ddl_pescuela, tabla_prepas_escuela(Application("str"), ddl_pmunicipio.SelectedItem.Text), "nombre_ct", "nombre_ct")
+                    ddl_pescuela.Items.Insert(0, "Mi escuela no aparece...")
+                    ddl_pescuela.Items.Insert(0, "Selecciona una escuela...")
+                    eventcode(4) = 0
+                    eventcode(5) = 0
+                    ib_pescuela.Visible = True
+                Else
+                    eventcode(4) = 0
+                    eventcode(5) = 1
+                    ib_pescuela.Visible = False
+                End If
+        End Select
+    End Sub
+
+    Protected Sub ddl_pescuela_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_pescuela.SelectedIndexChanged
+        Select Case ddl_pescuela.SelectedIndex
+            Case 0
+                'PUES NADA
+            Case 1
+                eventcode(4) = 0
+                eventcode(5) = 1
+            Case Else
+                eventcode(4) = 0
+                eventcode(5) = 0
+        End Select
+    End Sub
+
+    Protected Sub ib_bmpio_Click(sender As Object, e As ImageClickEventArgs) Handles ib_bmpio.Click
+        eventcode(2) = 0
+        eventcode(0) = 1
+        eventcode(3) = -1
+        ib_bcol.Visible = True
+        ddl_municipio.SelectedIndex = 0
+    End Sub
+
+    Protected Sub ddl_colonia_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_colonia.SelectedIndexChanged
+        If ddl_colonia.SelectedIndex = 1 Then
+            ib_bcol.Visible = True
+            eventcode(3) = 1
+        End If
+    End Sub
+
+    Protected Sub ib_bcol_Click(sender As Object, e As ImageClickEventArgs) Handles ib_bcol.Click
+        eventcode(2) = 0
+        eventcode(0) = 1
+        eventcode(3) = 0
+        ddl_colonia.SelectedIndex = 0
+    End Sub
+
+
+    Protected Sub ib_pmunicipio_Click(sender As Object, e As ImageClickEventArgs) Handles ib_pmunicipio.Click
+        eventcode(4) = 0
+        eventcode(5) = -1
+        ib_pescuela.Visible = True
+        ddl_pmunicipio.SelectedIndex = 0
+    End Sub
+
+    Protected Sub ib_pescuela_Click(sender As Object, e As ImageClickEventArgs) Handles ib_pescuela.Click
+        eventcode(5) = 0
+        ib_pescuela.Visible = True
+        ddl_pescuela.SelectedIndex = 0
+    End Sub
+
+    Protected Sub ddl_padecimientos_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddl_padecimientos.SelectedIndexChanged
+        If ddl_padecimientos.SelectedIndex = 1 Then
+            eventcode(6) = 1
+            eventcode(0) = 1
+        End If
+    End Sub
+
+    Protected Sub ib_padecimientos_Click(sender As Object, e As ImageClickEventArgs) Handles ib_padecimientos.Click
+        eventcode(6) = 0
+        eventcode(0) = 1
+        ddl_padecimientos.SelectedIndex = 0
+    End Sub
+
+    Protected Sub cal_day_DayRender(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.DayRenderEventArgs) Handles cal_day.DayRender
+        Try
+            Dim siguiente_fecha As Date
+            Dim local_dias_noagenda As DataTable = dias_noagenda("CITA_ENTREVISTA_CONTROL_ESCOLAR", ddl_carreras.SelectedValue.ToString, ddl_ciclo.SelectedValue.ToString)
+            If local_dias_noagenda.Rows.Count > 0 Then
+                Dim fd As Integer
+                For fd = 0 To local_dias_noagenda.Rows.Count - 1
+                    siguiente_fecha = CType(local_dias_noagenda.Rows(fd).Item(0).ToString, Date)
+                    If siguiente_fecha = e.Day.Date Then
+                        e.Cell.CssClass = local_dias_noagenda.Rows(fd).Item(2).ToString
+                        e.Day.IsSelectable = local_dias_noagenda.Rows(fd).Item(1).ToString
+                        Exit For
+                    Else
+                        e.Cell.CssClass = "dia_deshabilitado"
+                        e.Day.IsSelectable = False
+                        e.Cell.ToolTip = "Este día no puede agendar."
+                    End If
+                Next
+            Else
+                e.Cell.CssClass = "dia_deshabilitado"
+                e.Day.IsSelectable = False
+                e.Cell.ToolTip = "Este día no puede agendar."
+            End If
+        Catch ex As Exception
+            e.Cell.CssClass = "dia_deshabilitado"
+            e.Day.IsSelectable = False
+            e.Cell.ToolTip = "Este día no puede agendar."
+        End Try
+    End Sub
+
+    Protected Sub cal_day_SelectionChanged(sender As Object, e As EventArgs) Handles cal_day.SelectionChanged
+        rbl_hora.DataSource = horas_noagenda(cal_day.SelectedDate.Year & "-" & cal_day.SelectedDate.Month & "-" & cal_day.SelectedDate.Day, "2015A", ddl_carreras.SelectedValue.ToString)
+        rbl_hora.DataTextField = "hora"
+        rbl_hora.DataBind()
+    End Sub
+
+End Class

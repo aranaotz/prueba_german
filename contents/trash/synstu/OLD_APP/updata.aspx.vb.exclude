@@ -1,0 +1,227 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class updata
+    Inherits System.Web.UI.Page
+
+    Protected Sub cmd_snick_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_snick.Click
+        do_apodo(getcod)
+    End Sub
+
+    Private Function getcod() As String
+        getcod = gc(Session("usrcgi200Xstr"))
+    End Function
+
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT reference FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Private Function ce(ByVal cod As String) As Integer
+        Dim v As New SqlConnection(Application("str"))
+        Dim com As New SqlCommand("SELECT COUNT(*) AS busc FROM info_dataex WHERE matricula='" + cod + "'", v)
+        v.Open()
+        Select Case com.ExecuteScalar
+            Case "0"
+                ce = 0
+            Case Else
+                ce = 1
+        End Select
+        v.Close()
+    End Function
+
+    Private Sub do_apodo(ByVal cod As String)
+        Dim v As New SqlConnection(Application("str"))
+        Dim doa As New SqlCommand("SELECT COUNT(*) as apodo FROM info_dataex WHERE nick='" + tbx_apodo.Text + "'", v)
+        v.Open()
+        Select Case doa.ExecuteScalar
+            Case 0
+                Dim doa2 As New SqlCommand("SELECT COUNT(*) as apodo FROM users_outdoor WHERE usr='" + tbx_apodo.Text + "'", v)
+                Select Case doa2.ExecuteScalar
+                    Case 0
+                        Dim doa3 As New SqlCommand("SELECT COUNT(*) as apodo FROM users WHERE id_usr='" + tbx_apodo.Text + "'", v)
+                        Select Case doa3.ExecuteScalar
+                            Case 0
+                                Select Case ce(cod)
+                                    Case "0"
+                                        Dim sa As New SqlCommand("INSERT INTO info_dataex (nick,matricula) VALUES ('" + tbx_apodo.Text + "','" + cod + "')", v)
+                                        Dim sa2 As New SqlCommand("UPDATE users_outdoor SET nick='" + tbx_apodo.Text + "' WHERE reference='" + getcod() + "' AND usr='" + Session("usrcgi200Xstr") + "'", v)
+                                        sa.ExecuteNonQuery()
+                                        sa2.ExecuteNonQuery()
+                                    Case Else
+                                        Dim sa As New SqlCommand("UPDATE info_dataex SET nick='" + tbx_apodo.Text + "' WHERE matricula='" + cod + "'", v)
+                                        Dim sa2 As New SqlCommand("UPDATE users_outdoor SET nick='" + tbx_apodo.Text + "' WHERE reference='" + getcod() + "' AND usr='" + Session("usrcgi200Xstr") + "'", v)
+                                        sa.ExecuteNonQuery()
+                                        sa2.ExecuteNonQuery()
+                                End Select
+                                showmsg(1, "Apodo")
+                            Case Else
+                                showmsg(0, "Apodo")
+                        End Select
+                    Case Else
+                        showmsg(0, "Apodo")
+                End Select
+            Case Else
+                showmsg(0, "Apodo")
+        End Select
+        v.Close()
+    End Sub
+
+    Protected Sub cmd_savegdata_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_savegdata.Click
+        do_generales(getcod)
+        showmsg(1, "info1")
+    End Sub
+
+    Private Sub do_generales(ByVal cod As String)
+        Dim v As New SqlConnection(Application("str"))
+        Select Case ce(getcod)
+            Case "0"
+                Dim sa As New SqlCommand("INSERT INTO info_dataex (aladd,alcol,alcity,alcp,altel,email,matricula) VALUES ('" + tbx_address.Text + "','" + tbx_colonia.Text + "'," + _
+                                         "'" + tbx_city.Text + "','" + tbx_cp.Text + "','" + tbx_tel.Text + "','" + tbx_email.Text + "','" + cod + "')", v)
+                v.Open()
+                sa.ExecuteNonQuery()
+                v.Close()
+            Case Else
+                Dim sa As New SqlCommand("UPDATE info_dataex SET aladd='" + tbx_address.Text + "', alcol='" + tbx_colonia.Text + "', alcity='" + tbx_city.Text + "', " + _
+                                         "alcp='" + tbx_cp.Text + "', altel='" + tbx_tel.Text + "',email='" + tbx_email.Text + "'WHERE matricula='" + cod + "'", v)
+                v.Open()
+                sa.ExecuteNonQuery()
+                v.Close()
+        End Select
+    End Sub
+
+    Private Function do_password(ByVal cod As String) As Integer
+        Dim v As New SqlConnection(Application("str"))
+        Dim dp As New SqlCommand("SELECT COUNT(*) AS integridad FROM users_outdoor WHERE usr='" + Session("usrcgi200Xstr") + "' AND pwd='" + tbx_op.Text + "' AND reference='" + cod + "'", v)
+        v.Open()
+        Select Case dp.ExecuteScalar
+            Case "0"
+                do_password = 0
+            Case Else
+                do_password = 1
+        End Select
+        v.Close()
+    End Function
+
+    Protected Sub cmd_updp_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_updp.Click
+        Select Case do_password(getcod)
+            Case 1
+                chpwd(getcod)
+                showmsg(1, "contra")
+            Case Else
+                showmsg(0, "contra")
+        End Select
+    End Sub
+
+    Private Sub chpwd(ByVal cod As String)
+        Dim v As New SqlConnection(Application("str"))
+        Dim cp As New SqlCommand("UPDATE users_outdoor SET pwd='" + tbx_npa.Text + "',flag='1' WHERE usr='" + Session("usrcgi200Xstr") + "' AND reference='" + cod + "'", v)
+        v.Open()
+        cp.ExecuteNonQuery()
+        v.Close()
+    End Sub
+
+    Protected Sub cmd_return_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_return.Click
+        mv_update.ActiveViewIndex = 0
+    End Sub
+
+    Private Sub showmsg(ByVal t As Integer, ByVal c As String)
+        Select Case t
+            Case 1
+                Select Case c
+                    Case "Apodo"
+                        im_ref.ImageUrl = "~/sadin_stu/img/bien.gif"
+                        lbl_msg.Text = "Haz actualizado correctamente tu Apodo, la proxima puedes usarlo para iniciar sesion."
+                    Case "contra"
+                        im_ref.ImageUrl = "~/sadin_stu/img/bien.gif"
+                        lbl_msg.Text = "Se actualizo correctamente tu contraseña, para probarla cierra sesión e ingresa de nuevo a SADIN."
+                    Case "info1"
+                        im_ref.ImageUrl = "~/sadin_stu/img/bien.gif"
+                        lbl_msg.Text = "Gracias por actualizar tus datos. Toda informacion sera resguardada y usada de forma responsable."
+                    Case "quest"
+                        im_ref.ImageUrl = "~/sadin_stu/img/bien.gif"
+                        lbl_msg.Text = "Desde ahora podrás recuperar tu contraseña desde la pagina de inicio respondiendo a la pregunta que seleccionaste."
+                End Select
+            Case Else
+                Select Case c
+                    Case "Apodo"
+                        im_ref.ImageUrl = "~/sadin_stu/img/closewindow.gif"
+                        lbl_msg.Text = "El Apodo que ingresaste ya esta siendo utilizado por otro usuario, Intenta con otro."
+                    Case "contra"
+                        im_ref.ImageUrl = "~/sadin_stu/img/closewindow.gif"
+                        lbl_msg.Text = "La contraseña actual es incorrecta.."
+                    Case "quest"
+                        im_ref.ImageUrl = "~/sadin_stu/img/closewindow.gif"
+                        lbl_msg.Text = "Selecciona una pregunta valida para guardarla junto con tu respuesta secreta."
+                End Select
+        End Select
+        mv_update.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            mv_update.ActiveViewIndex = 0
+            cargaquestions()
+            cargadatos(getcod)
+        End If
+    End Sub
+
+    Private Sub cargaquestions()
+        Dim v As New SqlConnection(Application("str"))
+        Dim cqs As New SqlCommand("SELECT idsq,textsq FROM squestions ORDER BY idsq", v)
+        Dim csqa As New SqlDataAdapter(cqs)
+        Dim csqt As New DataTable
+        v.Open()
+        csqa.Fill(csqt)
+        v.Close()
+        With ddl_question
+            .DataSource = csqt
+            .DataTextField = "textsq"
+            .DataValueField = "idsq"
+            .DataBind()
+            .Items.Insert(0, "Selecciona una pregunta...")
+        End With
+
+    End Sub
+
+
+    Protected Sub cmd_quest_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_quest.Click
+        Select Case ddl_question.SelectedIndex
+            Case 0
+                showmsg(0, "quest")
+            Case Else
+                Dim v As New SqlConnection(Application("str"))
+                Dim usp As New SqlCommand("UPDATE  users_outdoor SET idsq='" + ddl_question.SelectedValue.ToString + "',sansw='" + tbx_answer.Text + "' WHERE " + _
+                                          "usr='" + Session("usrcgi200Xstr") + "' AND reference='" + getcod() + "'", v)
+                v.Open()
+                usp.ExecuteNonQuery()
+                v.Close()
+                showmsg(1, "quest")
+        End Select
+    End Sub
+
+    Private Sub cargadatos(ByVal cod As String)
+        Dim v As New SqlConnection(Application("str"))
+        Dim cd As New SqlCommand("SELECT nick,aladd,alcol,alcity,alcp,altel,email FROM info_dataex WHERE matricula='" + cod + "'", v)
+        Dim cda As New SqlDataAdapter(cd)
+        Dim cdt As New DataTable
+        v.Open()
+        cda.Fill(cdt)
+        v.Close()
+        Select Case cdt.Rows.Count
+            Case 0
+            Case Else
+                Dim rf As DataRow = cdt.Rows(0)
+                tbx_apodo.Text = rf.Item(0).ToString
+                tbx_address.Text = rf.Item(1).ToString
+                tbx_colonia.Text = rf.Item(2).ToString
+                tbx_city.Text = rf.Item(3).ToString
+                tbx_cp.Text = rf.Item(4).ToString
+                tbx_tel.Text = rf.Item(5).ToString
+                tbx_email.Text = rf.Item(6).ToString
+        End Select
+    End Sub
+End Class

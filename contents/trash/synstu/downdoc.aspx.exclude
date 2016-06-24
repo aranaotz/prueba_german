@@ -1,0 +1,7 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/synstu/synstu.master" AutoEventWireup="false" CodeFile="downdoc.aspx.vb" Inherits="downdoc" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+</asp:Content>
+

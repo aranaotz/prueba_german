@@ -1,0 +1,77 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/synpin/synpin.master" AutoEventWireup="false" CodeFile="ntrvwr.aspx.vb" Inherits="ntrvwr" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div style="padding-bottom: 200px;">
+        <table><tr><td>
+            RECUERDA QUE DEBES TOMAR ESTOS PUNTOS EN CUENTA PARA LA ENTREVISTA
+                   </td></tr><tr><td>
+                       Guía de entrevista a los aspirantes a ingresar a la Universidad Tecnológica de Jalisco
+                                 </td></tr><tr><td style="text-align: left;">
+                                     Categorías a considerarse:
+                                     <ol>
+                                         <li>Datos generales acerca de su historial en el bachillerato</li>
+                                         <li>Motivación hacia la carrera que se pretende estudiar</li>
+                                         <li>Información y experiencia previa sobre la carrera elegida</li>
+                                         <li>Metas a corto y mediano plazo</li>
+                                         <li>Posibilidad de dedicar tiempo a los estudios</li>
+                                         <li>Respaldo familiar</li>
+                                         <li>Habilidades sociales (en base sobre todo a la observación)</li>
+                                     </ol></td></tr>
+            <tr><td>
+                Preguntas base para la entrevista:</td></tr><tr><td style="text-align: left;">Datos generales acerca de su historial en el bachillerato</td></tr><tr><td style="text-align: left;">
+                    <ol>
+                        <li>Ahondar en cómo considera que fue su desempeño en el bachillerato</li>
+                        <li>¿Sus calificaciones reflejan realmente su aprendizaje y aprovechamiento escolar?</li>
+                        <li>Si pudiera cambiar algo de lo vivido en la preparatoria, ¿qué cambiaría?</li>
+                    </ol></td></tr><tr><td style="text-align: left;">
+                Motivación hacia la carrera que se pretende estudiar</td></tr><tr><td style="text-align: left;">
+                    <ol>
+                        <li>Si realizó trámites a otra universidad</li>
+                        <li>¿A qué carrera había realizado trámites?</li>
+                        <li>Si no había realizado antes trámites, ¿qué otras carreras había considerado?</li>
+                        <li>¿Había realizado trámites antes para esta universidad?</li>
+                        <li>¿Por qué eligió esta institución para cursar sus estudios universitarios?</li>
+                    </ol></td></tr><tr><td style="text-align: left;">
+                Información y experiencia previa sobre la carrera elegida</td></tr><tr><td style="text-align: left;">
+                        <ol>
+                            <li>¿Cómo es que entre tantas carreras finalmente se decidió por ésta?</li>
+                            <li>¿Qué le llamó la atención de la carrera elegida?</li>
+                            <li>¿Qué espera aprender de esta carrera?</li>
+                            <li>¿Sabe en qué trabajan las personas que estudian esta profesión?</li>
+                            <li>¿Ha tomado algún curso previo relacionado con la carrera elegida?</li>
+                            <li>¿Ha trabajado o trabaja en algo relacionado con la carrera que pretende estudiar?</li>
+                            <li>¿Había escuchado hablar sobre esta carrera o tiene parientes o conocidos que la ejerzan?</li>
+                        </ol></td></tr><tr><td style="text-align: left;">
+                            Metas a corto y mediano plazo</td></tr><tr><td style="text-align: left;">
+                        <ol>
+                            <li>¿Qué planea hacer cuando termine esta carrera?</li>
+                            <li>¿Estudiará la ingeniería posteriormente?</li>
+                            <li>¿Iniciará su propio negocio?</li>
+                            <li>¿Trabajará en algún negocio de la familia?</li>
+                        </ol></td></tr><tr><td style="text-align: left;">
+                            Posibilidad de dedicar tiempo a los estudios</td></tr><tr><td style="text-align: left;">
+                        <ol>
+                            <li>¿Qué planes tiene mientras estudie aquí; trabajará medio tiempo, tiempo completo, sólo estudiará, estudiará algún idioma o alguna otra disciplina?</li>
+                            <li>¿Considera importante que se tenga establecido en casa un tiempo y espacio definidos para estudiar?</li>
+                        </ol></td></tr><tr><td style="text-align: left;">
+                            Respaldo familiar</td></tr><tr><td style="text-align: left;">
+                        <ol>
+                            <li>¿Con quiénes vive actualmente?</li>
+                            <li>¿Sus familiares están enterados de que continuará estudiando y qué carrera?</li>
+                            <li>¿Qué opinan sus padres o pareja sobre su decisión de continuar estudiando una carrera a nivel profesional?</li>
+                            <li>¿Cuenta con apoyo económico de su familia?</li>
+                            <li>¿Cuenta con apoyo moral de su familia?</li>
+                        </ol></td></tr><tr><td style="text-align: left;">
+                            Habilidades sociales</td></tr><tr><td style="text-align: left;">
+                        <ol>
+                            <li>¿En qué inviertes tu tiempo libre?</li>
+                            <li>¿Tienes algún pasatiempo en especial?</li>
+                            <li>¿Practicas algún deporte?</li>
+                            <li>¿Perteneces a alguna asociación, grupo juvenil, etc.?</li>
+                        </ol></td></tr></table>
+               <asp:Button ID="cmd_cambiar" runat="server" Text="cambio" />
+    </div>
+</asp:Content>
+

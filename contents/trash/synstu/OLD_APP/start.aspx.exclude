@@ -1,0 +1,55 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="start.aspx.vb" Inherits="start" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <table style="font-family: verdana; font-size: 8pt; color: #003366; text-align: justify; vertical-align: top">
+    <tr>
+        <td style="font-family: verdana; font-size: 8pt; color: #003366; font-weight: bold; padding: 2px 2px 2px 10px">
+            ¡ Bienvenido a SADIN !</td>
+    </tr>
+    <tr>
+        <td style="font-family: verdana; font-size: 8pt; color: #003366; text-align: justify; vertical-align: top; padding-top: 2px; padding-bottom: 5px;">
+&nbsp;&nbsp;&nbsp; SADIN es un sistema integral de administración escolar en el cual se 
+            realizan los registros administrativos y académicos referentes a tu formación en 
+            nuestro centro.
+            Es desarrolado en nuestro colegio y no está presente en ningún otro lugar.<br />
+            Ahora tienes acceso a él para revisar tu historial y avance 
+            académico de una forma 
+            inmediata y actualizada.</td>
+    </tr>
+    <tr>
+        <td style="font-family: verdana; font-size: 8pt; color: #003366; font-weight: bold; padding: 2px 2px 2px 10px">
+            ¿ Cómo funciona SADIN ?</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 2px; padding-bottom: 5px">
+            &nbsp;&nbsp;&nbsp; En cada clase tu maestro registra las actividades realizadas 
+            y te califica conforme a tu desarrollo y a los criterios establecidos por la 
+            Dirección Académica.<br />
+            -La Evaluación Contínua forma el 60% de tu calificación.<br />
+            -Los exámenes complementan tu calificacion con el 40% restante.<br />
+            <br />
+&nbsp;&nbsp;&nbsp; SADIN recibe y procesa esta información para anexarla a tu historial 
+            académico. Esto nos permite tener registros 
+            totalmente transparentes y verídicos de tus calificaciones que tú podrás 
+            consultar mediante este sitio.&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="font-family: verdana; font-size: 8pt; color: #003366; font-weight: bold; padding: 2px 2px 2px 10px">
+            Recuerda que...</td>
+    </tr>
+    <tr>
+        <td style="padding-top: 2px; padding-bottom: 5px">
+            &nbsp;&nbsp;&nbsp; Las calificaciones son proporcionadas solo por el maestro 
+            contando con tiempos preestablecidos para registrarlas conforme a su carga horaria, tu calificación diaria 
+            puede NO estar disponible inmediatamente despues de tu clase. Ésta se reflejará 
+            en el sistema cuando tu maestro la reporte.<br />
+            <br />
+&nbsp;&nbsp;&nbsp;&nbsp; Cualquier información exhibida o impresa por este medio no tendrá 
+            validez oficial, ya que deberá contar con firma y sello de la Dirección Académica del 
+            Colegio.</td>
+    </tr>
+</table>
+</asp:Content>
+

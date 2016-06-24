@@ -1,0 +1,41 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports secure_tools
+
+Partial Class pwdupdt
+    Inherits System.Web.UI.Page
+
+    Protected Sub cmd_cambio_Click(sender As Object, e As EventArgs) Handles cmd_cambio.Click
+        Select Case escorrecto(Session("gcu"), tbx_contraa.Text)
+            Case True
+                pwdch(tbx_contra.Text, Session("gcu"))
+                Session.Clear()
+                mv_cambiopwd.ActiveViewIndex = 2
+                t_action.Enabled = True
+            Case Else
+                mv_cambiopwd.ActiveViewIndex = 1
+                t_action.Enabled = True
+        End Select
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        nocache()
+        backbutton()
+        If Not IsPostBack Then
+            mv_cambiopwd.ActiveViewIndex = 0
+            t_action.Enabled = False
+        End If
+    End Sub
+
+    Protected Sub t_action_Tick(sender As Object, e As EventArgs)
+        Select Case mv_cambiopwd.ActiveViewIndex
+            Case 0
+            Case 1
+                mv_cambiopwd.ActiveViewIndex = 0
+                t_action.Enabled = False
+            Case 2
+                t_action.Enabled = False
+                Response.Redirect("../glogin.aspx")
+        End Select
+    End Sub
+End Class

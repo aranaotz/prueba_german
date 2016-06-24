@@ -1,0 +1,213 @@
+﻿<%@ Page Title="Actualización de Datos - UTSyn 2014" Language="VB" MasterPageFile="synstu.master" AutoEventWireup="false" CodeFile="updata.aspx.vb" Inherits="updata" Culture="es-MX" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div class="div_principal" style="padding: 0px 0px 120px 0px;">
+        <h1 class="etiqueta_titulo">Datos Generales del Usuario</h1>
+        <%'-- <asp:FormView ID="fv_generales" runat="server"><ItemTemplate>--%>
+        <asp:MultiView ID="mv_generales" runat="server">
+            <asp:View ID="v_busqueda" runat="server">
+                <table class="tabla_busqueda"><tr><td class="top_tb">¿A quién buscas?</td></tr><tr><td>
+                    <table><tr><td><asp:TextBox ID="tbx_buscar" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                        <asp:FilteredTextBoxExtender ID="tbx_buscar_ftbe" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="!&quot;#$%&amp;/()=?¿'+*][}{-:;,." TargetControlID="tbx_buscar">
+                        </asp:FilteredTextBoxExtender>
+                        <asp:RequiredFieldValidator ID="rfv_buscar" runat="server" ControlToValidate="tbx_buscar" Display="None" ErrorMessage="Al menos una letra o numero a buscar" SetFocusOnError="True" ValidationGroup="busqueda"></asp:RequiredFieldValidator>
+                        <asp:ValidatorCalloutExtender ID="rfv_buscar_vcoe" runat="server" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rfv_buscar" WarningIconImageUrl="~/img/alertm.png" CloseImageUrl="~/img/close_coe.png" PopupPosition="BottomRight">
+                        </asp:ValidatorCalloutExtender>
+                        <asp:TextBoxWatermarkExtender ID="tbx_buscar_wme" runat="server" Enabled="True" TargetControlID="tbx_buscar" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                               </td><td style="padding: 0px 10px 0px 5px; margin: auto;">
+                        <asp:ImageButton ID="ib_go" runat="server" ImageUrl="~/img/arrowlogin_.png" Width="80%" style="vertical-align: middle;" ValidationGroup="busqueda"/>
+                    </td></tr></table>
+
+                </td></tr></table>
+            </asp:View>
+            <asp:View ID="v_resultados" runat="server">
+                <div><table class="cell_spa_0"><tr><td>
+                    <table class="cell_spa_0"><tr><td style="padding: 0px 10px 0px 10px;">¿Buscamos de nuevo?</td><td><asp:ImageButton ID="ib_back2" runat="server" ImageUrl="~/img/arrowback.png" CausesValidation="False" /></td></tr></table>
+                                                   </td></tr><tr><td style="padding: 10px 0px 0px 0px; border-top: solid 1px rgba(249,252,252,0.2);">
+                    <asp:GridView ID="gv_resultados" runat="server" AutoGenerateColumns="False" ShowHeader="False" GridLines="None" EmptyDataText="...porque no hemos encontrado nada..."><Columns>
+                        <asp:BoundField DataField="nombre_completo" >
+                        <ItemStyle HorizontalAlign="Left" />
+                        </asp:BoundField>
+                        <asp:TemplateField><ItemTemplate>
+                            <table><tr><td class="menu_submenu"><asp:LinkButton ID="lb_thisis" runat="server" CssClass="boton_texto_dentro" OnClick="lb_thisis_Click"></asp:LinkButton></td></tr></table>
+                        </ItemTemplate>
+                            <ItemStyle Font-Size="0.8em" />
+                        </asp:TemplateField>
+                    </Columns></asp:GridView></td></tr></table>
+                </div>
+            </asp:View>
+            <asp:View ID="v_generales" runat="server">
+                <%'-- <asp:FormView ID="fv_generales" runat="server"><ItemTemplate>--%>
+                <table class="cell_spa_0"><tr><td><table class="cell_spa_0"><tr><td style="padding: 0px 10px 0px 10px;">&nbsp;</td><td style="padding-right: 20px;"><asp:ImageButton ID="ib_back" runat="server" ImageUrl="~/img/arrowback.png" OnClick="ib_back_Click" Visible="False"/></td><td style="padding: 0px 10px 0px 10px; font-size: 1em;" class="menu_submenu">
+                    <asp:LinkButton ID="lb_guardar" runat="server" Text="Guardar perfil" CssClass="boton_texto_blanco" CommandName="guardar" ValidationGroup="guardareditar" Enabled="False"></asp:LinkButton></td><td class="menu_submenu" style="font-size: 1em;"><asp:LinkButton ID="lb_print" runat="server" Text="Imprimir Comprobante" CssClass="boton_texto_blanco" CommandName="Imprimir" ValidationGroup="guardareditar" CausesValidation="False"></asp:LinkButton></td></tr></table></td></tr><tr><td><table class="cell_spa_0" style="margin: auto;"><tr><td><asp:Image ID="img_user" runat="server" ImageUrl='<%# Eval("foto")%>' Height="150px" Width="150px" Visible="False" /></td>
+                    <td>
+                        <asp:Image ID="img_qr" runat="server" />
+                    </td>
+                    </tr><tr><td>
+                    <asp:FileUpload ID="fu_imagen" runat="server" Visible="False" />
+                                                    <asp:RegularExpressionValidator ID="rev_imagen" runat="server" ControlToValidate="fu_imagen" ErrorMessage="Archivo de imagen inválido!"
+                                                        ValidationExpression= "^([0-9a-zA-Z_\-~ :\\])+(.jpg|.JPG|.jpeg|.JPEG|.bmp|.BMP|.gif|.GIF|.png|.PNG)$" Display="None" ValidationGroup="guardareditar"></asp:RegularExpressionValidator> 
+                                                    <asp:ValidatorCalloutExtender ID="rev_imagen_vco" runat="server" Enabled="True" TargetControlID="rev_imagen">
+                                                    </asp:ValidatorCalloutExtender>
+                                                    <asp:RequiredFieldValidator ID="rfv_fu" runat="server" ControlToValidate="fu_imagen" Display="None" ErrorMessage="Es necesario que especifique una imagen!" ValidationGroup="guardareditar"></asp:RequiredFieldValidator>
+                                                    <asp:ValidatorCalloutExtender ID="rfv_fu_vco" runat="server" Enabled="True" TargetControlID="rfv_fu">
+                                                    </asp:ValidatorCalloutExtender></td>
+                        <td>&nbsp;</td>
+                    </tr></table></td></tr>
+
+                       <tr><td><table><tr><td class="titulo_fila_">Apellido Paterno</td><td class="campos_derecha_"><asp:TextBox ID="tbx_apaterno" runat="server" CssClass="tbxlogin_fill" Enabled="False" MaxLength="50"></asp:TextBox>
+                           <asp:FilteredTextBoxExtender ID="tbx_apaterno_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_apaterno">
+                           </asp:FilteredTextBoxExtender>
+                           <asp:TextBoxWatermarkExtender ID="tbx_apaterno_wme" runat="server" Enabled="True" TargetControlID="tbx_apaterno" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Apellido Materno</td><td class="campos_derecha_"><asp:TextBox ID="tbx_amaterno" runat="server" CssClass="tbxlogin_fill" Enabled="False" MaxLength="50"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_amaterno_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_amaterno">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" Enabled="True" TargetControlID="tbx_amaterno" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Nombres</td><td class="campos_derecha_"><asp:TextBox ID="tbx_nombres" runat="server" CssClass="tbxlogin_fill" Enabled="False" MaxLength="50"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_nombres_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_nombres">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" Enabled="True" TargetControlID="tbx_nombres" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Sexo</td>
+                               <td class="campos_derecha_">
+                                   <asp:DropDownList ID="ddl_sexo" runat="server" CssClass="droptransparent">
+                                   </asp:DropDownList>
+                                   <asp:RequiredFieldValidator ID="rfv_sexo" runat="server" ControlToValidate="ddl_sexo" ErrorMessage="Selecciona tu sexo" InitialValue="Selecciona uno" SetFocusOnError="True" Display="None" ValidationGroup="guardareditar"></asp:RequiredFieldValidator>
+                                   <asp:ValidatorCalloutExtender ID="rfv_sexo_vcoe" runat="server" CloseImageUrl="~/img/close_coe.png" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rfv_sexo" WarningIconImageUrl="~/img/alertm.png">
+                               </asp:ValidatorCalloutExtender>
+                               </td>
+                           </tr>
+                           <tr><td class="titulo_fila_">CURP</td><td class="campos_derecha_"><asp:TextBox ID="tbx_curp" runat="server" CssClass="tbxlogin_fill"  Enabled="true"></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender3" runat="server" Enabled="True" TargetControlID="tbx_curp" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Domicilio: Calle y Número</td><td class="campos_derecha_"><asp:TextBox ID="tbx_domicilio" runat="server" CssClass="tbxlogin_fill" MaxLength="200" ></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender4" runat="server" Enabled="True" TargetControlID="tbx_domicilio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Colonia</td><td class="campos_derecha_"><asp:TextBox ID="tbx_colonia" runat="server" CssClass="tbxlogin_fill" MaxLength="100" ></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender5" runat="server" Enabled="True" TargetControlID="tbx_colonia" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Municipio</td><td class="campos_derecha_"><asp:TextBox ID="tbx_municipio" runat="server" CssClass="tbxlogin_fill" MaxLength="100" ></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender6" runat="server" Enabled="True" TargetControlID="tbx_municipio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Codigo Postal</td><td class="campos_derecha_">
+                               <asp:TextBox ID="tbx_cp" runat="server" CssClass="tbxlogin_fill" MaxLength="5"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_cp_FilteredTextBoxExtender" runat="server" Enabled="True" TargetControlID="tbx_cp" ValidChars="1234567890">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_cp_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_cp" WatermarkCssClass="wmlogin" WatermarkText="...">
+                               </asp:TextBoxWatermarkExtender>
+                               </td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Telefono</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_telefono" runat="server" CssClass="tbxlogin_fill" MaxLength="10" ></asp:TextBox>
+                                   <asp:FilteredTextBoxExtender ID="tbx_telefono_FilteredTextBoxExtender" runat="server" Enabled="True" TargetControlID="tbx_telefono" ValidChars="1234567890">
+                                   </asp:FilteredTextBoxExtender>
+                                   <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender7" runat="server" Enabled="True" TargetControlID="tbx_telefono" WatermarkCssClass="wmlogin" WatermarkText="Lada + número">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Movil</td><td class="campos_derecha_"><asp:TextBox ID="tbx_movil" runat="server" CssClass="tbxlogin_fill" Rows="10" ></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_movil_FilteredTextBoxExtender" runat="server" Enabled="True" TargetControlID="tbx_movil" ValidChars="1234567890">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender8" runat="server" Enabled="True" TargetControlID="tbx_movil" WatermarkText="Lada + número" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Carrera</td><td class="campos_derecha_"><asp:TextBox ID="tbx_carrera" runat="server" CssClass="tbxlogin_fill"  Enabled="False"></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender9" runat="server" Enabled="True" TargetControlID="tbx_carrera" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Especialidad</td><td class="campos_derecha_"><asp:TextBox ID="tbx_especialidad" runat="server" CssClass="tbxlogin_fill"  Enabled="False"></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender10" runat="server" Enabled="True" TargetControlID="tbx_especialidad" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Correo electrónico</td><td class="campos_derecha_"><asp:TextBox ID="tbx_mail" runat="server" CssClass="tbxlogin_fill" ></asp:TextBox>
+                               <asp:RegularExpressionValidator ID="rev_email" runat="server" ControlToValidate="tbx_mail" Display="None" ErrorMessage="No parece un correo valido!" SetFocusOnError="True" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ValidationGroup="guardareditar"></asp:RegularExpressionValidator>
+                               <asp:ValidatorCalloutExtender ID="rev_email_vcoe" runat="server" CloseImageUrl="~/img/close_coe.png" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rev_email" WarningIconImageUrl="~/img/alertm.png">
+                               </asp:ValidatorCalloutExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender11" runat="server" Enabled="True" TargetControlID="tbx_mail" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Tipo Sangre</td><td class="campos_derecha_">
+                               <asp:DropDownList ID="ddl_sangre" runat="server" CssClass="droptransparent">
+                               </asp:DropDownList>
+                               </td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Fecha de Nacimiento</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_fnac" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <asp:CalendarExtender ID="tbx_fnac_ce" runat="server" Enabled="True" Format="dd/MM/yyyy" PopupPosition="Right" TargetControlID="tbx_fnac">
+                                       </asp:CalendarExtender>
+                                       <asp:RequiredFieldValidator ID="rfv_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="¿Tu fecha de nacimiento?" InitialValue="dd/mm/aaaa" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn" TargetControlID="rfv_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       <asp:RegularExpressionValidator ID="rev_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="No parece una fecha válida!" ValidationExpression="(((0[1-9]|[12][0-9]|3[01])([/])(0[13578]|10|12)([/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([/])(0[469]|11)([/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([/])(02)([/])(\d{4}))|((29)(\.|-|\/)(02)([/])([02468][048]00))|((29)([/])(02)([/])([13579][26]00))|((29)([/])(02)([/])([0-9][0-9][0][48]))|((29)([/])(02)([/])([0-9][0-9][2468][048]))|((29)([/])(02)([/])([0-9][0-9][13579][26])))" validationgroup="v0"></asp:RegularExpressionValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn2" TargetControlID="rev_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Estado Civil</td>
+                               <td class="campos_derecha_">
+                                   <asp:DropDownList ID="ddl_ecivil" runat="server" CssClass="droptransparent">
+                                   </asp:DropDownList>
+                                   <asp:RequiredFieldValidator ID="rfv_ecivil" runat="server" ControlToValidate="ddl_ecivil" ErrorMessage="Selecciona tu estado civil" InitialValue="Selecciona uno" SetFocusOnError="True" Display="None" ValidationGroup="guardareditar"></asp:RequiredFieldValidator>
+                                   <asp:ValidatorCalloutExtender ID="rfv_ecivil_vcoe" runat="server" CloseImageUrl="~/img/close_coe.png" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rfv_ecivil" WarningIconImageUrl="~/img/alertm.png">
+                               </asp:ValidatorCalloutExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Lugar de Nacimiento</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_ldn" runat="server" CssClass="tbxlogin_fill" Enabled="true" MaxLength="200"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_ldn_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_ldn" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Correo Institucional</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_instmail" runat="server" CssClass="tbxlogin_fill" MaxLength="100"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_instmail_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_instmail" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Nombre del Padre ó tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_ndt" runat="server" CssClass="tbxlogin_fill" MaxLength="200"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_ndt_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_ndt" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Domicilio del Padre ó tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_ddt" runat="server" CssClass="tbxlogin_fill" MaxLength="200"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_ddt_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_ddt" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Ocupacion del Padre ó tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_tocup" runat="server" CssClass="tbxlogin_fill" MaxLength="100"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_tocup_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_tocup" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Telefono del Padre ó tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_tdt" runat="server" CssClass="tbxlogin_fill" MaxLength="10"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_tdt_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_tdt" WatermarkCssClass="wmlogin" WatermarkText="Lada + número">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">¿Dónde cursaste el bachillerato?</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_bachillerato" runat="server" CssClass="tbxlogin_fill" MaxLength="200"></asp:TextBox>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_bachillerato_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_bachillerato" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Promedio Obtenido</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_promedio" runat="server" CssClass="tbxlogin_fill" MaxLength="5"></asp:TextBox>
+                                   <asp:FilteredTextBoxExtender ID="tbx_promedio_ftbe" runat="server" Enabled="True" TargetControlID="tbx_promedio" ValidChars="1234567890.">
+                                   </asp:FilteredTextBoxExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_promedio_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_promedio" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                </table></td></tr></table><%'-- </ItemTemplate></asp:FormView>--%>
+            </asp:View>
+        </asp:MultiView><%'--</ContentTemplate></asp:UpdatePanel>--%>
+
+    </div>
+</asp:Content>
+

@@ -1,0 +1,152 @@
+﻿@font-face {
+    font-family: 'Open Sans', ialvarohthin;
+    /*src: url('../fonts/TrendexLightSSi.TTF');*/
+    /*src: url('../fonts/solea/Solea-Light.TTF');*/
+    src: url('fonts/segoeuil.ttf');
+    }
+.html {display:table; height: 100%; width: 100%;}
+/*body {background-color: #01A51F; overflow: hidden; position: absolute; height: 200px; width: 300px; left: 50%; top: 40%; margin-top: -100px; margin-left: -150px; }*/
+body_green {background-color: #00A890; display: table-row; font-family: Verdana;\9 font-weight: 100;\9 filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);\9 zoom:1;\9}
+body_green {background-color: #00A890; display: table-row; font-family: 'Open Sans', ialvarohthin;}
+/*body {background-color: #00A890; position: absolute; left: 50%; top: 40%; margin-top: -100px; margin-left: -150px; overflow: hidden; height: 200px; width: 300px;}*/
+body_red {background-color: #b30430; overflow: hidden; position: absolute; height: 200px; width: 300px; left: 50%; top: 40%; margin-top: -100px; margin-left: -150px; }
+body {background-color: #b30430; display: table-row; font-family: 'Open Sans',Verdana;\9 font-weight: 100;\9 filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);\9 zoom:1;\9}
+/*body-siaaa_primero {background-color: #b30430; display: table-row; font-family: 'Open Sans', ialvarohthin;}*/
+body {background-color: #00A890; display: table-row; font-family: 'Open Sans', ialvarohthin;}
+.divlogin {text-align: center; color: #ffffff; margin: 10% auto; height: 200px; width: 300px;}
+.div_aviso {text-align: center; color: #ffffff; margin: auto;}
+/*.divlogin {vertical-align: central; text-align: center; font-family: 'Open Sans', ialvarohthin,'Segoe UI Light',Arial, Verdana; color: #ffffff; }*/
+.sysratelogin {font-size: 4em; text-align: justify;}
+.tbxlogin {font-size: 14pt; border: none; border-radius: 5px; padding: 8px; width: 80%; opacity: 1; background: #f9fcfc; transition: all 0.3s ease 0s;}
+.tbxlogin:hover {font-size: 14pt; border-radius: 5px; padding: 8px; width: 80%; background:rgba(255,255,255,1); opacity: 1; transition: all 0.3s ease 0s; }
+/*.tbxlogin:focus {font-size: 14pt; border-radius: 5px; padding: 8px; width: 80%; background:rgba(0,168,144,1); opacity: 1; color: #f9fcfc ;transition: all 0.3s ease 0s; }*/
+/*.tbxlogin:focus {font-size: 14pt; border-radius: 5px; padding: 8px; width: 80%; background:rgba(179,4,48,1); opacity: 1; color: #f9fcfc ;transition: all 0.3s ease 0s; }*/
+.tbxlogin:focus {font-size: 14pt; border-radius: 5px; padding: 8px; width: 80%; background: #999; opacity: 1; color: #000 ;transition: all 0.3s ease 0s; }
+.wmlogin {font-size: 14pt; border: none; border-radius: 5px; padding: 8px; width: 80%; background: #f9fcfc; color: #999999; transition: all 0.3s ease 0s;}
+.wmlogin:hover {font-size: 14pt; border-radius: 5px; padding: 8px; width: 80%; background:rgba(255,255,255,1); color: #b30430; transition: all 0.3s ease 0s;}
+.tablelogin {margin: auto; border-spacing:0; border-collapse:collapse; }
+.celllogin {padding: 7px;}
+.cellloginbutton {padding: 2px;}
+.piepage {position: relative; text-align: center; width: 100%; bottom: 0px; font-family: 'Open Sans', ialvarohthin, 'Segoe UI Light',Arial, Verdana; color: #D8F781; margin-top: 100px; font-size: .8em;}
+/*.errorlbl {vertical-align: central; text-align: center; font-family: 'Open Sans', ialvarohthin, 'Segoe UI Light',Arial, Verdana; color: rgba(255,216,0,1); font-size: 1.3em; transition: all 0.3s ease 0s;}*/
+.errorlbl {vertical-align: central; text-align: center; font-family: 'Open Sans', ialvarohthin, 'Segoe UI Light',Arial, Verdana; color: rgba(255,255,255,1); font-size: 1.3em; transition: all 0.3s ease 0s;}
+.titulo_medio {vertical-align: middle; font-size: 1em; font-family: 'Open Sans', ialvarohthin, 'Segoe UI Light',Arial, Verdana; overflow: hidden; position:relative; color: #b30430; margin: auto;}
+.Panel_error {border-radius: 5px; background: rgba(179,4,48,1);}
+.Panel_normal {display:none;}
+.bottombar_shadow{
+    margin: auto;
+    background: #ccc;
+    border: 5px solid white;
+    position:relative;
+    box-shadow: 0px -10px 50px rgba(0, 0, 0, 0.40);
+    -moz-box-shadow: 0px -10px 50px rgba(0, 0, 0, 0.40);
+    -webkit-box-shadow: 0px -10px 50px rgba(0, 0, 0, 0.40);
+}
+.centrado {
+    display: table;
+    margin: auto;
+}
+/*Css del validador*/
+.customCalloutStyle div, .customCalloutStyle td{
+/*border: solid 1px #ffffff;*/
+border: none;
+background-color: #b30430;
+color:White;
+}
+.customCalloutStyle .ajax__validatorcallout_popup_table{
+display: none;
+border: none;
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_popup_table_row{
+vertical-align: top;
+height: 100%;
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_cell{
+width: 20px;
+height: 100%;
+text-align: right;
+vertical-align: top;
+border: none;
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_table{
+height: 100%;
+border: none;
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_table_row{
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_arrow_cell
+{
+padding: 8px 0px 0px 0px;
+text-align: right;
+vertical-align: top;
+font-size: 1px;
+border: none;
+background-color: transparent;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_arrow_cell .ajax__validatorcallout_innerdiv{
+font-size: 1px;
+position: relative;
+left: 1px;
+border-bottom: none;
+border-right: none;
+border-left: none;
+width: 15px;
+background-color: transparent;
+padding: 0px;
+}
+.customCalloutStyle .ajax__validatorcallout_callout_arrow_cell .ajax__validatorcallout_innerdiv div{
+height: 1px;
+overflow: hidden;
+border-top: none;
+border-bottom: none;
+border-right: none;
+padding: 0px;
+margin-left: auto;
+}
+.customCalloutStyle .ajax__validatorcallout_error_message_cell
+{
+font-family: 'Segoe UI', Arial, Vedana;
+font-size: 0.8em;
+padding: 5px;
+border-right: none;
+border-left: none;
+width: 100%;
+}
+.customCalloutStyle .ajax__validatorcallout_icon_cell{
+width: 20px;
+padding: 5px;
+border-right: none;
+}
+.customCalloutStyle .ajax__validatorcallout_close_button_cell{
+vertical-align: top;
+padding: 15px;
+text-align: right;
+border-left: none;
+}
+.customCalloutStyle .ajax__validatorcallout_close_button_cell .ajax__validatorcallout_innerdiv{
+border: none;
+text-align: center;
+width: 10px;
+padding: 1px;
+cursor: pointer;
+}
+.boton_texto_ampliar {text-decoration: none; color: #f9fcfc; transition: all 0.3s ease 0s;}
+.boton_texto_ampliar:hover {text-decoration: none; color: #b30430; transition: all 0.3s ease 0s; font-size: 1.4em;}
+.popupanel {padding: 20px; color: #b30430; background: rgba(255,255,255,1); font-family: 'Open Sans', ialvarohthin,'Segoe UI', Arial, Verdana; font-size: 1.3em; border-radius: 5px;}
+.modalBackground_gris {background-color: #000; filter: alpha(opacity=50); opacity: 0.5; transition: all 0.3s ease 0s;}
+.modalBackground_gris:hover {background-color: #000; filter: alpha(opacity=80); opacity: 0.80; transition: all 0.3s ease 0s;}
+.linkbuttons {text-decoration: none; color: #CCC;transition: all 0.3s ease 0s;}
+.linkbuttons:hover {text-decoration: none; color: #b30430; transition: all 0.3s ease 0s;}
+
+.boton_discreto {text-decoration: none; color: #fff; transition: all 0.3s ease 0s;}
+.boton_discreto:hover {text-decoration: none; color: #b30430; transition: all 0.3s ease 0s;}

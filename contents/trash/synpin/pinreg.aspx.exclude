@@ -1,0 +1,412 @@
+﻿<%@ Page Title="Bienvenido a la UTJ" Language="VB" MasterPageFile="~/contents/masters/synpin.master" AutoEventWireup="false" CodeFile="pinreg.aspx.vb" Inherits="synpin" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+<%@ Register assembly="AjaxControls" namespace="AjaxControls" tagprefix="asp2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <link rel="stylesheet" type="text/css" href="pin.css">
+        <div><asp:UpdatePanel ID="up_recolecting" runat="server"><ContentTemplate>
+        <asp:MultiView ID="mv_ingreso" runat="server">
+            <asp:View ID="v_welcome" runat="server">
+               <table class="centrado"><tr><td><div class="titulo_medio"><span style="font-size: 1.3em;">Bienvenido al sistema de Preinscripción de la<br /> Universidad Tecnológica de Jalisco.</span><br /><span style="font-size: 0.8em;"><br />
+                   Te sugerimos que al capturar la información solicitada utilices mayusculas, minusculas y acentos; y que verifiques perfectamente la información capturada antes de enviar la solicitud y obtener tu comprobante. 
+                   </span>
+                                               </div></td></tr><tr><td style="text-align: center;">
+                    <table style="margin: auto"><tr><td style="padding:0px 20px 0px 20px; font-size: 1.2em;">Regístrate como aspirante</td><td><asp:ImageButton ID="ib_siguiente" runat="server" ImageUrl="~/img/arrowlogin_.png"/></td></tr></table></td></tr></table></asp:View>
+            <asp:View ID="v_body" runat="server">
+            <table style="margin: auto;"><tr><td><div style="margin: 0 20% 0 20%; padding: 10px; vertical-align: middle; text-align: center; font-size: 2em;">
+                <table><tr><td>Completa el formulario con la información correcta.<br /> En tu entrevista se te solicitarán los documentos que la respalden.</td></tr>
+                    <tr>
+                        
+
+                        <td style="text-align: center;"><table align="center" style="text-align: left;">
+                    <tr><td>
+                    <asp:DropDownList ID="ddl_carreras" runat="server" CssClass="droptransparent" validationgroup="v0" AutoPostBack="True"></asp:DropDownList>
+                        <asp:RequiredFieldValidator ID="rfv_carreras" runat="server" ControlToValidate="ddl_carreras" Display="None" ErrorMessage="Selecciona una sede para elegir una carrera." InitialValue="Antes de una carrera, selecciona la sede." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                          <asp:ValidatorCalloutExtender ID="rfv_carreras_vcoe" runat="server" Enabled="True" TargetControlID="rfv_carreras" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png">
+                        </asp:ValidatorCalloutExtender>  
+                        </td></tr>
+                    <tr>
+                        <td>
+                            <asp:DropDownList ID="ddl_turno" runat="server" CssClass="droptransparent" validationgroup="v0">
+                            </asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfv_turno" runat="server" ControlToValidate="ddl_turno" Display="None" ErrorMessage="Elije un turno!" InitialValue="Turno..." SetFocusOnError="true" validationgroup="v0"></asp:RequiredFieldValidator>
+                            <asp:ValidatorCalloutExtender ID="rfv_turno_vcoe" runat="server" Enabled="True" TargetControlID="rfv_turno" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png">
+                        </asp:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                <tr><td>
+                    <asp:DropDownList ID="ddl_motivo" runat="server" CssClass="droptransparent" validationgroup="v0">
+                        <asp:ListItem Value="0" Text="Dinos cómo te has enterado de la UTJ" Selected="True"></asp:ListItem>
+                        <asp:ListItem Value="8">Visita en mi preparatoria</asp:ListItem>
+                        <asp:ListItem Value="1" Text="Por medio de la Televisión"></asp:ListItem>
+                        <asp:ListItem Value="2" Text="Lo escuché en la Radio"></asp:ListItem>
+                        <asp:ListItem Value="3" Text="Me lo ha contado un conocido"></asp:ListItem>
+                        <asp:ListItem Value="4" Text="Al pasar he visto la Universidad"></asp:ListItem>
+                        <asp:ListItem Value="5" Text="Prensa (periódico, folletos, volantes)"></asp:ListItem>
+                        <asp:ListItem Value="6" Text="Redes Sociales"></asp:ListItem>
+                        <asp:ListItem Value="7" Text="Internet"></asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfv_enterado" runat="server" ControlToValidate="ddl_motivo" Display="None" ErrorMessage="Cuentanos como te has enterado!" InitialValue="0" SetFocusOnError="true" validationgroup="v0"></asp:RequiredFieldValidator>
+                    <asp:ValidatorCalloutExtender ID="rfv_enterado_vcoe" runat="server" Enabled="True" TargetControlID="rfv_enterado" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png">
+                        </asp:ValidatorCalloutExtender>
+
+                    </td></tr></table>
+                    <table><tr>
+                        <td class="titulo_fila" style="text-align: center;">Por defecto quedarás registrado como aspirante del ciclo escolar:</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;"><table align="center" style="text-align: left;"><tr><td>
+                            <asp:DropDownList ID="ddl_ciclo" runat="server" CssClass="droptransparent" validationgroup="v0">
+                                <asp:ListItem Selected="True" Value="2015A">Mayo - Agosto 2015</asp:ListItem>
+                            </asp:DropDownList>
+                        </td></tr></table></td>
+                    </tr>
+                    </table></td></tr></table></div>
+                </td></tr><tr><td style="text-align: center;">
+                <div style="margin: 0 20% 0 20%; padding: 10px; vertical-align: middle; text-align: center; font-size: 2em;"><table style="margin:auto;">
+                    <tr><td>
+                        
+                        <table class="centrado"><tr><td class="titulo_fila">Nombre(s)</td><td class="campos_derecha"><asp:TextBox ID="tbx_nombres" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfv_nombres" runat="server" ControlToValidate="tbx_nombres" Display="None" ErrorMessage="¡Por favor escribe tu nombre!" InitialValue="..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                            <asp:ValidatorCalloutExtender ID="vco_nombres" TargetControlID="rfv_nombres" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                            </td></tr>
+                                   <tr><td class="titulo_fila">Apellido Paterno</td><td class="campos_derecha"><asp:TextBox ID="tbx_paterno" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <asp:RequiredFieldValidator ID="rfv_paterno" runat="server" ControlToValidate="tbx_paterno" Display="None" ErrorMessage="¡Por favor escribe tu apellido paterno!" InitialValue="..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_paterno" TargetControlID="rfv_paterno" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Apellido Materno</td><td class="campos_derecha"><asp:TextBox ID="tbx_materno" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <asp:RequiredFieldValidator ID="rfv_materno" runat="server" ControlToValidate="tbx_materno" Display="None" ErrorMessage="¡Por favor escribe tu apellido materno!" InitialValue="..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_materno" TargetControlID="rfv_materno" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Sexo</td><td class="campos_derecha">
+                                       <asp:DropDownList ID="ddl_sexo" runat="server" CssClass="droptransparent" validationgroup="v0">
+                                       </asp:DropDownList>
+                                       <asp:RequiredFieldValidator ID="rfv_sexo" runat="server" ControlToValidate="ddl_sexo" Display="None" ErrorMessage="No olvides tu sexo!" InitialValue="Selecciona tu sexo" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_sexo" TargetControlID="rfv_sexo" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Nacionalidad</td><td class="campos_derecha">
+                                       <asp:MultiView ID="mv_nacionalidad" runat="server">
+                                           <asp:View ID="v_selector" runat="server"><asp:DropDownList ID="ddl_nacionalidad" runat="server" AutoPostBack="True" CssClass="droptransparent" validationgroup="v0">
+                                               <asp:ListItem Value="0" Text="Mexicana" Selected="True"></asp:ListItem>
+                                               <asp:ListItem Value="1" Text="Otra..." Selected="false"></asp:ListItem>
+                                              </asp:DropDownList></asp:View>
+                                           <asp:View ID="v_libre" runat="server"><table style="border-collapse: collapse;"><tr><td>
+                                               <asp:TextBox ID="tbx_nacionalidad" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                               <%'<asp:RequiredFieldValidator ID="rfv_nacionalidad" runat="server" ControlToValidate="tbx_nacionalidad" Display="None" ErrorMessage="Escribe tu nacionalidad!" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator> %>
+                                               <%'<asp:ValidatorCalloutExtender ID="vco_nacionalidad" TargetControlID="rfv_nacionalidad" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender> %>
+                                               </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_bnacionalidad" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table>
+                                               <asp:TextBoxWatermarkExtender ID="tbx_nacionalidad_wme" runat="server" Enabled="True" TargetControlID="tbx_nacionalidad" WatermarkText="Nacionalidad..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                           </asp:View>
+                                       </asp:MultiView>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Fecha de Nacimiento</td><td class="campos_derecha"><asp:TextBox ID="tbx_fnac" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <asp:CalendarExtender ID="tbx_fnac_ce" runat="server" Enabled="True" Format="dd/MM/yyyy" PopupPosition="Right" TargetControlID="tbx_fnac">
+                                       </asp:CalendarExtender>
+                                       <asp:RequiredFieldValidator ID="rfv_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="¿Tu fecha de nacimiento?" InitialValue="dd/mm/aaaa" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn" TargetControlID="rfv_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       <asp:RegularExpressionValidator ID="rev_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="No parece una fecha válida!" ValidationExpression="(((0[1-9]|[12][0-9]|3[01])([/])(0[13578]|10|12)([/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([/])(0[469]|11)([/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([/])(02)([/])(\d{4}))|((29)(\.|-|\/)(02)([/])([02468][048]00))|((29)([/])(02)([/])([13579][26]00))|((29)([/])(02)([/])([0-9][0-9][0][48]))|((29)([/])(02)([/])([0-9][0-9][2468][048]))|((29)([/])(02)([/])([0-9][0-9][13579][26])))" validationgroup="v0"></asp:RegularExpressionValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn2" TargetControlID="rev_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_general1_wme" runat="server" Enabled="True" TargetControlID="tbx_nombres" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_general2_wme" runat="server" Enabled="True" TargetControlID="tbx_paterno" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_general3_wme" runat="server" Enabled="True" TargetControlID="tbx_materno" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_general5_wme" runat="server" Enabled="True" TargetControlID="tbx_fnac" WatermarkText="dd/mm/aaaa" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                            <tr>
+                                <td class="titulo_fila">Correo Electrónico</td>
+                                <td class="campos_derecha">
+                                    <asp:TextBox ID="tbx_email" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                    <asp:TextBoxWatermarkExtender ID="tbx_email_wme" runat="server" Enabled="True" TargetControlID="tbx_email" WatermarkCssClass="wmlogin" WatermarkText="email que revises">
+                                    </asp:TextBoxWatermarkExtender>
+                                    <asp:RequiredFieldValidator ID="rfv_email" runat="server" ControlToValidate="tbx_email" Display="None" ErrorMessage="¡Por favor escribe tu email!" InitialValue="email que revises" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                    <asp:ValidatorCalloutExtender ID="vco_email" TargetControlID="rfv_email" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="titulo_fila" style="vertical-align: top;">Dirección actual<br />(Selecciona estado,<br />municipio y<br />colonia.</td>
+                                <td class="campos_derecha">
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <td style="vertical-align: top;">
+                                                <table style="width:100%; border-collapse:collapse">
+                                                    <tr>
+                                                        <td style="margin-left: 40px">
+                                                            <asp:DropDownList ID="ddl_estado" runat="server" CssClass="droptransparent" AutoPostBack="true" validationgroup="v0">
+                                                            </asp:DropDownList>
+                                                            <asp:RequiredFieldValidator ID="rfv_estado" runat="server" ControlToValidate="ddl_estado" Display="None" ErrorMessage="Selecciona el estado de procedencia" InitialValue="Selecciona un estado..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                            <asp:ValidatorCalloutExtender ID="vco_estado" TargetControlID="rfv_estado" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="margin-left: 120px">
+                                                            <asp:Multiview ID="mv_municipio" runat="server"><asp:View ID="v_mpioselector" runat="server">
+                                                            <asp:DropDownList ID="ddl_municipio" runat="server" CssClass="droptransparent" AutoPostBack="True" validationgroup="v0">
+                                                            </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfv_municipio" runat="server" ControlToValidate="ddl_municipio" Display="None" ErrorMessage="Selecciona el municipio donde vives." InitialValue="Selecciona un municipio..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                                <asp:ValidatorCalloutExtender ID="vco_municipio" TargetControlID="rfv_municipio" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                                                </asp:View>
+                                                                <asp:View ID="v_mpiomanual" runat="server"><table class="cell_spa_0""><tr><td>
+                                               <asp:TextBox ID="tbx_mpio" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                               <asp:TextBoxWatermarkExtender ID="tbx_mpio_wme" runat="server" Enabled="True" TargetControlID="tbx_mpio" WatermarkText="Municipio..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                                   </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_bmpio" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table></asp:View>
+                                                            </asp:Multiview>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="margin-left: 120px">
+                                                            <asp:MultiView ID="mv_colonia" runat="server"><asp:View ID="mv_colselector" runat="server">
+                                                            <asp:DropDownList ID="ddl_colonia" runat="server" CssClass="droptransparent" AutoPostBack="True" validationgroup="v0">
+                                                            </asp:DropDownList>
+                                                                <asp:RequiredFieldValidator ID="rfv_colonia" runat="server" ControlToValidate="ddl_colonia" Display="None" ErrorMessage="¡Por favor selecciona o escribe el nombre de la colonia!" InitialValue="Selecciona una Colonia..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                                <asp:ValidatorCalloutExtender ID="vco_colonia" TargetControlID="rfv_colonia" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                                                </asp:View><asp:View ID="v_colmanual" runat="server"><table style="border-collapse: collapse;"><tr><td>
+                                               <asp:TextBox ID="tbx_col" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                                <asp:TextBoxWatermarkExtender ID="tbx_col_wme" runat="server" Enabled="True" TargetControlID="tbx_col" WatermarkText="Colonia..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                                   </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_bcol" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table></asp:View></asp:MultiView>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <asp:TextBox ID="tbx_direccion" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="rfv_calleynumero" runat="server" ControlToValidate="tbx_direccion" Display="None" ErrorMessage="Escribe la calle y número de la cas donde habitas." InitialValue="Calle y número(s)" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                <asp:ValidatorCalloutExtender ID="vco_calleynumero" TargetControlID="rfv_calleynumero" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                                <asp:TextBoxWatermarkExtender ID="tbx_direccion_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_direccion" WatermarkCssClass="wmlogin" WatermarkText="Calle y número(s)">
+                                                </asp:TextBoxWatermarkExtender>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                        </tr>
+                            <tr>
+                                <td class="titulo_fila" style="vertical-align: top;">Código Postal</td>
+                                <td class="campos_derecha">
+                                    <asp:TextBox ID="tbx_cp" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                    <asp:TextBoxWatermarkExtender ID="tbx_cp_TextBoxWatermarkExtender" runat="server" Enabled="True" TargetControlID="tbx_cp" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                    </asp:TextBoxWatermarkExtender>
+                                    <asp:FilteredTextboxExtender ID="tbx_cp_ftbe" runat="server" ValidChars="1234567890" TargetControlID="tbx_cp" Enabled="True"></asp:FilteredTextboxExtender>
+                                </td>
+                            </tr>
+                            </table>
+                      
+                         </td></tr>
+                </table></div>
+                </td></tr><tr><td>
+                    <div style="margin: 0 20% 0 20%; padding: 10px; vertical-align: middle; text-align: center; font-size: 2em;"><table style="margin:auto;">
+                    <tr><td><table class="centrado"><tr><td class="titulo_fila">Nombre del Padre/Madre o Tutor</td><td class="campos_derecha"><asp:TextBox ID="tbx_tutor" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfv_tutor" runat="server" ControlToValidate="tbx_tutor" Display="None" ErrorMessage="Escribe el nombre de tu tutor." InitialValue="..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                        <asp:ValidatorCalloutExtender ID="vco_tutor" TargetControlID="rfv_tutor" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                        </td></tr>
+                                   <tr>
+                                       <td class="titulo_fila">Teléfono del Padre/Madre o Tutor</td>
+                                       <td class="campos_derecha">
+                                           <asp:TextBox ID="tbx_ptelefono" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                           <asp:FilteredTextBoxExtender ID="tbx_ptelefono_ftbe" runat="server" Enabled="True" TargetControlID="tbx_ptelefono" ValidChars="0123456789-">
+                                       </asp:FilteredTextBoxExtender>
+                                           
+                                       </td>
+                        </tr>
+                                   <tr><td class="titulo_fila">Estado civil</td><td class="campos_derecha">
+                                       <asp:DropDownList ID="ddl_civil" runat="server" CssClass="droptransparent" validationgroup="v0">
+                                       </asp:DropDownList>
+                                       <asp:RequiredFieldValidator ID="rfv_civil" runat="server" ControlToValidate="ddl_civil" Display="None" ErrorMessage="Selecciona tu estado civil actual." InitialValue="Selecciona tu estado civil" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_civil" TargetControlID="rfv_civil" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Completa tu Curp</td><td class="campos_derecha"><asp:TextBox ID="tbx_curp" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <%'<asp:RequiredFieldValidator ID="rfv_curp" runat="server" ControlToValidate="tbx_curp" Display="None" ErrorMessage="Escribe tu Curp" InitialValue="..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator> %>
+                                       <%'<asp:ValidatorCalloutExtender ID="vco_curp" TargetControlID="rfv_curp" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender> %>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila">Ahora un teléfono donde te encontremos</td><td class="campos_derecha"><asp:TextBox ID="tbx_telefono" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                       <asp:FilteredTextBoxExtender ID="tbx_telefono_ftbe" runat="server" Enabled="True" TargetControlID="tbx_telefono" ValidChars="0123456789-">
+                                       </asp:FilteredTextBoxExtender>
+                                       <asp:RequiredFieldValidator ID="rfv_telefono" runat="server" ControlToValidate="tbx_telefono" Display="None" ErrorMessage="Escribe tu telefono a 10 dígitos" InitialValue="10 Dígitos" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_telefono" TargetControlID="rfv_telefono" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       </td></tr>
+                                   <tr><td class="titulo_fila" style="vertical-align: top;">Bachillerato de procedencia<br />(Selecciona estado,<br />municipio y<br />tu escuela.</td><td class="campos_derecha" style="vertical-align: top;">
+                                       <table style="width:100%; border-collapse:collapse;">
+                                           <tr>
+                                               <td>
+                                                   <asp:DropDownList ID="ddl_pestado" runat="server" CssClass="droptransparent" AutoPostBack="True" validationgroup="v0">
+                                                   </asp:DropDownList>
+                                                   <asp:RequiredFieldValidator ID="rfv_pestado" runat="server" ControlToValidate="ddl_pestado" Display="None" ErrorMessage="Selecciona el estado donde se encuentra tu escuela." InitialValue="Selecciona un estado..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                   <asp:ValidatorCalloutExtender ID="vco_pestado" TargetControlID="rfv_pestado" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                               </td>
+                                           </tr>
+                                           <tr>
+                                               <td>
+                                                   <asp:MultiView ID="mv_pmunicipio" runat="server"><asp:View ID="v_pmunicipiosel" runat="server">
+                                                   <asp:DropDownList ID="ddl_pmunicipio" runat="server" CssClass="droptransparent" AutoPostBack="True" validationgroup="v0">
+                                                   </asp:DropDownList>
+                                                       <asp:RequiredFieldValidator ID="rfv_pmunicipio" runat="server" ControlToValidate="ddl_pmunicipio" Display="None" ErrorMessage="Selecciona el municipio de procedencia." InitialValue="Selecciona un municipio..." SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                                       <asp:ValidatorCalloutExtender ID="vco_pmunicipio" TargetControlID="rfv_pmunicipio" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                                       </asp:View><asp:View ID="v_pmunicipioman" runat="server">
+                                                   <table class="cell_spa_0""><tr><td><asp:TextBox ID="tbx_pmunicipio" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                               <asp:TextBoxWatermarkExtender ID="tbx_pmunicipio_wme" runat="server" Enabled="True" TargetControlID="tbx_pmunicipio" WatermarkText="Municipio..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                                   </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_pmunicipio" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table></asp:View></asp:MultiView>
+                                               </td>
+                                           </tr>
+                                           <tr>
+                                               <td>
+                                                   <asp:MultiView ID="mv_pescuela" runat="server"><asp:View ID="v_pescuelasel" runat="server">
+                                                   <asp:DropDownList ID="ddl_pescuela" runat="server" CssClass="droptransparent" AutoPostBack="True" validationgroup="v0">
+                                                   </asp:DropDownList></asp:View><asp:View ID="v_pescuelaman" runat="server">
+                                                       <table class="cell_spa_0""><tr><td><asp:TextBox ID="tbx_pescuela" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                               <asp:TextBoxWatermarkExtender ID="tbx_pescuela_wme" runat="server" Enabled="True" TargetControlID="tbx_pescuela" WatermarkText="Escuela..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                                   </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_pescuela" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table></asp:View></asp:MultiView>
+                                                </td>
+                                           </tr>
+                                        </table>
+                                       </td></tr>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_antece1_wme" runat="server" Enabled="True" TargetControlID="tbx_tutor" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_antece3_wme" runat="server" Enabled="True" TargetControlID="tbx_curp" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_antece4_wme" runat="server" Enabled="True" TargetControlID="tbx_telefono" WatermarkText="10 Dígitos" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_ptelefono_wme" runat="server" Enabled="True" TargetControlID="tbx_ptelefono" WatermarkText="10 Dígitos" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                            </table></td></tr>
+                </table></div>
+            </td></tr><tr><td>
+                <div style="margin: 0 20% 10% 20%; padding: 10px; vertical-align: middle; text-align: center; font-size: 2em;"><table style="margin:auto;">
+                    <tr><td><table class="centrado"><tr><td class="titulo_fila">Tu afiliación al IMSS es</td><td class="campos_derecha">
+                        <asp:DropDownList ID="ddl_afiliacion" runat="server" CssClass="droptransparent" validationgroup="v0">
+                            <asp:ListItem Value="0">Selecciona una opcion...</asp:ListItem>
+                            <asp:ListItem Value="1">Por medio de alguno de mis padres</asp:ListItem>
+                            <asp:ListItem Value="2">Por medio de la escuela donde estudio</asp:ListItem>
+                            <asp:ListItem Value="3">Por medio de mi trabajo</asp:ListItem>
+                            <asp:ListItem Value="4">No cuento con afiliación al IMSS</asp:ListItem>
+                        </asp:DropDownList>
+                        <asp:RequiredFieldValidator ID="rfv_afiliacion" runat="server" ControlToValidate="ddl_afiliacion" Display="None" ErrorMessage="Indica tu tipo de afiliación al IMSS." InitialValue="0" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                        <asp:ValidatorCalloutExtender ID="vco_afiliacion" TargetControlID="rfv_afiliacion" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                        </td></tr>
+                                   <tr>
+                                       <td class="titulo_fila">Escribe tu NSS (IMSS)</td>
+                                       <td class="campos_derecha">
+                                           <asp:TextBox ID="tbx_imss" runat="server" CssClass="tbxlogin_fill" validationgroup="v0"></asp:TextBox>
+                                           <asp:TextBoxWatermarkExtender ID="tbx_imss_wme" runat="server" Enabled="True" TargetControlID="tbx_imss" WatermarkText="XX-XX-XX-XXXX-X" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                       </td>
+                        </tr>
+                        <tr>
+                            <td class="titulo_fila">Tipo y factor RH de sangre</td>
+                            <td class="campos_derecha">
+                                <asp:DropDownList ID="ddl_tdsangre" runat="server" CssClass="droptransparent" validationgroup="v0">
+                                    <asp:ListItem Value="0">Selecciona una opcion...</asp:ListItem>
+                                    <asp:ListItem Value="O RH POSITIVO">O RH POSITIVO</asp:ListItem>
+                                    <asp:ListItem>O RH NEGATIVO</asp:ListItem>
+                                    <asp:ListItem>A RH POSITIVO</asp:ListItem>
+                                    <asp:ListItem Value="A RH POSITIVO">A RH POSITIVO</asp:ListItem>
+                                    <asp:ListItem>B RH POSITIVO</asp:ListItem>
+                                    <asp:ListItem>B RH NEGATIVO</asp:ListItem>
+                                    <asp:ListItem>AB RH POSITIVO</asp:ListItem>
+                                    <asp:ListItem>AB RH NEGATIVO</asp:ListItem>
+                                </asp:DropDownList>
+                                <asp:RequiredFieldValidator ID="rfv_rh" runat="server" ControlToValidate="ddl_tdsangre" Display="None" ErrorMessage="Selecciona tu tipo de sangre!." InitialValue="0" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                <asp:ValidatorCalloutExtender ID="vco_rh" TargetControlID="rfv_rh" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                            </td>
+                        </tr>
+                                   <tr><td class="titulo_fila" style="vertical-align: top;">Enfermedades crónicas</td><td class="campos_derecha" style="vertical-align: top;">
+                                       <asp:MultiView ID="mv_padecimientos" runat="server"><asp:View ID="v_padecimientossel" runat="server"><asp:DropDownList ID="ddl_padecimientos" runat="server" AutoPostBack="True" CssClass="droptransparent" validationgroup="v0">
+                                           <asp:ListItem>No tengo enfermedades cronicas</asp:ListItem>
+                                           <asp:ListItem>Si tengo enfermedades crónicas</asp:ListItem>
+                                           </asp:DropDownList></asp:View>
+                                           <asp:View ID="v_padecimientosman" runat="server">
+                                               <table class="cell_spa_0""><tr><td><asp:TextBox ID="tbx_padecimientos" runat="server" CssClass="tbxlogin_fill" MaxLength="300" Rows="3" TextMode="MultiLine" validationgroup="v0"></asp:TextBox>
+                                               <asp:TextBoxWatermarkExtender ID="tbx_medicos2_wme" runat="server" Enabled="True" TargetControlID="tbx_padecimientos" WatermarkText="Maximo 300 caracteres..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                                                   </td><td style="padding: 20px 3px 3px 3px; vertical-align: middle;">
+                                                   <asp:ImageButton ID="ib_padecimientos" runat="server" Imageurl="~/img/arrowback.png" style="width: 80%;" CausesValidation="False"/>
+                                                 </td></tr></table></asp:View></asp:MultiView></td></tr>
+                                   <tr>
+                                       <td class="titulo_fila" style="vertical-align: top;">Cita para entrevista<br /><span style="font-size: 0.7em;">Elije un día y la hora que acudirás a tu entrevista en la UTJ.</span></td>
+                                       <td class="campos_derecha" style="vertical-align: top;">
+                                           
+                                           <%'PROGRAMA DE CITAS PARA ENTREVISTAS %>
+                                           <div><table><tr><td style="font-size: 0.6em;">
+                                               <asp:calendar ID="cal_day" runat="server" VisibleDate="2015-01-05"></asp:calendar></td>
+                                               <td style="font-size: 0.5em;"><asp:RadioButtonList ID="rbl_hora" runat="server" RepeatColumns="2" RepeatDirection="Vertical"></asp:RadioButtonList></td></tr>
+                                                </table></div>
+
+
+                                       </td>
+                        </tr>
+                                   </table></td></tr><tr><td><table style="margin: auto;"><tr><td>Pre-registrar</td><td style="padding: 10px;">
+                            <asp:imagebutton ID="ib_next4" runat="server" Imageurl="~/img/arrowlogin_.png" validationgroup="v0" />
+                            <asp:ConfirmButtonExtender ID="ib_next4_cbe" runat="server" ConfirmText="Te enviaremos tu comprobate de registro a tu correo. Es muy importante que la información que proporcionaste sea correcta. ¿Deseas continuar?" Enabled="True" TargetControlID="ib_next4">
+                            </asp:ConfirmButtonExtender>
+                    </td></tr></table></td></tr>
+                </table></div>
+            </td></tr></table></asp:View>
+            <asp:View ID="v_final" runat="server">
+                <div style="margin: 0 20% 10% 20%; padding: 10px; vertical-align: middle; text-align: center;"><table style="margin: auto;">
+                    <tr><td style="font-size: 2em; text-align: center;">¡Hemos terminado!</td></tr>
+                    <tr>
+                        <td style="font-size: 2em; text-align: center;">Tu número de registro es <asp:Label ID="lbl_registro" runat="server" style="font-weight: bold;"></asp:Label>.</td>
+                    </tr>
+                    <tr><td style="padding: 10px 30px 10px 30px; font-size: 1.5em; text-align: center;"><span style="font-weight: bold;">El <asp:Label ID="lbl_cita" runat="server" Text="dia seleccionado"></asp:Label>  &nbsp;es la cita para tu entrevista en la UTJ.</span><br /> Debes imprimir y/o guardar tu comprobante de registro con el botón Comprobante, por tu seguridad te lo hemos enviado a tu correo. Revísalo con atención: contiene información detallada del siguiente paso en tu ingreso.</td></tr><tr><td style="margin: auto; text-align: center;"><table class="centrado"><tr><td class="menu"><asp:LinkButton ID="lb_comprobante" runat="server" CssClass="boton_texto">Comprobante</asp:LinkButton></td><td class="menu">
+                                <asp:LinkButton ID="lb_salir" runat="server" CssClass="boton_texto">Salir</asp:LinkButton></td></tr></table></td></tr>
+                </table></div>
+            </asp:View>
+        </asp:MultiView></ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="lb_comprobante" />
+            </Triggers>
+            </asp:UpdatePanel>
+
+<%'----------------------CODIGO DEL LOADING----------------------------- %>
+            <asp:UpdatePanelAnimationExtender ID="up_cursos_aex" runat="server" 
+                  Enabled="True" TargetControlID="up_recolecting">
+                        <Animations>
+                             <OnUpdating>
+                                   <Parallel duration="0.5" fps="30">
+                                   <FadeOut AnimationTarget="up_recolecting" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                   </Parallel>
+                            </OnUpdating>
+                            <OnUpdated>
+                                 <Parallel duration="0.5" fps="30">
+                                   <FadeIn Animationtarget="up_recolecting" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                   </Parallel>
+                              </OnUpdated>
+                    </Animations>
+             </asp:UpdatePanelAnimationExtender>
+             <asp2:ModalUpdateProgress ID="mup_ping" runat="server" 
+                        AssociatedUpdatePanelID="up_recolecting" 
+                        BackgroundCssClass="background_blanco" CancelControlID="lb_cancel" 
+                        DisplayAfter="1000"><ProgressTemplate>
+                        <div class="centrado_modal">
+                            <div id="floatingBarsG">
+                            <div class="blockG" id="rotateG_01">
+                            </div>
+                            <div class="blockG" id="rotateG_02">
+                            </div>
+                            <div class="blockG" id="rotateG_03">
+                            </div>
+                            <div class="blockG" id="rotateG_04">
+                            </div>
+                            <div class="blockG" id="rotateG_05">
+                            </div>
+                            <div class="blockG" id="rotateG_06">
+                            </div>
+                            <div class="blockG" id="rotateG_07">
+                            </div>
+                            <div class="blockG" id="rotateG_08">
+                            </div>  
+                            </div>
+                            <asp:LinkButton ID="lb_cancel" runat="server"></asp:LinkButton>
+                        </div>
+                        </ProgressTemplate>
+            </asp2:ModalUpdateProgress>
+<%'----------------------END----------------------------- %>
+       </div>
+</asp:Content>
+

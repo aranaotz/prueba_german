@@ -1,0 +1,44 @@
+﻿
+Partial Class contents_adminuserinfo
+    Inherits System.Web.UI.Page
+
+    Protected Sub cmd_buscar_Click(sender As Object, e As EventArgs) Handles cmd_buscar.Click
+        'gv_resultados.DataSource = busqueda_alumno(tbx_cadena.Text)
+        gv_resultados.DataBind()
+        mv_kadexvalid.ActiveViewIndex = 0
+    End Sub
+
+    Private Sub fkardex(ByVal matricula As String)
+        Session("gcu") = matricula
+        dl_kardex.DataSource = cicloskardex(matricula)
+        dl_kardex.DataBind()
+        fv_generales.DataSource = generales_kardex(matricula)
+        fv_generales.DataBind()
+        mv_kadexvalid.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub dl_kardex_ItemDataBound(sender As Object, e As DataListItemEventArgs) Handles dl_kardex.ItemDataBound
+        Dim cicloa As String = CType(e.Item.FindControl("lbl_ciclo"), Label).Text
+        Dim gvciclo As GridView = CType(e.Item.FindControl("gv_calificaciones"), GridView)
+        With gvciclo
+            ' .DataSource = kardex_estudiante_kardex(Session("gcu"), cicloa)
+            .DataBind()
+            .EmptyDataText = "No se han encontrado registros en éste ciclo"
+        End With
+    End Sub
+
+    Protected Sub cmd_imprimir_Click(sender As Object, e As ImageClickEventArgs)
+        Dim printselection As DropDownList = CType(fv_generales.FindControl("ddl_selection"), DropDownList)
+        Dim matricula As Label = CType(fv_generales.FindControl("lbl_matricula"), Label)
+        Select Case printselection.SelectedValue
+            Case 1
+                ' fini001(Session("gcu"))
+                'descarga("fin-i001", matricula.Text, ".pdf")
+            Case 2
+        End Select
+    End Sub
+
+    Protected Sub lb_resultados_Click(sender As Object, e As EventArgs)
+        fkardex(sender.CommandArgument.ToString)
+    End Sub
+End Class

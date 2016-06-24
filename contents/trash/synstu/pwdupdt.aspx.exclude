@@ -1,0 +1,66 @@
+﻿<%@ Page Title="Mantenimiento de contraseña - UTSYN 2015" Language="VB" MasterPageFile="~/synstu/synstu.master" AutoEventWireup="false" CodeFile="pwdupdt.aspx.vb" Inherits="pwdupdt" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div style="text-align: center;"><table style="width: 100%;"><tr><td style="font-size: 1.5em; padding: 0px 0px 20px 0px;">Mantenimiento de contraseñas</td></tr>
+        <tr><td>Escribe la misma contraseña en ambas cajas de texto. Pulsa Guardar para cerrar sesion e ingresar con la nueva contraseña.<br />
+            (máximo 20 caracteres, acepta solo alfanuméricos)
+            
+            </td></tr>
+        <tr><td style="padding: 30px; text-align: center;">
+            <asp:UpdatePanel ID="p_password" runat="server" UpdateMode="Conditional"><ContentTemplate>
+                <asp:Timer ID="t_action" runat="server" Interval="3000" OnTick="t_action_Tick"></asp:Timer>
+            <asp:MultiView ID="mv_cambiopwd" runat="server"><asp:View ID="v_datos" runat="server">
+            <asp:Panel ID="p_pwd" runat="server" DefaultButton="cmd_cambio">
+            <table style="margin: auto;"><tr><td>Contraseña actual</td><td style="padding: 5px;"><asp:TextBox ID="tbx_contraa" runat="server" ValidationGroup="contra" TextMode="Password" CssClass="wmlogin" MaxLength="20" Width="250px"></asp:TextBox>
+                </td></tr>
+                <tr><td>Nueva contraseña</td><td style="padding: 5px;"><asp:TextBox ID="tbx_contra" runat="server" ValidationGroup="contra" TextMode="Password" CssClass="wmlogin" MaxLength="20" Width="250px"></asp:TextBox>
+                </td></tr>
+                <tr><td>otra vez...</td><td style="padding: 5px;"><asp:TextBox ID="tbx_contran" runat="server" ValidationGroup="contra" TextMode="Password" CssClass="wmlogin" MaxLength="20" Width="250px"></asp:TextBox>
+                    
+                    <asp:RequiredFieldValidator ID="rfv_tbx_contraa" runat="server" ErrorMessage="Escribe tu contraseña actual." 
+                        Display="None" ControlToValidate="tbx_contraa" SetFocusOnError="True" ValidationGroup="contra"></asp:RequiredFieldValidator>
+                    <asp:ValidatorCalloutExtender ID="vcoe_rfv_tbx_contraa" runat="server" TargetControlID="rfv_tbx_contraa" CloseImageUrl="../img/close_coe.png" 
+                        CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+                    <asp:RegularExpressionValidator ID="rev_tbx_contraa" runat="server" Display="None" ErrorMessage="Por favor solo escribe carácteres alfanuméricos" 
+                        ControlToValidate="tbx_contraa" ValidationGroup="contra" ValidationExpression="^[a-zA-Z0-9]+$"></asp:RegularExpressionValidator>
+                    <asp:ValidatorCalloutExtender ID="vcoe_rev_tbx_contraa" runat="server" TargetControlID="rev_tbx_contraa" CloseImageUrl="../img/close_coe.png" 
+                        CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+                    
+                    <asp:RequiredFieldValidator ID="rfv_tbx_contra" runat="server" ErrorMessage="¡Para cambiar contraseña es necesario escribir algo!." 
+                        Display="None" ControlToValidate="tbx_contra" SetFocusOnError="True" ValidationGroup="contra"></asp:RequiredFieldValidator>
+                    <asp:ValidatorCalloutExtender ID="vcoe_rfv_tbx_contra" runat="server" TargetControlID="rfv_tbx_contra" CloseImageUrl="../img/close_coe.png" 
+                        CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+                    <asp:RegularExpressionValidator ID="rev_tbx_contra" runat="server" Display="None" ErrorMessage="Por favor solo escribe carácteres alfanuméricos" 
+                        ControlToValidate="tbx_contra" ValidationGroup="contra" ValidationExpression="^[a-zA-Z0-9]+$"></asp:RegularExpressionValidator>
+                    <asp:ValidatorCalloutExtender ID="vco_rev_tbx_contra" runat="server" TargetControlID="rev_tbx_contra" CloseImageUrl="../img/close_coe.png" 
+                        CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+                    <asp:CompareValidator ID="cv_tbx_contra_n" runat="server" ErrorMessage="¡Las contraseñas con no son idénticas!." 
+                        ControlToCompare="tbx_contra" ControlToValidate="tbx_contran" ValidationGroup="contra" Display="None"></asp:CompareValidator>
+                    <asp:ValidatorCalloutExtender ID="vcoe_cv_tbx_contra_n" runat="server" TargetControlID="cv_tbx_contra_n" CloseImageUrl="../img/close_coe.png" 
+                        CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+                    </td></tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td style="padding: 30px;">
+                        <asp:Button ID="cmd_cambio" runat="server" Text="Cambiar contraseña y cerrar sesion" ValidationGroup="contra" />
+                    </td>
+                </tr>
+                </table></asp:Panel></asp:View>
+                <asp:View ID="v_error" runat="server">
+                    <div style="padding: 20px;"><p><img alt="Error" src="../img/error_red.png" /></p><p>La contraseña actual no es correcta.<br />Intenta de nuevo.</p></div>
+                </asp:View>
+                <asp:View ID="v_ok" runat="server">
+                    <div style="padding: 20px;"><p><img alt="Error" src="../img/ok_green.png" /></p><p>El cambio se ha realizado con éxito.<br />Se ha cerrado la sesión, por favor ingrese con sus nuevas credenciales.</p></div>
+                </asp:View>
+
+            </asp:MultiView></ContentTemplate>
+                <Triggers>
+                    <asp:AsyncPostBackTrigger ControlID="t_action" EventName="Tick" />
+                </Triggers>
+            </asp:UpdatePanel>
+            </td></tr>
+         </table></div>
+</asp:Content>
+

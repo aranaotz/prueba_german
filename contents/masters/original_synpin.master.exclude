@@ -1,0 +1,38 @@
+﻿<%@ Master Language="VB" CodeFile="original_synpin.master.vb" Inherits="synpin_synpin" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-mx">
+<head runat="server">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link href="pin.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body style="margin:0; padding: 0; height: 100%; text-align: center;">
+    <form id="form1" runat="server">
+        <asp:ToolkitScriptManager ID="sm_masterpi" runat="server" EnableScriptGlobalization="True" ScriptMode="Release"></asp:ToolkitScriptManager>
+
+        <%
+            '<asp:Panel ID="p_top" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center;">
+            '<div><img src="../img/utzmg_mini.png" alt="Universidad Tecnologica de Jalisco" /></div></asp:Panel>
+            '<asp:AlwaysVisibleControlExtender ID="p_top_avce" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_top" VerticalSide="Bottom">
+            '</asp:AlwaysVisibleControlExtender>
+        %>
+
+    <div>
+        <asp:ContentPlaceHolder id="cph_start" runat="server">
+        </asp:ContentPlaceHolder>
+    </div>
+        <asp:panel ID="p_foot" runat="server" style="background-color: #fff; width: 100%; text-align: center;" CssClass="bottombar_shadow">
+     <div><table class="centrado"><tr><td><div style="position: relative; bottom:80px; right: 0px; height: 70px;"><img src="../img/logosolo.png" alt="Universidad Tecnologica de Jalisco" width="370"/></div></td>
+         <td><img src="../img/lgm.png" alt="Universidad Tecnologica de Jalisco" /></td></tr></table></div></asp:panel>
+        <asp:AlwaysVisibleControlExtender ID="p_foot_AlwaysVisibleControlExtender" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_foot" VerticalSide="Bottom">
+        </asp:AlwaysVisibleControlExtender>
+    </form>
+</body>
+</html>

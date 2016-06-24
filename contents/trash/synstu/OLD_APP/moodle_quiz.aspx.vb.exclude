@@ -1,0 +1,36 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+
+Partial Class moodle_quiz
+    Inherits System.Web.UI.Page
+
+    Protected Sub cmd_send_Click(sender As Object, e As System.EventArgs) Handles cmd_send.Click
+        Dim c As New SqlConnection(Application("strsta"))
+        Dim ic As New SqlCommand("INSERT INTO moodle_quiz (matr,ciclo,q1,q2,q3) VALUES ('" + getcod() + "','" + getactualcycle() + "','" + rbl_q1.SelectedItem.Text + "','" + rbl_q2.SelectedItem.Text + "','" + tbx_q3.Text + "')", c)
+        c.Open()
+        ic.ExecuteNonQuery()
+        c.Close()
+        Response.Redirect("~/sadin_stu/eval_doc.aspx" & "?aywystb=" & Request.QueryString("aywystb"))
+    End Sub
+
+    Private Function getactualcycle() As String
+        Dim v As New SqlConnection(Application("str"))
+        Dim cycle As New SqlCommand("SELECT ciclo FROM general_ciclos WHERE active=1", v)
+        v.Open()
+        getactualcycle = cycle.ExecuteScalar
+        v.Close()
+    End Function
+
+    Private Function getcod() As String
+        getcod = gc(Session("usrcgi200Xstr"))
+    End Function
+
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT reference FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+End Class

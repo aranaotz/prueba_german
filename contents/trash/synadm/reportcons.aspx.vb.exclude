@@ -1,0 +1,205 @@
+﻿Imports turntable_code
+Imports print_docs
+Imports downdocument
+Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class reportcons
+    Inherits System.Web.UI.Page
+
+    Protected Sub gv_cursos_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        'DropDownList TEAMTICAS
+        ddl_tematicas.DataSource = tematicas(e.CommandArgument.ToString, ciclo_actual)
+        ddl_tematicas.DataValueField = "cve_unica"
+        ddl_tematicas.DataTextField = "nombre_ut"
+        ddl_tematicas.DataBind()
+        ddl_tematicas.Items.Insert(0, "Seleccione una unidad a evaluar...")
+        hf_icu.Value = e.CommandArgument
+        lbl_curso.Text = e.CommandName
+        mv_captura.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If IsNothing(Session("gcu")) Then
+            Response.Redirect("~/glogin.aspx")
+        Else
+            montacursos(Session("gcu"))
+        End If
+    End Sub
+
+    Protected Sub montacursos(ByVal usuario As String)
+        gv_cursos.DataSource = cursos(usuario)
+        gv_cursos.DataBind()
+        mv_captura.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub gv_alumnos_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gv_alumnos.RowDataBound
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            Dim ddlcal As DropDownList = CType(e.Row.FindControl("ddl_calificacion"), DropDownList)
+            With ddlcal
+                .DataSource = cal_options(CType(e.Row.FindControl("hf_icu"), HiddenField).Value)
+                .DataValueField = "letra_unica"
+                .DataTextField = "letra"
+                .DataBind()
+                .Items.Insert(0, New ListItem("...", "-"))
+            End With
+        End If
+    End Sub
+
+    Protected Sub lb_otroc_Click(sender As Object, e As EventArgs) Handles lb_otroc.Click
+        mv_captura.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub lb_nextc_Click(sender As Object, e As EventArgs) Handles lb_nextc.Click
+        If ddl_tematicas.SelectedIndex <> 0 Then
+            Select Case estado_reporte(ciclo_actual, hf_icu.Value, ddl_tematicas.SelectedValue)
+                Case 0
+                    gv_alumnos.DataSource = alumnos(hf_icu.Value, ddl_tematicas.SelectedValue)
+                    gv_alumnos.DataBind()
+                    lb_definitiva.CommandArgument = "0"
+                    lb_temporal.CommandArgument = "0"
+                    lb_temporal.Enabled = True
+                    lb_definitiva.Enabled = True
+                    lb_imprimir.Enabled = False
+                Case 1
+                    gv_alumnos.DataSource = alumnos(hf_icu.Value, ddl_tematicas.SelectedValue)
+                    gv_alumnos.DataBind()
+                    recuperando()
+                    lb_definitiva.CommandArgument = "1"
+                    lb_temporal.CommandArgument = "1"
+                    lb_temporal.Enabled = True
+                    lb_definitiva.Enabled = True
+                    lb_imprimir.Enabled = False
+                Case 2
+                    gv_alumnos.DataSource = alumnos(hf_icu.Value, ddl_tematicas.SelectedValue)
+                    gv_alumnos.DataBind()
+                    recuperando()
+                    lb_definitiva.CommandArgument = "0"
+                    lb_temporal.CommandArgument = "0"
+                    lb_temporal.Enabled = False
+                    lb_definitiva.Enabled = False
+                    lb_imprimir.Enabled = True
+                    lb_imprimir.CommandArgument = ddl_tematicas.SelectedValue.ToString
+                Case 3
+                    gv_alumnos.DataSource = alumnos(hf_icu.Value, ddl_tematicas.SelectedValue)
+                    gv_alumnos.DataBind()
+                    lb_definitiva.CommandArgument = "0"
+                    lb_temporal.CommandArgument = "0"
+                    lb_temporal.Enabled = False
+                    lb_definitiva.Enabled = False
+                    lb_imprimir.Enabled = False
+                Case Else
+                    gv_alumnos.DataSource = alumnos(hf_icu.Value, ddl_tematicas.SelectedValue)
+                    gv_alumnos.DataBind()
+                    lb_definitiva.CommandArgument = "0"
+                    lb_temporal.CommandArgument = "0"
+                    lb_temporal.Enabled = False
+                    lb_definitiva.Enabled = False
+                    lb_imprimir.Enabled = False
+            End Select
+            mv_captura.ActiveViewIndex = 2
+        Else
+            mv_captura.ActiveViewIndex = 1
+        End If
+    End Sub
+
+    Protected Sub lb_definitiva_Click(sender As Object, e As EventArgs) Handles lb_definitiva.Click
+        guardar("2", sender.CommandArgument.ToString)
+        lbl_msg.Text = "Se ha guardado de forma definitiva con éxito el reporte."
+        mv_captura.ActiveViewIndex = 3
+    End Sub
+
+    Protected Sub lb_otra_Click(sender As Object, e As EventArgs) Handles lb_otra.Click
+        mv_captura.ActiveViewIndex = 1
+    End Sub
+
+    Private Sub guardar(ByVal status As String, ByVal estado_anterior As String)
+        Dim cont As Integer
+        Dim icumu As String = CType(gv_alumnos.Rows(0).FindControl("hf_icu"), HiddenField).Value
+        Dim token As String = mustring(ciclo_actual, icumu)
+        For cont = 0 To gv_alumnos.Rows.Count - 1
+            Dim icu As String = CType(gv_alumnos.Rows(cont).FindControl("hf_icu"), HiddenField).Value
+            Dim matricula As String = CType(gv_alumnos.Rows(cont).FindControl("hf_matricula"), HiddenField).Value
+            Dim utematica As String = CType(gv_alumnos.Rows(cont).FindControl("hf_utematica"), HiddenField).Value
+            Dim calif As String = CType(gv_alumnos.Rows(cont).FindControl("ddl_calificacion"), DropDownList).SelectedValue
+            Dim tipocal As String = CType(gv_alumnos.Rows(cont).FindControl("ddl_tc"), DropDownList).SelectedValue
+            If cont = 0 Then
+                actualiza(icu, token, calif, tipocal, matricula, utematica, Session("usuario"), status, ciclo_actual, estado_anterior)
+            End If
+            turntable_code.guardar(icu, token, calif, tipocal, matricula, utematica, Session("usuario"), status, ciclo_actual, estado_anterior)
+        Next
+    End Sub
+
+    Protected Sub lb_temporal_Click(sender As Object, e As EventArgs) Handles lb_temporal.Click
+        guardar("1", sender.CommandArgument.ToString)
+        lbl_msg.Text = "Se ha guardado en forma temporal con éxito el reporte."
+        mv_captura.ActiveViewIndex = 3
+    End Sub
+
+    Protected Sub lb_om_Click(sender As Object, e As EventArgs) Handles lb_om.Click
+        mv_captura.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub lb_ou_Click(sender As Object, e As EventArgs) Handles lb_ou.Click
+        mv_captura.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub lb_cs_Click(sender As Object, e As EventArgs) Handles lb_cs.Click
+        Session.Clear()
+    End Sub
+
+    Protected Sub Page_LoadComplete(sender As Object, e As EventArgs) Handles Me.LoadComplete
+        If IsNothing(Session("gcu")) Then
+            Response.Redirect("~/glogin.aspx")
+        End If
+    End Sub
+
+    Private Sub recuperando()
+        Dim mientras As Integer
+        For mientras = 0 To gv_alumnos.Rows.Count - 1
+            Dim matricula As String = CType(gv_alumnos.Rows(mientras).FindControl("hf_matricula"), HiddenField).Value
+            Dim icu As String = CType(gv_alumnos.Rows(mientras).FindControl("hf_icu"), HiddenField).Value
+            Dim utematica As String = CType(gv_alumnos.Rows(mientras).FindControl("hf_utematica"), HiddenField).Value
+            Dim selcal As DropDownList = CType(gv_alumnos.Rows(mientras).FindControl("ddl_calificacion"), DropDownList)
+            Dim seltipocal As DropDownList = CType(gv_alumnos.Rows(mientras).FindControl("ddl_tc"), DropDownList)
+            Dim c As New SqlConnection(Application("str"))
+            Dim gustr As New SqlCommand("select ustring from eval_unidadesrp where icu='" + icu + "' AND id_unidad='" + utematica + "' AND ciclo='" + ciclo_actual() + "'", c)
+            c.Open()
+            Dim ustring = gustr.ExecuteScalar.ToString
+            c.Close()
+            Dim gc As New SqlDataAdapter("SELECT cal, tipocal FROM eval_unidades WHERE ustring='" + ustring + "' AND matricula='" + matricula + "' order by id", c)
+            Dim gct As New DataTable
+            c.Open()
+            gc.Fill(gct)
+            c.Close()
+            selcal.SelectedIndex = selcal.Items.IndexOf(selcal.Items.FindByValue(gct.Rows(0).Item(0).ToString))
+            seltipocal.SelectedIndex = seltipocal.Items.IndexOf(seltipocal.Items.FindByValue(gct.Rows(0).Item(1).ToString))
+        Next
+    End Sub
+
+    Protected Sub lb_preprint_Click(sender As Object, e As EventArgs) Handles lb_preprint.Click
+        gv_general.DataSource = truepost(hf_icu.Value)
+        gv_general.DataBind()
+        Select Case enableprint4complet(hf_icu.Value, ciclo_actual)
+            Case True
+                lbl_mensaje.Text = ""
+                lb_print.Enabled = True
+            Case Else
+                lbl_mensaje.Text = "No se permite la impresión porque faltan evaluar unidades temáticas."
+                lb_print.Enabled = False
+        End Select
+        mv_captura.ActiveViewIndex = 4
+    End Sub
+
+    Protected Sub lb_print_Click(sender As Object, e As EventArgs) Handles lb_print.Click
+        descarga("cce-i004", ccei004(hf_icu.Value, ciclo_actual), ".pdf")
+    End Sub
+
+    Protected Sub lb_asistencia_Click(sender As Object, e As EventArgs) Handles lb_asistencia.Click
+        descarga("cce-i008", ccei008(hf_icu.Value, ciclo_actual), ".pdf")
+    End Sub
+
+    Protected Sub lb_imprimir_Click(sender As Object, e As EventArgs) Handles lb_imprimir.Click
+        descarga("cce-i009", ccei009(hf_icu.Value, ciclo_actual, sender.CommandArgument.ToString), ".pdf")
+    End Sub
+End Class

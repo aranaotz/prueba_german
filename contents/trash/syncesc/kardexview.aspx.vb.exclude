@@ -1,0 +1,30 @@
+﻿Imports usuario_alumno
+Partial Class kardexview
+    Inherits System.Web.UI.Page
+
+    Protected Sub cmd_buscar_Click(sender As Object, e As EventArgs) Handles cmd_buscar.Click
+        fkardex(tbx_cadena.Text)
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        
+    End Sub
+
+    Private Sub fkardex(ByVal matricula As String)
+        Session("gcu") = matricula
+        dl_kardex.DataSource = ciclos(matricula)
+        dl_kardex.DataBind()
+        fv_generales.DataSource = generales_kardex(matricula)
+        fv_generales.DataBind()
+    End Sub
+
+    Protected Sub dl_kardex_ItemDataBound(sender As Object, e As DataListItemEventArgs) Handles dl_kardex.ItemDataBound
+        Dim cicloa As String = CType(e.Item.FindControl("lbl_ciclo"), Label).Text
+        Dim gvciclo As GridView = CType(e.Item.FindControl("gv_calificaciones"), GridView)
+        With gvciclo
+            .DataSource = kardex_estudiante(Session("gcu"), cicloa)
+            .DataBind()
+            .EmptyDataText = "No se han encontrado registros en éste ciclo"
+        End With
+    End Sub
+End Class

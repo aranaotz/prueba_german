@@ -1,0 +1,35 @@
+﻿<%@ Page Title="Registrados en General por carrera - Reportes UTZMG 2015" Language="VB" MasterPageFile="~/contents/synreports/Reports.master" AutoEventWireup="false" CodeFile="reggencar.aspx.vb" Inherits="reggencar" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+<%@ Register assembly="AjaxControls" namespace="AjaxControls" tagprefix="asp2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_reporte" Runat="Server">
+    <asp:ToolkitScriptManager ID="reports" runat="server"></asp:ToolkitScriptManager>
+    <div><table><tr><td>Elija la carrera y el ciclo que desea consultar:</td></tr>
+        <tr><td><table><tr><td><asp:DropDownList ID="ddl_carreras" runat="server"></asp:DropDownList></td>
+            <td><asp:DropDownList ID="ddl_ciclo" runat="server"/></td>
+                       </tr></table></td></tr><tr><td>
+                           <asp:Button ID="cmd_consulta" runat="server" text="Consultar" ValidationGroup="rep"/>
+                       </td></tr><tr><td>
+                           <asp:GridView ID="gv_reporte" runat="server" EmptyDataText="No se encontraron resultados. :(">
+                               <AlternatingRowStyle BackColor="#E5E5E5" />
+                               <HeaderStyle BackColor="Black" ForeColor="White" />
+                           </asp:GridView>
+                       </td></tr><tr><td>
+                           <asp:Label ID="lbl_conteo" runat="server"></asp:Label>
+                                     </td></tr>
+         </table>
+        <asp:RequiredFieldValidator ID="rfv_ddl_carreras" runat="server" ErrorMessage="Es necesario que seleccione una carrera." 
+                 Display="None" ControlToValidate="ddl_carreras" SetFocusOnError="True" ValidationGroup="rep" InitialValue="0"></asp:RequiredFieldValidator>
+        <asp:ValidatorCalloutExtender ID="vcoe_rfv_ddl_carreras" runat="server" TargetControlID="rfv_ddl_carreras" CloseImageUrl="../img/close_coe.png" 
+                 CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+        
+        <asp:RequiredFieldValidator ID="rfv_ddl_ciclo" runat="server" ErrorMessage="Es necesario que seleccione un ciclo." 
+                 Display="None" ControlToValidate="ddl_ciclo" SetFocusOnError="True" ValidationGroup="rep" InitialValue="0"></asp:RequiredFieldValidator>
+        <asp:ValidatorCalloutExtender ID="vcoe_rfv_ddl_ciclo" runat="server" TargetControlID="rfv_ddl_ciclo" CloseImageUrl="../img/close_coe.png" 
+                 CssClass="customCalloutStyle" WarningIconImageUrl="../img/alert_yel.png" Enabled="True"></asp:ValidatorCalloutExtender>
+    </div>
+</asp:Content>
+

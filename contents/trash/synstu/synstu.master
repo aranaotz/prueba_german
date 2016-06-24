@@ -1,0 +1,60 @@
+﻿<%@ Master Language="VB" CodeFile="synstu.master.vb" Inherits="synstu_synstu" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-mx">
+<head id="Head1" runat="server">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/gif" href="animated_favicon1.gif" />
+    <link href="stu.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body style="margin:0; padding: 0; height: 100%; text-align: center;">
+    <form id="form1" runat="server">
+        <asp:ToolkitScriptManager ID="sm_masterpi" runat="server" EnableScriptGlobalization="True"></asp:ToolkitScriptManager>
+
+        <%
+            '<asp:Panel ID="p_top" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center;">
+            '<div><img src="../img/utzmg_mini.png" alt="Universidad Tecnologica de la Zona Metropolitana de Guadalajara" /></div></asp:Panel>
+            '<asp:AlwaysVisibleControlExtender ID="p_top_avce" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_top" VerticalSide="Bottom">
+            '</asp:AlwaysVisibleControlExtender>
+        %>
+
+    <div>
+        <table class="cell_spa_0" style="width: 100%;"><tr><td>
+            <table style="margin: auto;"><tr><td><img src="../img/close_coe.png" alt="Cerrar Sesion" style="vertical-align: middle;"/></td>
+                <td style="text-align: center; padding: 7px;"><asp:LinkButton ID="lb_closesession" runat="server" CausesValidation="False" CssClass="boton_texto">Cerrar la sesion</asp:LinkButton></td>
+                </tr></table>
+            </td><td></td></tr><tr>
+            <td style="vertical-align: top; background: rgba(132,132,132,0.9); height:1000px; border-right: 1px solid #666; width: 0%;">
+                <table><tr><td>
+        <asp:Gridview ID="gv_menu" runat="server" AutoGenerateColumns="False" GridLines="None" ShowHeader="False"><Columns>
+            <asp:TemplateField><ItemTemplate>
+                <div class='<%# DataBinder.Eval(Container.DataItem, "css")%>'><asp:Label ID="lbl_menu" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "menu_text")%>' ToolTip='<%# DataBinder.Eval(Container.DataItem, "menu_popup")%>' Enabled='<%# DataBinder.Eval(Container.DataItem, "enable")%>'></asp:Label></div>
+                <div><table><tr><td><asp:Image ID="img_alumno" runat="server" Width="100"/></td><td><asp:GridView ID="gv_submenu" runat="server" AutoGenerateColumns="False" GridLines="None" ShowHeader="False"><Columns>
+                    <asp:TemplateField><ItemTemplate>
+                        <div class='<%# DataBinder.Eval(Container.DataItem, "css")%>'>
+                            <asp:LinkButton ID="lb_submenu" runat="server" Enabled='<%# DataBinder.Eval(Container.DataItem, "enable")%>' Text='<%# DataBinder.Eval(Container.DataItem, "submenu_text")%>' ToolTip='<%# DataBinder.Eval(Container.DataItem, "submenu_popup")%>' CommandArgument='<%# DataBinder.Eval(Container.DataItem, "submenu_command")%>' CssClass="boton_texto_blanco" OnClick="lb_submenu_Click" CausesValidation="False"></asp:LinkButton></div>
+                    </ItemTemplate></asp:TemplateField>
+                </Columns></asp:GridView></td></tr></table></div>
+             </ItemTemplate></asp:TemplateField>
+        </Columns></asp:Gridview></td></tr></table>
+        </td><td style="vertical-align: top; width: 100%;">
+            <asp:ContentPlaceHolder id="cph_start" runat="server">
+             
+            </asp:ContentPlaceHolder>
+        </td></tr></table>
+    </div>
+      <asp:panel ID="p_foot" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center;" CssClass="bottombar_shadow">
+   <div><table class="centrado"><tr><td><div style="position: relative; bottom:150px; right: 0px; height: 70px;"><img src="../img/logoutzmg.png" alt="Universidad Tecnologica de la Zona Metropolitana de Guadalajara" /></div></td>
+       <td><img src="../img/lgm.png" alt="Universidad Tecnologica de la Zona Metropolitana de Guadalajara" /></td></tr></table></div></asp:panel>
+      <asp:AlwaysVisibleControlExtender ID="p_foot_AlwaysVisibleControlExtender" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_foot" VerticalSide="Bottom">
+      </asp:AlwaysVisibleControlExtender>
+    </form>
+</body>
+</html>
+

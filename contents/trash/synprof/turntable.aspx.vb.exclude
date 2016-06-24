@@ -1,0 +1,52 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports turntable_code
+
+Partial Class synprof_Default
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            fill_courses(gc)
+        End If
+    End Sub
+
+    Private Function gc() As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT c_user FROM users WHERE id_usr='" + Session("usrcgi200Xstr") + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Private Function getactualcycle() As String
+        Dim v As New SqlConnection(Application("str"))
+        Dim cycle As New SqlCommand("SELECT ciclo FROM general_ciclos WHERE active=1", v)
+        v.Open()
+        getactualcycle = cycle.ExecuteScalar
+        v.Close()
+    End Function
+
+    Private Sub fill_courses(ByVal usr As String)
+        Dim sc As New SqlConnection(Application("str"))
+        Dim fcc As New SqlCommand("SELECT materia + ' (' + grupo + ')' as text,icu FROM future_inf_icu WHERE prof='" + usr + "' AND ciclo='" + getactualcycle() + "' ORDER BY icu", sc)
+        Dim fcda As New SqlDataAdapter(fcc)
+        Dim fcdt As New DataTable
+        sc.Open()
+        fcda.Fill(fcdt)
+        sc.Close()
+        ddl_cursos.DataSource = fcdt
+        ddl_cursos.DataTextField = "text"
+        ddl_cursos.DataValueField = "icu"
+        ddl_cursos.DataBind()
+        Dim selectnull As New ListItem
+        selectnull.Text = " :: Seleccione un curso ::"
+        selectnull.Value = "0"
+        ddl_cursos.Items.Insert(0, selectnull)
+    End Sub
+
+    Protected Sub cmd_mostrar_Click(sender As Object, e As ImageClickEventArgs) Handles cmd_mostrar.Click
+        dl_unidades.DataSource = tabla_unidades(Application("str"), ddl_cursos.SelectedValue)
+        dl_unidades.DataBind()
+    End Sub
+End Class

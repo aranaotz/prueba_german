@@ -1,0 +1,96 @@
+﻿<%@ Page Title="Modulo de Evaluaciones - Synrate 2013" Language="VB" MasterPageFile="~/synprof/profworking.master" AutoEventWireup="false" CodeFile="turntable.aspx.vb" Inherits="synprof_Default" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <link href="prof.css" rel="stylesheet" type="text/css" />
+    <link href="general.css" rel="stylesheet" type="text/css" />
+    <div style="padding: 10px; font-family: ialvarohthin, 'Segoe UI Light', 'Helvetica Neue', 'Lucida Grande', Arial, Helvetica, Verdana, sans-serif; color: #333333;">
+    <cc1:ToolkitScriptManager ID="sm_asistencias" runat="server"></cc1:ToolkitScriptManager>
+        <table style="width: 100%; text-align: center;" cellpadding="0" cellspacing="0"><tr>
+                <td><table style="width: 100%; text-align: justify;">
+                        <tr><td style="padding: 0px 5px 0px 15px">
+                                Este es su centro de evaluación.<br />
+                                Solo el tipo definitiva es visible para el alumno.</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px;">
+                    <table class="titulo_medio">
+                    <tr>
+                        <td style="padding: 0px 5px 0px 5px;">
+                            <asp:DropDownList ID="ddl_cursos" runat="server" CssClass="droptransparent"></asp:DropDownList>
+                        </td>
+                        <td>
+                            <asp:Imagebutton ID="cmd_mostrar" runat="server" Text="Mostrar Fechas" ImageUrl="img/arrowlogin_.png" CssClass="centrado_imagen"
+                                CausesValidation="False" />
+                        </td>
+                    </tr>
+                </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px; text-align: center">
+                    <asp:UpdateProgress ID="up_asistencias" runat="server" DisplayAfter="100">
+                   <ProgressTemplate>
+                        <iframe src="about:blank" class="esperando_iframe"></iframe>
+                        <div class="esperando">Espere un momento...</div>
+                    </ProgressTemplate>
+                    </asp:UpdateProgress>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <div>
+                <asp:UpdatePanel ID="up_task" runat="server"><ContentTemplate>
+                     <div>
+                <asp:DataList ID="dl_unidades" runat="server" HorizontalAlign="Left">
+                    <ItemTemplate>
+                        <div class='<%# DataBinder.Eval(Container.DataItem, "estilo")%>' style="padding: 0px 0px 10px 0px;"><table style="width: 100%; border-spacing: 4px; border-collapse:separate;"><tr><td class="titulo_medio"><asp:Label ID="tbx_title" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "unidad")%>'></asp:Label></td></tr>
+                            <tr>
+                                <td style="padding: 0px 0px 0px 20px"><table><tr><td style="padding: 0px 10px 0px 10px">Duración: <asp:Label ID="lbl_horas" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "horas")%>'></asp:Label> horas.</td>
+                                <td style="text-align:right; padding: 0px 10px 0px 10px; background: rgba(255,255,255,0.3); border-radius: 5px;"><asp:Linkbutton ID="lb_listas" runat="server" CssClass="boton_texto_dentro">Lista de Asistencia</asp:Linkbutton></td></tr></table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0px 0px 0px 20px"><table><tr><td style="padding: 0px 10px 0px 10px">Estado: <asp:Label ID="lbl_estado" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "string")%>'></asp:Label></td>
+                                <td style="text-align:right; padding: 0px 10px 0px 10px; background: rgba(255,255,255,0.3); border-radius: 5px;"><asp:Linkbutton ID="lb_reportar" runat="server" CssClass="boton_texto_dentro">Evaluar Unidad</asp:Linkbutton></td></tr></table>
+                            </td>
+                            </tr>
+                            </table></div>
+                    </ItemTemplate>
+                </asp:DataList>
+            </div>
+                </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="cmd_mostrar" EventName="Click" />
+                    </Triggers>
+                 </asp:UpdatePanel></div>
+                    <cc1:UpdatePanelAnimationExtender ID="up_reporte_aex" runat="server" 
+                        Enabled="True" TargetControlID="up_task">
+                        <Animations>
+                             <OnUpdating>
+                                   <Parallel duration="0.5" fps="30">
+                                   <FadeOut AnimationTarget="up_task" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                   </Parallel>
+                            </OnUpdating>
+                            <OnUpdated>
+                                 <Parallel duration="0.5" fps="30">
+                                   <FadeIn Animationtarget="up_task" minimumOpacity="0" ForceLayoutInIE="true"/>
+                                   </Parallel>
+                              </OnUpdated>
+                    </Animations>
+                    </cc1:UpdatePanelAnimationExtender>
+                </td>
+            </tr>
+            <tr><td>
+            
+            </td></tr>
+        </table>
+    </div>
+
+
+</asp:Content>
+

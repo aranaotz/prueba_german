@@ -1,0 +1,352 @@
+﻿<%@ Page Title="Actualizacion de Informacion del usuario SADIN - SADIN CGI" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="updata.aspx.vb" Inherits="updata" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <style type="text/css">
+        .style1
+        {
+            color: #CC0000;
+            font-weight: bold;
+        }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<link href="general.css" rel="stylesheet" type="text/css" />
+<div><asp:MultiView ID="mv_update" runat="server"><asp:View ID="v_imput" runat="server">
+    <table style="border: 1px solid #E8E8E8; width: 100%; font-family: verdana; font-size: 7.5pt; color: #003366;">
+        <tr>
+            <td style="border: 1px solid #CCCCCC; padding: 5px; text-align: justify; background-color: #F0F0F0;">
+                <cc1:ToolkitScriptManager ID="sm_getdata" runat="server">
+                </cc1:ToolkitScriptManager>
+                Con la intención de que cualquier información del Colegio se te haga llegar para 
+                que estes siempre enterado de las actividades que se realicen, te pedimos <b>
+                actualices tus datos en SADIN</b>. Toda información aqui guardada sera <b>
+                estrictamente confidencial y se dará solamente uso informativo</b>.</td>
+        </tr>
+        <tr>
+            <td>
+                <table style="width:100%;">
+                    <tr>
+                        <td style="padding: 10px 5px 10px 5px; ">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td>
+                                        <asp:Image ID="Image7" runat="server" ImageUrl="~/sadin_stu/img/chal.gif" />
+                                    </td>
+                                    <td style="color: #660033; text-align: left">
+                            El usuario o inicio de sesión que se te proporciono para ingresar a SADIN te es 
+                            dificil de recordar? 
+                                        <br />
+                                        Da de alta un apodo!! <b>Te servirá igual que tu nombre de 
+                            usuario!!</b></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 20px; text-align: left">
+                            <table>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Apodo actual:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                                            ControlToValidate="tbx_apodo" Display="None" 
+                                            ErrorMessage="Ingresa un Apodo para poder guardarlo!!." 
+                                            ValidationGroup="apodo"></asp:RequiredFieldValidator>
+                                        <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator1_vce" runat="server" 
+                                            Enabled="True" TargetControlID="RequiredFieldValidator1">
+                                        </cc1:ValidatorCalloutExtender>
+                                        <asp:TextBox ID="tbx_apodo" runat="server" CssClass="textboxes" 
+                                            ValidationGroup="apodo"></asp:TextBox>
+                                    </td>
+                                    <td>
+                                        <asp:Button ID="cmd_snick" runat="server" CssClass="botones_minis" 
+                                            Text="Guardar apodo" ValidationGroup="apodo" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 10px 10px 20px; text-align: left;">
+                <table>
+                    <tr>
+                        <td colspan="2" class="databluetop">
+                            Datos del Usuario</td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Domicilio:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_address" runat="server" CssClass="textboxes" Width="300px" 
+                                ValidationGroup="data"></asp:TextBox>
+                            <cc1:TextBoxWatermarkExtender ID="tbx_address_TextBoxWatermarkExtender" 
+                                runat="server" Enabled="True" TargetControlID="tbx_address" 
+                                WatermarkCssClass="textbox_wm" 
+                                WatermarkText="Calle, número exterior e interior.">
+                            </cc1:TextBoxWatermarkExtender>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                                ControlToValidate="tbx_address" Display="None" 
+                                ErrorMessage="Por favor, llena el campo domicilio." ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator2_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator2">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Colonia:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_colonia" runat="server" CssClass="textboxes" Width="300px"  ValidationGroup="data"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
+                                ControlToValidate="tbx_colonia" Display="None" 
+                                ErrorMessage="Por favor ingresa el nombre de tu Colonia." 
+                                ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator3_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator3">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Ciudad:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_city" runat="server" CssClass="textboxes" Width="200px"  ValidationGroup="data"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
+                                ControlToValidate="tbx_city" Display="None" 
+                                ErrorMessage="Por favor ingresa el nombre de tu Ciudad." ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator4_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator4">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Codigo Postal:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_cp" runat="server" CssClass="textboxes" Width="100px"  
+                                ValidationGroup="data" MaxLength="5"></asp:TextBox>
+                            <cc1:FilteredTextBoxExtender ID="tbx_cp_FilteredTextBoxExtender" runat="server" 
+                                Enabled="True" TargetControlID="tbx_cp" ValidChars="0123456789">
+                            </cc1:FilteredTextBoxExtender>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" 
+                                ControlToValidate="tbx_cp" Display="None" 
+                                ErrorMessage="Por favor ingresa el código postal." ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator5_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator5">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Telefono:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_tel" runat="server" CssClass="textboxes" Width="100px"  
+                                ValidationGroup="data" MaxLength="10"></asp:TextBox>
+                            <cc1:FilteredTextBoxExtender ID="tbx_tel_ftbe" runat="server" Enabled="True" 
+                                TargetControlID="tbx_tel" ValidChars="01234567890">
+                            </cc1:FilteredTextBoxExtender>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" 
+                                ControlToValidate="tbx_tel" Display="None" 
+                                ErrorMessage="Por favor ingresa un telefono con lada en el cual te podamos localizar." 
+                                ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator6_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator6">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="datagrayleft">
+                            Correo Electrónico:</td>
+                        <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                            <asp:TextBox ID="tbx_email" runat="server" CssClass="textboxes" Width="300px"  ValidationGroup="data"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" 
+                                ControlToValidate="tbx_email" Display="None" 
+                                ErrorMessage="Ingresa un correo de contacto." ValidationGroup="data"></asp:RequiredFieldValidator>
+                            <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator10_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RequiredFieldValidator10">
+                            </cc1:ValidatorCalloutExtender>
+                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+                                ControlToValidate="tbx_email" Display="None" 
+                                ErrorMessage="Es un correo el que ingresaste?, parece ser no válido. Intenta con otro." 
+                                ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
+                                ValidationGroup="data"></asp:RegularExpressionValidator>
+                            <cc1:ValidatorCalloutExtender ID="RegularExpressionValidator1_ValidatorCalloutExtender" 
+                                runat="server" Enabled="True" TargetControlID="RegularExpressionValidator1">
+                            </cc1:ValidatorCalloutExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;</td>
+                        <td style="padding-top: 10px">
+                            <asp:Button ID="cmd_savegdata" runat="server" 
+                                Text="Guardar Información de usuario" CssClass="botones_minis" 
+                                ValidationGroup="data" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left: 20px; text-align: left">
+                <table>
+                    <tr>
+                        <td class="databluetop">
+                            Cambio de Contraseña</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Contraseña anterior:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:TextBox ID="tbx_op" runat="server" CssClass="textboxes" 
+                                            TextMode="Password" ValidationGroup="contra"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" 
+                                            ControlToValidate="tbx_op" Display="None" 
+                                            ErrorMessage="Escribe tu actual contraseña para validarte." 
+                                            ValidationGroup="contra"></asp:RequiredFieldValidator>
+                                        <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator7_ValidatorCalloutExtender" 
+                                            runat="server" Enabled="True" TargetControlID="RequiredFieldValidator7">
+                                        </cc1:ValidatorCalloutExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Nueva Contraseña:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:TextBox ID="tbx_np" runat="server" CssClass="textboxes" 
+                                            TextMode="Password" ValidationGroup="contra"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" 
+                                            ControlToValidate="tbx_np" Display="None" 
+                                            ErrorMessage="Escribe una nueva contraseña." ValidationGroup="contra"></asp:RequiredFieldValidator>
+                                        <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator8_ValidatorCalloutExtender" 
+                                            runat="server" Enabled="True" TargetControlID="RequiredFieldValidator8">
+                                        </cc1:ValidatorCalloutExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Repite Nueva Contraseña:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:TextBox ID="tbx_npa" runat="server" CssClass="textboxes" 
+                                            TextMode="Password" ValidationGroup="contra"></asp:TextBox>
+                                        <asp:CompareValidator ID="CompareValidator1" runat="server" 
+                                            ControlToCompare="tbx_np" ControlToValidate="tbx_npa" Display="None" 
+                                            ErrorMessage="La nueva contraseña y la confirmación debe de ser la misma!" 
+                                            ValidationGroup="contra"></asp:CompareValidator>
+                                        <cc1:ValidatorCalloutExtender ID="CompareValidator1_vce" runat="server" 
+                                            Enabled="True" TargetControlID="CompareValidator1">
+                                        </cc1:ValidatorCalloutExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td style="padding-top: 10px">
+                                        <asp:Button ID="cmd_updp" runat="server" Text="Cambiar Contraseña" 
+                                            CssClass="botones_minis" ValidationGroup="contra" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px">
+                <table>
+                    <tr>
+                        <td class="databluetop">
+                            Recuperación de Contraseña:</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: justify; padding: 5px">
+                            En caso de olvido de tu contraseña, SADIN te hara una pregunta, misma que 
+                            seleccionarás de la siguiente lista. Guarda una respuesta, ya que 
+                            <span class="style1">solo por medio 
+                            de ella podrás recuperarla</span>. La respuesta puede contener cualquier 
+                            caracter.<br />
+                            <br />
+                            <i><b>*Recuerda que para despistar al enemigo puedes escribir una respuesta que no 
+                            tenga nada que ver con la pregunta, así incrementarás el nivel de seguridad de 
+                            tu cuenta.</b></i></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Elije una pregunta:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:DropDownList ID="ddl_question" runat="server" CssClass="dropdown">
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="datagrayleft">
+                                        Asigna una respuesta:</td>
+                                    <td style="padding-right: 5px; padding-left: 5px; vertical-align: middle; text-align: left; font-family: verdana; font-size: 7.5pt; color: #003366">
+                                        <asp:TextBox ID="tbx_answer" runat="server" CssClass="textboxes" Width="300px" 
+                                            ValidationGroup="quest"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" 
+                                            ControlToValidate="tbx_answer" Display="None" 
+                                            ErrorMessage="Escribe una respuesta para completar el proceso." 
+                                            ValidationGroup="quest"></asp:RequiredFieldValidator>
+                                        <cc1:ValidatorCalloutExtender ID="RequiredFieldValidator11_ValidatorCalloutExtender" 
+                                            runat="server" Enabled="True" TargetControlID="RequiredFieldValidator11">
+                                        </cc1:ValidatorCalloutExtender>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td style="padding-top: 5px">
+                                        <asp:Button ID="cmd_quest" runat="server" Text="Guardar pregunta y respuesta" 
+                                            CssClass="botones_minis" ValidationGroup="quest" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    </asp:View>
+    <asp:View ID="v_output" runat="server">
+        <table style="width:70%;">
+            <tr>
+                <td style="padding: 20px;">
+                    <table style="margin: auto; font-family: verdana; font-size: 7.5pt; font-weight: bold; text-align: center;">
+                        <tr>
+                            <td>
+                                <asp:Image ID="im_ref" runat="server" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px">
+                                <asp:Label ID="lbl_msg" runat="server"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <asp:Button ID="cmd_return" runat="server" CssClass="botones" Text="Regresar" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </asp:View>
+    </asp:MultiView></div>
+</asp:Content>
+

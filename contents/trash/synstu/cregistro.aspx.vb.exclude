@@ -1,0 +1,762 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Reflection
+Imports ASPPDFLib
+
+Partial Class cregistro
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        nocache()
+        'entrada()
+        If Not IsPostBack Then
+            'Dim startmode As String = revisa_tramite(Session("cod"), ciclo_actual)
+            'Session("startmode") = startmode
+            'Select Case startmode
+            'Case "0"
+            'cmd_save.Enabled = False
+            'carga_materias_no_ofertadas(Session("carrera"), startmode)
+            'Case Else
+            'Session("ustring") = get_tramite(Session("cod"))
+            'carga_materias_no_ofertadas(Session("carrera"), startmode, Session("ustring"))
+            'traer_cursos(Session("ustring"))
+            'mostrar_curso_no_solicitado(Session("ustring"), Session("carrera"))
+            cmd_registrar.CommandArgument = Session("gcu")
+            cmd_save.Enabled = True
+            'End Select
+        End If
+    End Sub
+
+    'Private Sub carga_materias_no_ofertadas(ByVal car As String, ByVal startmode As String, Optional ByVal ustring As String = "0")
+    ' Dim c As New SqlConnection(Application("str"))
+    '     Select Case startmode
+    '         Case "0"
+    ' Dim cmno As New SqlDataAdapter("SELECT clave, nombre + ' (' + CONVERT(varchar, creditos) + ' creditos)' AS text FROM " + car + " WHERE (clave NOT IN (SELECT clave FROM current_oferta WHERE (ciclo='" + ciclo_actual() + "')))", c)
+    ' Dim cmnot As New DataTable
+    '             c.Open()
+    '             cmno.Fill(cmnot)
+    '             c.Close()
+    '             With ddl_courses
+    '                 .DataSource = cmnot
+    '                 .DataValueField = "clave"
+    '                 .DataTextField = "text"
+    '                 .DataBind()
+    '             End With
+    '         Case Else
+    ' Dim cmno As New SqlDataAdapter("SELECT clave, nombre + ' (' + CONVERT(varchar, creditos) + ' creditos)' AS text FROM " + car + " WHERE (clave NOT IN (SELECT clave FROM current_oferta WHERE (ciclo='" + ciclo_actual() + "'))) AND (clave NOT IN (" + _
+    '                                "SELECT clave FROM xi_courses WHERE ustring='" + ustring + "'))", c)
+    ' Dim cmnot As New DataTable
+    '             c.Open()
+    '             cmno.Fill(cmnot)
+    '             c.Close()
+    '             With ddl_courses
+    '                 .DataSource = cmnot
+    '                 .DataValueField = "clave"
+    '                 .DataTextField = "text"
+    '                 .DataBind()
+    '             End With
+    '     End Select
+    '
+    '    End Sub
+
+    Private Function revisa_tramite(ByVal codigo As String, ByVal ciclo As String) As String
+        Dim c As New SqlConnection(Application("str"))
+        Dim rt As New SqlCommand("SELECT CASE WHEN COUNT(*)>0 THEN '1' ELSE '0' END existe FROM tramites WHERE usuario='" + codigo + "' AND tipo_b='219' AND calendario='" + ciclo + "'", c)
+        c.Open()
+        revisa_tramite = rt.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+    Private Function get_tramite(ByVal codigo As String) As String
+        Dim c As New SqlConnection(Application("str"))
+        Dim gtr As New SqlCommand("SELECT tid FROM tramites WHERE usuario='" + codigo + "' AND tipo_b='219' AND calendario='" + ciclo_actual() + "'", c)
+        c.Open()
+        get_tramite = gtr.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+
+    Sub nocache()
+        Response.Cache.SetCacheability(HttpCacheability.NoCache)
+        Response.AppendHeader("Pragma", "no-cache")
+        Response.AppendHeader("Cache-Control", "no-store")
+        Response.AppendHeader("Expires", "-1")
+    End Sub
+
+    'Private Sub entrada()
+    '    If Not IsPostBack Then
+    '        revisar_usuario()
+    '        If Session("estado") = 1 Then
+    '            revisar_session()
+    '            If Session("estado") = 2 Then
+    '                obtener_carrera()
+    '           End If
+    '       End If
+    '  End If
+    'End Sub
+
+    Private Sub revisar_usuario()
+        Dim solcon As New SqlConnection(Application("str"))
+        'codigo = Request.QueryString("id")
+        Dim solcom As New SqlCommand("SELECT codigo,nombre,carrera,ingreso,session_id,mat FROM usuarios WHERE codigo='" + Session("cod") + "'", solcon)
+        solcon.Open()
+        Dim soldaa As SqlDataAdapter = New System.Data.SqlClient.SqlDataAdapter(solcom)
+        Dim dtable As DataTable = New System.Data.DataTable
+        soldaa.Fill(dtable)
+        solcon.Close()
+        Select Case dtable.Rows.Count
+            Case 0
+                Dim e As String
+                e = "105"
+                Response.Redirect("~\e.app\st_error.aspx?id_error=" + e)
+            Case 1
+                Session("nombre") = dtable.Rows(0).Item(1).ToString
+                Session("carrera") = dtable.Rows(0).Item(2).ToString
+                Session("ingreso") = dtable.Rows(0).Item(3).ToString
+                Session("mat") = dtable.Rows(0).Item(5).ToString
+                Session("estado") = 1
+        End Select
+    End Sub
+
+    Private Sub revisar_session()
+        Dim solcon As New SqlConnection(Application("str"))
+        'session_id = Request.QueryString("session")
+        Dim solcom As New SqlCommand("SELECT codigo,session_id FROM usuarios WHERE session_id='" + Session("session_id") + "' AND codigo='" + Session("cod") + "'", solcon)
+        solcon.Open()
+        Dim soldaa As SqlDataAdapter = New System.Data.SqlClient.SqlDataAdapter(solcom)
+        Dim dtable As DataTable = New System.Data.DataTable
+        soldaa.Fill(dtable)
+        solcon.Close()
+        Select Case dtable.Rows.Count
+            Case 0
+                Dim e As String
+                e = "105"
+                Response.Redirect("~\e.app\st_error.aspx?id_error=" + e)
+            Case 1
+                Session("estado") = 2
+        End Select
+    End Sub
+
+    'Private Sub obtener_carrera()
+    ' Dim solcon As New SqlConnection(Application("str"))
+    ' Dim solcom_c As New SqlCommand("SELECT nombre FROM carreras WHERE clave='" + Session("carrera") + "'", solcon)
+    '     solcon.Open()
+    ' Dim soldaa_c As SqlDataAdapter = New System.Data.SqlClient.SqlDataAdapter(solcom_c)
+    ' Dim dtable As DataTable = New System.Data.DataTable
+    '     soldaa_c.Fill(dtable)
+    '     solcon.Close()
+    '     Session("name_carrera") = dtable.Rows(0).Item(0).ToString
+    '     soldaa_c.Dispose()
+    '     dtable.Dispose()
+    '     lbl_nombre.Text = Session("nombre")
+    '     lbl_carrera.Text = Session("name_carrera")
+    '     lbl_ingreso.Text = Session("ingreso")
+    '     lbl_matricula.Text = Session("mat")
+    '     lbl_codigo.Text = Session("cod")
+    '     getst_from_st()
+    ' End Sub
+
+    'Private Sub getst_from_st()
+    ' Dim solcon As New SqlConnection(Application("str"))
+    ' Dim solcom As New SqlCommand("SELECT name FROM status WHERE nshort='" + Session("st") + "'", solcon)
+    '     solcon.Open()
+    ' Dim soldaa As SqlDataAdapter = New System.Data.SqlClient.SqlDataAdapter(solcom)
+    ' Dim dtable As DataTable = New System.Data.DataTable
+    '     soldaa.Fill(dtable)
+    '     solcon.Close()
+    '     lbl_status.Text = dtable.Rows(0).Item(0).ToString
+    '     dtable.Clear()
+    ' End Sub
+
+    Private Function ciclo_actual() As String
+        Dim c As New SqlConnection(Application("str"))
+
+        'ARREGLO DE CICLOS PARA CAMBIO DE current_oferta A 2012A
+        'ESTO ELIMINA LA CONSULTA DEL CICLO ACTUAL Y OBLIGA A QUE SEA 2012A
+
+        Dim ca As New SqlCommand("SELECT TOP(1) '2014S' ciclo FROM ciclos", c)
+        'Dim ca As New SqlCommand("SELECT ciclo FROM ciclos WHERE actual=1", c)
+        c.Open()
+        ciclo_actual = ca.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+    Private Sub registrar(ByVal icu As String, ByVal procede As Boolean, ByVal causa As String)
+        registrar_curso(icu, Session("gcu"), procede, causa)
+        'traer_cursos(get_ustring)
+    End Sub
+
+    Private Function get_list(ByVal idt As String) As DataTable
+        Dim c As New SqlConnection(Application("str"))
+        Dim gl As New SqlDataAdapter("SELECT nrc, causa, img FROM xi_table WHERE ustring='" + idt + "' AND mostrada=0", c)
+        Dim glt As New DataTable
+        c.Open()
+        gl.Fill(glt)
+        c.Close()
+        get_list = glt
+        'gv_list.DataSource = glt
+        'gv_list.DataBind()
+    End Function
+
+    Protected Sub cmd_registrar_Click(sender As Object, e As System.EventArgs) Handles cmd_registrar.Click
+        Dim q As Integer
+        For q = 1 To 10
+            Dim tbx As TextBox = CType(CType(Page.Master.FindControl("cph_start"), ContentPlaceHolder).FindControl("tbx_i" & q.ToString), TextBox)
+            If tbx.Text <> "" Then
+                Select Case valido(tbx, sender.CommandArgument.ToString)
+                    Case True
+                        registrar(tbx.Text, True, "Registrada en su horario correctamente")
+                        'contar y registrar los que si proceden
+                    Case False
+                        'NUEVO - LOS REGISTROS QUE NO PROCEDEN SE ANEXARAN A LA BASE EN LA FUNCION VALIDO, MAL DISEÑO? TAL VEZ, PERO ES NECESARIO EN ESTE MOMENTO
+                        'contar y registrar los que no proceden
+                End Select
+            End If
+        Next
+        'Select Case get_list(get_ustring).Rows.Count
+        '    Case Is > 0
+        'gv_list.DataSource = get_list(get_ustring)
+        'gv_list.DataBind()
+        'mostradas_todas(get_ustring)
+        'delete_content()
+        'get_list(get_ustring)
+        traer_cursos(Session("gcu"))
+        'If gv_registro.Rows.Count < 1 Then
+        ' cmd_save.Enabled = False
+        ' Else
+        ' cmd_save.Enabled = True
+        ' End If
+        'hf_list_mpe.Show()
+        '   Case Else
+        'pulsan el boton sin escribir nu un solo nrc
+        'End Select
+    End Sub
+
+    Private Sub mostradas_todas(ByVal idt As String)
+        Dim c As New SqlConnection(Application("str"))
+        Dim mt As New SqlCommand("UPDATE xi_table SET mostrada=1 WHERE ustring='" + idt + "'", c)
+        c.Open()
+        mt.ExecuteNonQuery()
+        c.Close()
+    End Sub
+
+    Private Sub delete_content()
+        Dim z As Integer
+        For z = 1 To 10
+            Dim tbx As TextBox = CType(CType(Page.Master.FindControl("cph_mp"), ContentPlaceHolder).FindControl("tbx_i" & z.ToString), TextBox)
+            tbx.Text = ""
+        Next z
+    End Sub
+
+    Private Function valido(ByVal tbx As TextBox, ByVal matricula As String) As Boolean
+        Select Case tbx.Text.Length
+            Case 5
+                Dim c As New SqlConnection(Application("str"))
+                Dim cck1 As New SqlCommand("select case when count(*)>0 then 1 else 0 end existe from current_alicu where matricula='" + matricula + "' and icu='" + tbx.Text + "'", c)
+                c.Open()
+                Select Case cck1.ExecuteScalar.ToString
+                    Case "1"
+                        c.Close()
+                        registrar(tbx.Text, False, "El ICU ya se encuentra registrado.")
+                        'argumentar error de que ya esta registrado
+                        valido = False
+                    Case Else
+                        c.Close()
+                        Dim cck2 As New SqlCommand("SELECT CASE WHEN COUNT(*)>0 THEN 1 ELSE 0 END veces from current_oferta where icu='" + tbx.Text + "' and ciclo='" + ciclo_actual() + "'", c)
+                        c.Open()
+                        Select Case cck2.ExecuteScalar.ToString
+                            Case "1"
+                                c.Close()
+                                Select Case getcruze(tbx.Text, Session("gcu"))
+                                    Case False
+                                        Select Case getmateria(tbx.Text, Session("gcu"))
+                                            Case True
+                                                'argumentar error de que ya esta agregada la materia
+                                                registrar(tbx.Text, False, "La materia ya se encuentra pre-registrada")
+                                                valido = False
+                                            Case Else
+                                                Select Case getcarrera(tbx.Text, Session("carrera"))
+                                                    Case True
+                                                        valido = True
+                                                    Case Else
+                                                        registrar(tbx.Text, False, "El ICU no pertenece a su Carrera")
+                                                        'argumentar error que no pertenece a la carrera
+                                                        valido = False
+                                                End Select
+                                        End Select
+                                    Case Else
+                                        registrar(tbx.Text, False, "El horario del ICU se cruza con otro de su lista")
+                                        'argumentar error que no existe el icu
+                                        valido = False
+                                End Select
+                            Case Else
+                                c.Close()
+                                registrar(tbx.Text, False, "El NRC no existe en la current_oferta actual (" & ciclo_actual() & ").")
+                                'argumentar error que no existe el icu
+                                valido = False
+                        End Select
+
+                End Select
+            Case Else
+                registrar(tbx.Text, False, "El NRC no tiene la longitud correcta (5).")
+                'argumentar el error
+                valido = False
+        End Select
+    End Function
+
+    Private Function getcarrera(ByVal icu As String, ByVal car As String) As Boolean
+        'Dim c As New SqlConnection(Application("str"))
+        'Dim gc As New SqlCommand("SELECT CASE WHEN COUNT(*) = 0 THEN '0' ELSE '1' END AS hay FROM " + car + " WHERE (clave IN (SELECT DISTINCT clave FROM current_oferta WHERE (icu = '" + icu + "') AND (ciclo='" + ciclo_actual() + "')))", c)
+        'c.Open()
+        'getcarrera = gc.ExecuteScalar.ToString
+        'c.Close()
+        getcarrera = True
+    End Function
+
+    Private Function getmateria(ByVal icu As String, ByVal matricula As String) As Boolean
+        Dim c As New SqlConnection(Application("str"))
+        Dim gm As New SqlCommand("SELECT CASE WHEN COUNT(*) = 0 THEN '0' ELSE '1' END AS hay FROM (SELECT DISTINCT current_oferta.materia FROM current_alicu INNER JOIN current_oferta ON current_alicu.icu = current_oferta.icu WHERE " + _
+                                 "(current_alicu.matricula = '" + matricula + "') AND (current_oferta.ciclo='" + ciclo_actual() + "') AND (current_oferta.materia IN (SELECT DISTINCT materia FROM current_oferta AS oferta_1 WHERE (icu = '" + icu + "')))) AS derivedtbl_1", c)
+        c.Open()
+        getmateria = gm.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+    Private Function getcruze(ByVal icu As String, ByVal matricula As String) As Boolean
+        Dim c As New SqlConnection(Application("str"))
+        Dim gc As New SqlDataAdapter("SELECT materia, ini, fin, CASE WHEN L = '' THEN '0' ELSE 'L' END AS L, CASE WHEN M = '' THEN '0' ELSE 'M' END AS M, CASE WHEN I = '' THEN '0' ELSE 'I' END AS I, " + _
+                                     "CASE WHEN J = '' THEN '0' ELSE 'J' END AS J, CASE WHEN V = '' THEN '0' ELSE 'V' END AS V, CASE WHEN S = '' THEN '0' ELSE 'S' END AS S FROM current_oferta WHERE (icu = '" + icu + "') AND (ciclo='" + ciclo_actual() + "')", c)
+        Dim gct1 As New DataTable
+        c.Open()
+        gc.Fill(gct1)
+        c.Close()
+
+        Dim cn As Integer
+        For cn = 0 To gct1.Rows.Count - 1
+            Dim horainicial As String = gct1.Rows(cn).Item(1).ToString
+            Dim horafinal As String = gct1.Rows(cn).Item(2).ToString
+            Dim k As Integer
+            For k = 3 To gct1.Columns.Count - 1
+                If gct1.Rows(cn).Item(k).ToString <> "0" Then
+                    Dim dia As String = gct1.Rows(cn).Item(k).ToString
+                    'falta tomar solo las que proceden
+                    Dim gc2 As New SqlCommand("SELECT  CASE WHEN COUNT(*) = 0 THEN '0' ELSE '1' END AS hay " + _
+                                              "FROM (SELECT current_oferta.materia, current_oferta.ini, current_oferta.fin, current_oferta.L, current_oferta.M, current_oferta.I, current_oferta.J, current_oferta.V, current_oferta.S FROM current_oferta INNER JOIN current_alicu ON current_oferta.icu = current_alicu.icu WHERE " + _
+                                              "(current_alicu.matricula = '" + matricula + "') AND (current_oferta.ciclo = '" + ciclo_actual() + "')) AS existen WHERE (ini <= '" + horainicial + "') AND (fin > '" + horainicial + "') AND (" + dia + " = '" + dia + "') OR (ini < '" + horafinal + "') AND (fin >= '" + horafinal + "') AND (" + dia + " = '" + dia + "')", c)
+                    c.Open()
+                    Dim bolo As Boolean = gc2.ExecuteScalar.ToString
+                    c.Close()
+                    If bolo = True Then
+                        gct1.Clear()
+                        getcruze = bolo
+                        Exit Function
+                    End If
+                End If
+            Next
+        Next
+        gct1.Clear()
+        getcruze = False
+    End Function
+
+    Private Sub traer_cursos(ByVal matricula As String)
+        Dim c As New SqlConnection(Application("str"))
+        Dim ct As New SqlDataAdapter("SELECT current_alicu.id, current_alicu.icu, current_oferta.clave + ' - ' + current_oferta.materia materia, CASE WHEN L='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END L, " + _
+                                     "CASE WHEN M='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END M, CASE WHEN I='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END I, " + _
+                                     "CASE WHEN J='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END J, CASE WHEN V='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END V, " + _
+                                     "CASE WHEN S='' THEN '' ELSE current_oferta.ini + ' - ' + current_oferta.fin END S FROM current_alicu INNER JOIN current_oferta ON current_alicu.icu=current_oferta.icu AND current_alicu.ciclo=current_oferta.ciclo WHERE current_alicu.matricula='" + matricula + "' AND current_alicu.ciclo='" + ciclo_actual() + "'", c)
+        Dim ctt As New DataTable
+        c.Open()
+        ct.Fill(ctt)
+        c.Close()
+        gv_registro.DataSource = ctt
+        gv_registro.DataBind()
+
+        Select Case ctt.Rows.Count
+            Case Is > 0
+                cmd_save.Enabled = True
+            Case Else
+                cmd_save.Enabled = False
+        End Select
+    End Sub
+
+    Private Sub registrar_curso(ByVal icu As String, matricula As String, ByVal procede As Boolean, ByVal causa As String)
+        Dim c As New SqlConnection(Application("str"))
+        Select Case procede
+            Case True
+                Dim ct As New SqlCommand("INSERT into current_alicu (matricula,icu,ciclo) VALUES ('" + matricula + "','" + icu + "','" + ciclo_actual() + "')", c)
+                'Dim ct As New SqlCommand("INSERT into xi_table (ustring,icu,confirmada,ciclo,procede,causa,img,mostrada) VALUES ('" + ustring + "','" + icu + "','0','" + ciclo_actual() + "', '1', 'Pre-registrada correctamente','~/img/palomam.png','0')", c)
+                c.Open()
+                ct.ExecuteNonQuery()
+                c.Close()
+            Case Else
+                'Dim ct As New SqlCommand("INSERT into current_alicu (matricula,icu,ciclo) VALUES ('" + matricula + "','" + icu + "','" + ciclo_actual() + "')", c)
+                'Dim ct As New SqlCommand("INSERT into xi_table (ustring,icu,confirmada,ciclo,procede,causa,img,mostrada) VALUES ('" + ustring + "','" + icu + "','0','" + ciclo_actual() + "', '0', '" + causa + "','~/img/noyetbmini.png','0')", c)
+                'c.Open()
+                'ct.ExecuteNonQuery()
+                'c.Close()
+        End Select
+
+    End Sub
+
+    Private Function get_ustring() As String
+        If IsNothing(Session("ustring")) Then
+            Session("ustring") = Session("cod") & Now.Millisecond.ToString & Now.DayOfYear.ToString & Now.Hour.ToString & Now.Minute.ToString & ciclo_actual()
+            get_ustring = Session("ustring")
+        Else
+            get_ustring = Session("ustring")
+        End If
+    End Function
+
+    Protected Sub delete_item(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim c As New SqlConnection(Application("str"))
+        Dim ct As New SqlCommand("DELETE FROM current_alicu WHERE id='" + sender.CommandArgument.ToString + "'", c)
+        c.Open()
+        ct.ExecuteNonQuery()
+        c.Close()
+        traer_cursos(Session("gcu"))
+    End Sub
+
+    Protected Sub cmd_save_Click(sender As Object, e As System.EventArgs) Handles cmd_save.Click
+        Select Case gv_registro.Rows.Count
+            Case Is <> 0
+                Dim c As New SqlConnection(Application("str"))
+                Dim ct As New SqlCommand("UPDATE xi_table SET confirmada=1 WHERE ustring='" + Session("ustring") + "'", c)
+                Dim cd As New SqlCommand("DELETE FROM xi_table WHERE procede=0 and ustring='" + Session("ustring") + "'", c)
+                c.Open()
+                ct.ExecuteNonQuery()
+                cd.ExecuteNonQuery()
+                c.Close()
+                registrar_solicitud()
+                crearpdf(creditos(Session("carrera"), Session("ustring")))
+                lbl_okmsg.Text = "Imprime tu comprobante de Pre-Registro. Puedes volver si necesitas cambiar algo, estará disponible hasta el 22 de Noviembre de 2012."
+                hf_okmsg_mpe.Show()
+                cmd_print.CommandArgument = Session("ustring")
+                Session.Remove("ustring")
+            Case Else
+                'lbl_msg.Text = "No hay NRCs en tu lista de solicitud!"
+                'hf_msg_mpe.Show()
+        End Select
+    End Sub
+
+    Private Sub registrar_solicitud()
+        Dim solcon As New SqlConnection(Application("str"))
+        Select Case Session("startmode")
+            Case "1"
+                Dim query As String = "UPDATE tramites SET fecha_sol=getdate(), detalle='" + nrcs() + "' WHERE tid='" + Session("ustring") + "'"
+                solcon.Open()
+                Dim st_c1 As New SqlCommand(query, solcon)
+                st_c1.ExecuteNonQuery()
+                solcon.Close()
+            Case Else
+                Dim query As String = "INSERT INTO tramites (usuario,nombre,carrera,tipo_a,tipo_b,sol_text,detalle,tid,calendario,fecha_sol) VALUES ('" + Session("cod") + "','" + Session("nombre") + "','" + Session("carrera") + "','418','219','Pre-Registro de Materias en SIATCE','" + nrcs() + "','" + Session("ustring") + "','" + ciclo_actual() + "', getdate())"
+                solcon.Open()
+                Dim st_c1 As New SqlCommand(query, solcon)
+                st_c1.ExecuteNonQuery()
+                solcon.Close()
+        End Select
+    End Sub
+
+    Private Function nrcs() As String
+        Dim c As New SqlConnection(Application("str"))
+        Dim ct As New SqlDataAdapter("SELECT DISTINCT current_oferta.clave FROM xi_table INNER JOIN current_oferta ON xi_table.nrc = current_oferta.nrc AND xi_table.ciclo = current_oferta.ciclo WHERE (xi_table.ustring = '" + Session("ustring") + "') AND " + _
+                                     "(xi_table.ciclo = '" + ciclo_actual() + "') AND (xi_table.procede = 1)", c)
+        Dim ctt As New DataTable
+        c.Open()
+        ct.Fill(ctt)
+        c.Close()
+        Dim y As Integer
+        For y = 0 To ctt.Rows.Count - 1
+            Select Case y
+                Case 0
+                    nrcs = ctt.Rows(y).Item(0).ToString
+                Case Else
+                    nrcs = nrcs & ", " & ctt.Rows(y).Item(0).ToString
+            End Select
+        Next
+    End Function
+
+    'Protected Sub cmd_cancel_Click(sender As Object, e As System.EventArgs) Handles cmd_cancel.Click
+    '    Response.Redirect("~\log.usr\rcption.aspx?id=" + Session("cod") & "&session=" + Session("session_id"))
+    'End Sub
+
+    Private Function creditos(ByVal car As String, ByVal ustring As String) As String
+        Dim c As New SqlConnection(Application("str"))
+        Dim crd As New SqlCommand("SELECT SUM(creditos) AS creditos FROM " + car + " WHERE (clave IN (SELECT DISTINCT clave FROM current_oferta WHERE (ciclo='" + ciclo_actual() + "') AND (nrc IN (SELECT nrc FROM xi_table WHERE (ustring = '" + ustring + "')))))", c)
+        c.Open()
+        creditos = crd.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+    Private Sub crearpdf(ByVal creditosx As String)
+        'DATOS DEL NUEVO DOCUMENTO
+        Dim objPdf As IPdfManager = New PdfManager()
+        objPdf.RegKey = "IWeztcEDU3jtepIV1q3mqjVv1Jwk7dar6SkOH5nT5pFhXYK+/tWyaZh8WIY9Oq2sebodYEBbKfnj"
+        Dim objDoc As IPdfDocument = objPdf.OpenDocument(Server.MapPath("\cescolar\base_docs\com_prereg.pdf"), Missing.Value)
+        objDoc.Title = "Documento Comprobante de Tramite"
+        objDoc.Creator = "SIATCE CUCEI"
+        Dim objPage As IPdfPage = objDoc.Pages(1)
+        Dim objFont As IPdfFont = objDoc.Fonts.LoadFromFile("c:\windows\fonts\calibri.ttf")
+        Dim objfontitalic As IPdfFont = objDoc.Fonts.LoadFromFile("c:\windows\fonts\calibrii.ttf")
+        'POSICIONAMIENTO DEL TEXTO
+        Dim pos_nombre As String = "x=82; y=618; width=450; alignment=center; size=10; color=&H000000"
+        Dim pos_codigo As String = "x=82; y=590; width=450; alignment=center; size=10"
+        Dim pos_tramite As String = "x=82; y=562; width=447; alignment=center; size=10"
+        Dim pos_carrera As String = "x=82; y=520; width=450; alignment=center; size=10"
+        Dim pos_fdsolicitud As String = "x=82; y=492; width=450; alignment=center; size=10"
+        Dim pos_iut As String = "x=165, y=452, width=281, height=8, type=17"
+        Dim pos_cdt As String = "x=205, y=411, width=200, height=8, type=17"
+        Dim pos_cda As String = "x=429, y=738, width=150, height=18, type=17"
+        'TEXTO DEL DOCUMENTO
+        objPage.Canvas.DrawBarcode(Session("cod"), pos_cda)
+        objPage.Canvas.DrawText(Session("nombre"), pos_nombre, objFont)
+        'objPage.Canvas.DrawText(Session("tidid"), pos_cdt, objFont)
+        objPage.Canvas.DrawText(Session("cod"), pos_codigo, objFont)
+        objPage.Canvas.DrawText(string_del_tramite.ToUpper, pos_tramite, objFont)
+        objPage.Canvas.DrawText(carrera(Session("carrera")).ToUpper, pos_carrera, objFont)
+        objPage.Canvas.DrawText(Now.ToString.ToUpper, pos_fdsolicitud, objFont)
+        objPage.Canvas.DrawBarcode(Session("ustring"), pos_iut)
+        objPage.Canvas.DrawBarcode(devuelve, pos_cdt)
+        'IMPRESION DEL CODIGO QR
+        objPage.Canvas.DrawBarcode2D("SIATCE CUCEI 2012 PWD >@ialvaroh<: start:  " & "IUT: " & Session("ustring") & ", CODIGO: " & Session("cod") & ", TRAMITE: PRE-REGISTRO DE MATERIAS 2013A, " + _
+                                              "CURSOS REGISTRADOS: " + string_del_tramite.ToUpper + ", NUMERO DE CREDITOS: " + creditosx + ", FECHA DE " + _
+                                              "TRAMITE: " & Now.ToString & ", NOMBRE DEL ALUMNO: " & Session("nombre") & ", CARRERA" + _
+                                              ": " & carrera(Session("carrera")) & ", SOURCEIP: " & Request.ServerVariables("REMOTE_ADDR") & ".  TODA LA INFORMACION IMPRESA ES " + _
+                                              "DE CARACTER PRIVADO Y NO ES COMPARTIDA PUBLICAMENTE. GRACIAS POR HACER USO DE SIATCE", "Type=3; Version=18; X=465; Y=374")
+
+        'IMPRESION DE HORARIO
+        Dim th As IPdfTable = objDoc.CreateTable("Width=566;Height=0;rows=1;cols=8;border=0.1;bordercolor=black;cellbordercolor=black;cellborder=0.1;cellpadding=1")
+        th.Font = objFont
+        Dim HeaderRow As IPdfRow = th.Rows(1)
+        HeaderRow.Height = 16
+        With HeaderRow
+            .BgColor = &HC0C0C0
+            .Cells(1).AddText("NRC", "alignment=center; ")
+            .Cells(1).Width = 40
+            .Cells(2).AddText("Materia", "alignment=center")
+            .Cells(2).Width = 200
+            .Cells(3).AddText("Lunes", "alignment=center")
+            .Cells(3).Width = 55
+            .Cells(4).AddText("Martes", "alignment=center")
+            .Cells(4).Width = 55
+            .Cells(5).AddText("Miercoles", "alignment=center")
+            .Cells(5).Width = 55
+            .Cells(6).AddText("Jueves", "alignment=center")
+            .Cells(6).Width = 55
+            .Cells(7).AddText("Viernes", "alignment=center")
+            .Cells(7).Width = 55
+            .Cells(8).AddText("Sabado", "alignment=center")
+            .Cells(8).Width = 55
+        End With
+
+        Dim col As Integer
+        Dim rw As Integer
+        For rw = 0 To gv_registro.Rows.Count - 1
+            Dim nextrow As IPdfRow = th.Rows.Add(14)
+            For col = 0 To 7
+                Dim celda As IPdfCell = nextrow.Cells(col + 1)
+                celda.AddText(IIf(gv_registro.Rows(rw).Cells(col).Text = "&nbsp;", "", gv_registro.Rows(rw).Cells(col).Text), "alignment=center; expand=true; size=8", objFont)
+            Next
+        Next
+        Dim multiplicador As Integer = (rw + 1)
+        objPage.Canvas.DrawTable(th, "x=18;y=330;VAlignment=middle;alignment=center")
+        objPage.Canvas.DrawText("Cursos Pre- Registrados   (" & creditosx & " Creditos)", "x=82; y=360; width=450; alignment=center; size=10", objFont)
+        objPage.Canvas.DrawText("Este pre-registro NO asegura un lugar en el siguiente ciclo.", "x=82; y=345; width=450; alignment=center; size=10", objFont)
+
+        'IMPRESION DE CURSOS SOLICITADOS
+        'Select Case gv_courses.Rows.Count
+        '    Case Is > 0
+        'Dim start_line As String = (314 - (multiplicador * 14)).ToString
+        'objPage.Canvas.DrawText("Cursos solicitados que no se han ofertado en el 2013A", "x=82; y=" & start_line & "; width=450; alignment=left; size=10", objFont)
+        'Dim tc As IPdfTable = objDoc.CreateTable("Width=280;Height=0;rows=1;cols=1;border=0.1;bordercolor=black;cellbordercolor=black;cellborder=0.1;cellpadding=1")
+        'tc.Font = objFont
+        'Dim hr As IPdfRow = tc.Rows(1)
+        'hr.Height = 16
+        'With hr
+        ' .BgColor = &HC0C0C0
+        ' .Cells(1).AddText("NOMBRE DEL CURSO", "alignment=center; ")
+        ' End With
+        ' Dim rwc As Integer
+        ' For rwc = 0 To gv_courses.Rows.Count - 1
+        ' Dim nextrowc As IPdfRow = tc.Rows.Add(14)
+        ' Dim celdac As IPdfCell = nextrowc.Cells(1)
+        ' celdac.AddText(IIf(gv_courses.Rows(rwc).Cells(0).Text = "&nbsp;", "", gv_courses.Rows(rwc).Cells(0).Text), "alignment=center; expand=true; size=8", objFont)
+        ' Next
+        ' objPage.Canvas.DrawTable(tc, "x=18;y=" & start_line - 17 & ";VAlignment=middle;alignment=center")
+        ' End Select
+
+        Dim v As New SqlConnection(Application("str"))
+        Dim sdoc As New SqlCommand("INSERT INTO documents (id_tramite,idt,filename,path,docdescription,codigo,created) VALUES " + _
+                                   "('" + devuelve() + "','" + Session("ustring") + "','" + Session("ustring") & ".pdf" + "','" + Server.MapPath("\cescolar\cfm\") + "','Documento comprobante de trámite','" + Session("cod") + "',getdate())", v)
+        v.Open()
+        sdoc.ExecuteNonQuery()
+        v.Close()
+
+        'GUARDADO DEL DOCUMENTO
+        Dim path As String = Server.MapPath("\cescolar\cfm\" & Session("ustring") & ".pdf")
+        Dim file As System.IO.FileInfo = New System.IO.FileInfo(path)
+        If (file.Exists) Then
+            file.Delete()
+            Dim Filename = objDoc.Save(Server.MapPath("\cescolar\cfm\" & Session("ustring") & ".pdf"), False)
+        Else
+            Dim Filename = objDoc.Save(Server.MapPath("\cescolar\cfm\" & Session("ustring") & ".pdf"), False)
+        End If
+    End Sub
+
+    Private Function string_del_tramite() As String
+        string_del_tramite = nrcs()
+    End Function
+
+    Private Function devuelve() As String
+        Dim solcon As New SqlConnection(Application("str"))
+        Dim solcom As New SqlCommand("SELECT id FROM tramites WHERE tid = '" + Session("ustring") + "'", solcon)
+        solcon.Open()
+        Dim soldaa As SqlDataAdapter = New System.Data.SqlClient.SqlDataAdapter(solcom)
+        Dim dtable As DataTable = New System.Data.DataTable
+        soldaa.Fill(dtable)
+        solcon.Close()
+        Session("tidid") = dtable.Rows(0).Item(0).ToString
+        devuelve = Session("tidid")
+        dtable.Clear()
+    End Function
+
+    Private Function carrera(ByVal car As String) As String
+        Dim c As New SqlConnection(Application("str"))
+        Dim ct As New SqlCommand("SELECT nombre FROM carreras WHERE clave='" + car + "'", c)
+        c.Open()
+        carrera = ct.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+
+    Protected Sub cmd_print_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles cmd_print.Click
+        Response.Redirect("~\log.usr\usr_comp.aspx?file=" + sender.CommandArgument.ToString + "")
+    End Sub
+
+    Protected Sub gotoorigin_Click(sender As Object, e As System.Web.UI.ImageClickEventArgs) Handles gotoorigin.Click
+        Response.Redirect("~\log.usr\rcption.aspx?id=" + Session("cod") & "&session=" + Session("session_id"))
+    End Sub
+
+    'TEST DE ETIQUETAS DE LA JOYERIA
+
+    Private Sub crearpdf_test()
+        'DATOS DEL NUEVO DOCUMENTO
+        Dim objPdf As IPdfManager = New PdfManager()
+        objPdf.RegKey = "IWeztcEDU3jtepIV1q3mqjVv1Jwk7dar6SkOH5nT5pFhXYK+/tWyaZh8WIY9Oq2sebodYEBbKfnj"
+        'Dim objDoc As IPdfDocument = objPdf.OpenDocument(Server.MapPath("\cescolar\base_docs\com_tramite_xi.pdf"), Missing.Value)
+        Dim objDoc As IPdfDocument = objPdf.CreateDocument
+        objDoc.Title = "IMPRESION DE ETIQUETAS PARA LABORATORIO"
+        objDoc.Creator = "SADIN CGI"
+        objDoc.Pages.Add()
+        Dim objPage As IPdfPage = objDoc.Pages(1)
+        Dim objFont As IPdfFont = objDoc.Fonts.LoadFromFile("c:\windows\fonts\calibri.ttf")
+        Dim objfontitalic As IPdfFont = objDoc.Fonts.LoadFromFile("c:\windows\fonts\calibrii.ttf")
+        'POSICIONAMIENTO DEL TEXTO
+        Dim pos_nombre As String = "x=82; y=618; width=450; alignment=center; size=10; color=&H000000"
+        Dim pos_codigo As String = "x=82; y=590; width=450; alignment=center; size=10"
+        Dim pos_tramite As String = "x=82; y=562; width=447; alignment=center; size=10"
+        Dim pos_carrera As String = "x=82; y=520; width=450; alignment=center; size=10"
+        Dim pos_fdsolicitud As String = "x=82; y=492; width=450; alignment=center; size=10"
+        Dim pos_iut As String = "x=165, y=452, width=281, height=8, type=17"
+        Dim pos_cdt As String = "x=205, y=411, width=200, height=8, type=17"
+        Dim pos_cda As String = "x=429, y=738, width=150, height=18, type=2"
+        'TEXTO DEL DOCUMENTO
+
+        Dim c As New SqlConnection(Application("intromission"))
+        'Dim ct As New SqlDataAdapter("SELECT codigo,precio,id FROM joyeria WHERE status=0 ORDER BY codigo", c)
+        Dim ct As New SqlDataAdapter("SELECT DEWEY,biu FROM biblio ORDER BY DEWEY", c)
+        Dim ctt As New DataTable
+        c.Open()
+        ct.Fill(ctt)
+        c.Close()
+
+        'Dim t As String = "36"
+        Dim startx As Integer = tbx_i2.Text
+        Dim starty As Integer = tbx_i3.Text
+        Dim startxn As Integer = tbx_i4.Text
+        Dim startyn As Integer = tbx_i5.Text
+        Dim startax As Integer = tbx_i7.Text
+        Dim startay As Integer = tbx_i8.Text
+        Dim startaxn As Integer = tbx_i9.Text
+        Dim startayn As Integer = tbx_i10.Text
+
+
+        Dim k As Integer
+        Dim j As Integer = 0
+        For k = 1 To 15
+            Dim counter As Integer = j * 36
+            objPage.Canvas.DrawBarcode(ctt.Rows(k).Item(0).ToString, "x=" & startx & ", y=" & starty - counter & ", width=70, height=18, FontSize=7, type=17")
+            objPage.Canvas.DrawText("$" & ctt.Rows(k).Item(1).ToString, "x=" & startxn & "; y=" & startyn - counter & "; width=100; alignment=left; size=10", objFont)
+            'Dim storage As New SqlCommand("UPDATE joyeria SET status='1' WHERE id='" + ctt.Rows(k).Item(2).ToString + "'", c)
+            c.Open()
+            'storage.ExecuteNonQuery()
+            c.Close()
+            k = k + 1
+            objPage.Canvas.DrawBarcode(ctt.Rows(k).Item(0).ToString, "x=" & startax & ", y=" & startay - counter & ", width=70, height=18, FontSize=7, type=17")
+            objPage.Canvas.DrawText("$" & ctt.Rows(k).Item(1).ToString, "x=" & startaxn & "; y=" & startayn - counter & "; width=100; alignment=left; size=10", objFont)
+            'Dim storagea As New SqlCommand("UPDATE joyeria SET status='1' WHERE id='" + ctt.Rows(k).Item(2).ToString + "'", c)
+            c.Open()
+            'storagea.ExecuteNonQuery()
+            c.Close()
+            j = j + 1
+
+
+        Next
+
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=740, width=150, height=18, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=700, width=100, height=10, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=" & tbx_i2.Text & ", y=" & tbx_i3.Text & ", width=70, height=18, FontSize=7, type=17")
+        'objPage.Canvas.DrawText("$630", "x=" & tbx_i7.Text & "; y=" & tbx_i8.Text & "; width=100; alignment=left; size=10", objFont)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=620, width=50, height=15, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=" & tbx_i2.Text & ", y=" & tbx_i3.Text - tbx_i4.Text & ", width=70, height=18, FontSize=7, type=17")
+        'objPage.Canvas.DrawText("$630", "x=" & tbx_i7.Text & "; y=" & tbx_i8.Text - tbx_i4.Text & "; width=100; alignment=left; size=10", objFont)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=580, width=200, height=18, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=" & tbx_i2.Text & ", y=" & (tbx_i3.Text - tbx_i4.Text) - tbx_i4.Text & ", width=70, height=18, FontSize=7, type=17")
+        'objPage.Canvas.DrawText("$630", "x=" & tbx_i7.Text & "; y=" & (tbx_i8.Text - tbx_i4.Text) - tbx_i4.Text & "; width=100; alignment=left; size=10", objFont)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=540, width=130, height=18, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=500, width=120, height=18, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=460, width=30, height=18, type=" & t)
+        'objPage.Canvas.DrawBarcode("30501", "x=429, y=420, width=40, height=18, type=" & t)
+
+
+
+
+        'GUARDADO DEL DOCUMENTO
+        Dim Filename = objDoc.Save(Server.MapPath("\cescolar\cfm\mine.pdf"), False)
+    End Sub
+
+    'Protected Sub cmd_add_Click(sender As Object, e As System.EventArgs) Handles cmd_add.Click
+    '    agregar_curso_no_solicitado(ddl_courses.SelectedValue.ToString, get_ustring)
+    '    mostrar_curso_no_solicitado(get_ustring, Session("carrera"))
+    '    carga_materias_no_ofertadas(Session("carrera"), "1", Session("ustring"))
+    'End Sub
+
+    Private Sub agregar_curso_no_solicitado(ByVal materia As String, ByVal ustring As String)
+        Dim c As New SqlConnection(Application("str"))
+        Dim acns As New SqlCommand("INSERT INTO xi_courses (clave,ustring) VALUES ('" + materia + "','" + ustring + "')", c)
+        c.Open()
+        acns.ExecuteNonQuery()
+        c.Close()
+    End Sub
+
+    'Private Sub mostrar_curso_no_solicitado(ByVal ustring As String, ByVal car As String)
+    ' Dim c As New SqlConnection(Application("str"))
+    ' Dim mcns As New SqlDataAdapter("SELECT xi_courses.id,(" + car + ".clave + ' - ' + " + car + ".nombre) nombre FROM xi_courses INNER JOIN " + car + " ON xi_courses.clave=" + car + ".clave WHERE xi_courses.ustring='" + ustring + "' ORDER BY " + car + ".nombre", c)
+    ' Dim mcnst As New DataTable
+    '     c.Open()
+    '     mcns.Fill(mcnst)
+    '     c.Close()
+    '     gv_courses.DataSource = mcnst
+    '     gv_courses.DataBind()
+    ' End Sub
+
+    Protected Sub delete_item_b(ByVal sender As Object, ByVal e As System.EventArgs)
+        Dim c As New SqlConnection(Application("str"))
+        Dim ct As New SqlCommand("DELETE FROM xi_courses WHERE id='" + sender.CommandArgument.ToString + "'", c)
+        c.Open()
+        ct.ExecuteNonQuery()
+        c.Close()
+        'mostrar_curso_no_solicitado(get_ustring, Session("carrera"))
+        'carga_materias_no_ofertadas(Session("carrera"), "1", Session("ustring"))
+    End Sub
+End Class
+

@@ -1,0 +1,55 @@
+﻿Imports secure_tools
+Imports System.Data
+Imports System.Data.SqlClient
+Imports loginsecure
+
+Partial Class sendquery
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        nocache()
+        backbutton()
+        mv_recovery.ActiveViewIndex = 0
+        t_action.Enabled = False
+    End Sub
+
+    Protected Sub t_action_Tick(sender As Object, e As EventArgs)
+        Select Case mv_recovery.ActiveViewIndex
+            Case 0
+            Case 1
+                t_action.Enabled = False
+                Response.Redirect("../glogin.aspx")
+            Case 2
+                
+        End Select
+    End Sub
+
+    Protected Sub cmd_recover_Click(sender As Object, e As EventArgs) Handles cmd_recover.Click
+        Try
+            Dim dttemp As DataTable = senderemail_recovery("1")
+            sendmail(getemail_recovery(tbx_recover.Text), dttemp.Rows(0).Item(0).ToString, dttemp.Rows(0).Item(1).ToString, chain)
+            storequery(tbx_recover.Text)
+        Catch ex As Exception
+
+        End Try
+        mv_recovery.ActiveViewIndex = 1
+        t_action.Enabled = True
+    End Sub
+
+    Private Function chain() As String
+        Return EncryptData(cleanchain(tbx_recover.Text)).Replace("+", ".")
+    End Function
+
+    Private Sub storequery(ByVal matricula As String)
+        Dim c As New SqlConnection(Application("str"))
+        Dim sq As New SqlCommand("INSERT INTO secure_tokens (matricula,token,startdate,enddate) VALUES ('" + matricula + "','" + chain() + "',getdate(), " + _
+                                 "DATEADD(day,2,getdate()))", c)
+        c.Open()
+        sq.ExecuteNonQuery()
+        c.Close()
+    End Sub
+
+    Protected Sub cmd_cancelar_Click(sender As Object, e As EventArgs) Handles cmd_cancelar.Click
+        Response.Redirect("../glogin.aspx")
+    End Sub
+End Class

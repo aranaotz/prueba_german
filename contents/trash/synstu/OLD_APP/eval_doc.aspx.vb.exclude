@@ -1,0 +1,380 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class eval_doc
+    Inherits System.Web.UI.Page
+
+
+    Private Function getcod() As String
+        getcod = gc(Session("usrcgi200Xstr"))
+    End Function
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT reference FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Private Function gg(ByVal matr As String) As String
+        Dim sc As New SqlConnection(Application("str"))
+        Dim ggc As New SqlCommand("SELECT grupo FROM alumnos WHERE matr='" + getcod() + "' AND ciclo='" + getactualcycle + "'", sc)
+        sc.Open()
+        gg = ggc.ExecuteScalar
+        sc.Close()
+    End Function
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        'SELECT PROGRAMADO SOLO PARA LA ENCUESTA DE MEDIOS O ALGUN OTRA QUE ESTE ADEMAS DE LA DE LOS MAESTROS
+        Select Case grq(getcod())
+            Case 0
+                im_estado_aa.ImageUrl = "img/noyetb.png"
+                lbl_estado_a.Text = "No Iniciada"
+            Case Else
+                im_estado_aa.ImageUrl = "img/okyetb.png"
+                lbl_estado_a.Text = "Completada"
+        End Select
+        If Not IsPostBack Then
+            mostrar_clases(gg(getcod))
+            mv_encuesta.ActiveViewIndex = 0
+            'assing_alumno_self()
+        End If
+    End Sub
+
+    Private Function existe_guardada(ByVal alumno As String) As Boolean
+        Dim c As New SqlConnection(Application("strsta"))
+        Dim eg As New SqlCommand("SELECT CASE WHEN COUNT(*)>0 THEN 1 ELSE 0 END FROM cgi_teval_r WHERE alumno='" + alumno + "' AND id_q='21' AND id_quiz='9' AND ciclo='" + getactualcycle() + "'", c)
+        c.Open()
+        existe_guardada = eg.ExecuteScalar.ToString
+        c.Close()
+    End Function
+
+    Private Sub assing_alumno_self()
+        lb_docente_a.CommandArgument = getcod()
+        lb_materia_a.CommandArgument = getcod()
+    End Sub
+
+    Private Function getactualcycle() As String
+        Dim v As New SqlConnection(Application("str"))
+        Dim cycle As New SqlCommand("SELECT ciclo FROM general_ciclos WHERE active=1", v)
+        v.Open()
+        getactualcycle = cycle.ExecuteScalar
+        v.Close()
+    End Function
+
+    Private Sub mostrar_clases(ByVal grupo As String)
+        Dim sc As New SqlConnection(Application("str"))
+        Dim mc As New SqlCommand("SELECT icu,mat,materia,prof,nombre,tipo FROM future_inf_icu WHERE ciclo='" + getactualcycle + "' AND grupo='" + grupo + "'", sc)
+        Dim mca As New SqlDataAdapter(mc)
+        Dim mct As New DataTable
+        sc.Open()
+        mca.Fill(mct)
+        sc.Close()
+        dl_evaluaciones.DataSource = mct
+        dl_evaluaciones.DataBind()
+        ya_hechas()
+        ' ya_hechas_added()
+    End Sub
+
+    Private Sub ya_hechas_added()
+        Dim sc As New SqlConnection(Application("strsta"))
+        Dim yh As New SqlCommand("SELECT COUNT(*) FROM quiz_es WHERE alumno='" + gc(Session("usrcgi200Xstr")) + "' AND ciclo='" + getactualcycle() + "' AND id_quiz='3'", sc)
+        sc.Open()
+        Select Case yh.ExecuteScalar
+            Case 0
+                lb_materia_a.Enabled = True
+                lb_docente_a.Enabled = True
+                im_estado_aa.ImageUrl = "img/noyetb.png"
+                lbl_estado_a.Text = "No Iniciada"
+            Case Else
+                lb_materia_a.Enabled = False
+                lb_docente_a.Enabled = False
+                im_estado_aa.ImageUrl = "img/okyetb.png"
+                lbl_estado_a.Text = "Completada"
+        End Select
+        sc.Close()
+    End Sub
+
+    Private Function grq(ByVal matr As String) As Integer
+        Dim v As New SqlConnection(Application("strsta"))
+        'Dim c As New SqlCommand("SELECT COUNT(*) AS rqn from radio_quiz where matr='" + matr + "'", v)
+        Dim c As New SqlCommand("SELECT COUNT(*) AS rqn from moodle_quiz where matr='" + matr + "' and ciclo='" + getactualcycle() + "'", v)
+        v.Open()
+        grq = c.ExecuteScalar
+        v.Close()
+    End Function
+
+    Private Sub ya_hechas()
+        Dim sc As New SqlConnection(Application("strsta"))
+        Dim ci As Integer
+        For ci = 0 To dl_evaluaciones.Items.Count - 1
+            Dim lbmat As LinkButton = CType(dl_evaluaciones.Items(ci).FindControl("lb_materia"), LinkButton)
+            Dim lbdoc As LinkButton = CType(dl_evaluaciones.Items(ci).FindControl("lb_docente"), LinkButton)
+            Dim imestado As Image = CType(dl_evaluaciones.Items(ci).FindControl("im_estado"), Image)
+            Dim lblestado As Label = CType(dl_evaluaciones.Items(ci).FindControl("lbl_estado"), Label)
+            Dim yh As New SqlCommand("SELECT COUNT(*) FROM quiz_es WHERE alumno='" + gc(Session("usrcgi200Xstr")) + "' AND icu='" + lbmat.CommandArgument.ToString + "' AND ciclo='" + getactualcycle() + "' AND id_quiz='9'", sc)
+            sc.Open()
+            Select Case yh.ExecuteScalar
+                Case 0
+                    lbmat.Enabled = True
+                    lbdoc.Enabled = True
+                    imestado.ImageUrl = "img/noyetb.png"
+                    lblestado.Text = "No Iniciada"
+                Case Else
+                    lbmat.Enabled = False
+                    lbdoc.Enabled = False
+                    imestado.ImageUrl = "img/okyetb.png"
+                    lblestado.Text = "Completada"
+            End Select
+            sc.Close()
+        Next
+    End Sub
+
+    Protected Sub docommand(ByVal sender As Object, ByVal e As System.EventArgs)
+        Select Case sender.CommandName
+            Case "do_encuesta"
+                Dim sc As New SqlConnection(Application("strsta"))
+                Dim cf As New SqlCommand("SELECT pane_id,pane_text FROM cgi_teval_p WHERE eval_id='10' AND ciclo='" + getactualcycle() + "' ORDER BY pane_order", sc)
+                Dim cfa As New SqlDataAdapter(cf)
+                Dim cft As New DataTable
+                sc.Open()
+                cfa.Fill(cft)
+                sc.Close()
+                dl_base.DataSource = cft
+                dl_base.DataBind()
+                Dim ict As Integer
+                For ict = 0 To dl_base.Items.Count - 1
+                    Dim idcat As String = CType(dl_base.Items(ict).FindControl("lbl_category"), Label).Attributes("idc").ToString
+                    Dim cfq As New SqlCommand("SELECT q_id,q_string,q_type FROM cgi_teval_q WHERE q_pane='" + idcat + "' AND q_tp LIKE '%" + sender.Attributes("tipo") + "%' " + _
+                                              "AND ciclo='" + getactualcycle() + "' AND id_quiz='10' ORDER BY q_order", sc)
+                    Dim cfq_ex As New SqlCommand("SELECT q_id,q_string,q_type FROM cgi_teval_q WHERE q_pane='" + idcat + "' AND q_tp LIKE '%" + sender.Attributes("tipo") + "%' " + _
+                                              "AND ciclo='" + getactualcycle() + "' AND id_quiz='10' AND q_id<>'21' ORDER BY q_order", sc)
+                    Dim cfqa As New SqlDataAdapter(IIf(existe_guardada(getcod) = True, cfq_ex, cfq))
+                    Dim cfqt As New DataTable
+                    sc.Open()
+                    cfqa.Fill(cfqt)
+                    sc.Close()
+                    Dim dl_subbase As DataList = CType(dl_base.Items(ict).FindControl("dl_quiz"), DataList)
+                    dl_subbase.DataSource = cfqt
+                    dl_subbase.DataBind()
+                    Dim idq As Integer
+                    For idq = 0 To dl_subbase.Items.Count - 1
+                        Dim idqs As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Text
+                        Dim qtype As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Attributes("toq").ToString
+                        Dim mvqtype As MultiView = CType(dl_subbase.Items(idq).FindControl("mv_qtype"), MultiView)
+                        Select Case qtype
+                            Case 0
+                                Dim rbl As Object = CType(dl_subbase.Items(idq).FindControl("rbl_answer"), RadioButtonList)
+                                Dim fa As New SqlCommand("SELECT a_id,a_text FROM cgi_teval_a WHERE a_pane='" + idcat + "' AND a_q='" + idqs + "' " + _
+                                                         "AND ciclo='" + getactualcycle() + "' AND id_quiz='10' ORDER BY a_order", sc)
+                                Dim faa As New SqlDataAdapter(fa)
+                                Dim fat As New DataTable
+                                sc.Open()
+                                faa.Fill(fat)
+                                sc.Close()
+                                rbl.datasource = fat
+                                rbl.datatextfield = "a_text"
+                                rbl.datavaluefield = "a_id"
+                                rbl.databind()
+                                mvqtype.ActiveViewIndex = 0
+                            Case 1
+                                Dim rbl As Object = CType(dl_subbase.Items(idq).FindControl("cbxl_sm"), CheckBoxList)
+                                Dim fa As New SqlCommand("SELECT a_id,a_text FROM cgi_teval_a WHERE a_pane='" + idcat + "' AND a_q='" + idqs + "' " + _
+                                                         "AND ciclo='" + getactualcycle() + "' AND id_quiz='10' ORDER BY a_order", sc)
+                                Dim faa As New SqlDataAdapter(fa)
+                                Dim fat As New DataTable
+                                sc.Open()
+                                faa.Fill(fat)
+                                sc.Close()
+                                rbl.datasource = fat
+                                rbl.datatextfield = "a_text"
+                                rbl.datavaluefield = "a_id"
+                                rbl.databind()
+                                mvqtype.ActiveViewIndex = 1
+                            Case 2
+                                mvqtype.ActiveViewIndex = 2
+                        End Select
+                    Next
+                Next
+                cmd_send.CommandArgument = sender.CommandArgument.ToString
+                mv_encuesta.ActiveViewIndex = 1
+        End Select
+    End Sub
+
+    Protected Sub cmd_send_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmd_send.Click
+        If check_quiz(sender.CommandArgument) = 0 Then
+            lbl_msg.Text = "Hay campos en la encuesta que aún no se llenan, para poder enviarla debes llenar TODOS los campos. En las preguntas abiertas por lo menos debes de escribir 15 caracteres."
+            hf_errormsg_mpe.Show()
+        Else
+            send_quiz(sender.CommandArgument, "9")
+        End If
+    End Sub
+
+    Private Function check_quiz(ByVal icu As String) As Integer
+        Dim ict As Integer
+        For ict = 0 To dl_base.Items.Count - 1
+            'Dim idcat As String = CType(dl_base.Items(ict).FindControl("lbl_category"), Label).Attributes("idc").ToString
+            Dim dl_subbase As DataList = CType(dl_base.Items(ict).FindControl("dl_quiz"), DataList)
+            Dim idq As Integer
+            For idq = 0 To dl_subbase.Items.Count - 1
+                'Dim idqs As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Text
+                Dim qtype As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Attributes("toq").ToString
+                'Dim mvqtype As MultiView = CType(dl_subbase.Items(idq).FindControl("mv_qtype"), MultiView)
+                Select Case qtype
+                    Case 0
+                        Dim rbl As RadioButtonList = CType(dl_subbase.Items(idq).FindControl("rbl_answer"), RadioButtonList)
+                        If rbl.SelectedIndex = -1 Then
+                            rbl.Focus()
+                            check_quiz = 0
+                            Exit Function
+                        End If
+                    Case 1
+                        Dim rbl As CheckBoxList = CType(dl_subbase.Items(idq).FindControl("cbxl_sm"), CheckBoxList)
+                        If rbl.SelectedIndex = -1 Then
+                            rbl.Focus()
+                            check_quiz = 0
+                            Exit Function
+                        End If
+                    Case 2
+                        Dim tbxoq As TextBox = CType(dl_subbase.Items(idq).FindControl("tbx_oq"), TextBox)
+                        If tbxoq.Text.Length < 10 Then
+                            tbxoq.Focus()
+                            check_quiz = 0
+                            Exit Function
+                        End If
+                End Select
+            Next
+        Next
+        check_quiz = 1
+        Exit Function
+    End Function
+
+    Private Sub send_quiz(ByVal icu As String, id_qt As String)
+        Dim ict As Integer
+        Dim sc As New SqlConnection(Application("strsta"))
+        For ict = 0 To dl_base.Items.Count - 1
+            Dim idcat As String = CType(dl_base.Items(ict).FindControl("lbl_category"), Label).Attributes("idc").ToString
+            Dim dl_subbase As DataList = CType(dl_base.Items(ict).FindControl("dl_quiz"), DataList)
+            Dim idq As Integer
+            For idq = 0 To dl_subbase.Items.Count - 1
+                Dim idqs As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Text
+                Dim qtype As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Attributes("toq").ToString
+                Dim mvqtype As MultiView = CType(dl_subbase.Items(idq).FindControl("mv_qtype"), MultiView)
+                Select Case qtype
+                    Case 0
+                        Dim rbl As RadioButtonList = CType(dl_subbase.Items(idq).FindControl("rbl_answer"), RadioButtonList)
+                        Dim fain As New SqlCommand("INSERT INTO cgi_teval_r (alumno,id_cat,id_q,id_a,a_text,idq,icu,id_quiz,ciclo) VALUES " + _
+                                                 "('" + gc(Session("usrcgi200Xstr")) + "','" + idcat + "','" + idqs + "','" + rbl.SelectedValue.ToString + "','" + rbl.SelectedItem.Text + "'," + _
+                                                 "'0','" + icu + "','" + id_qt + "','" + getactualcycle() + "')", sc)
+                        sc.Open()
+                        fain.ExecuteNonQuery()
+                        sc.Close()
+                    Case 1
+                        Dim rbl As CheckBoxList = CType(dl_subbase.Items(idq).FindControl("cbxl_sm"), CheckBoxList)
+                        Dim isel As Integer
+                        For isel = 0 To rbl.Items.Count - 1
+                            If rbl.Items(isel).Selected = True Then
+                                Dim fain As New SqlCommand("INSERT INTO cgi_teval_r (alumno,id_cat,id_q,id_a,a_text,idq,icu,id_quiz,ciclo) VALUES " + _
+                                                           "('" + gc(Session("usrcgi200Xstr")) + "','" + idcat + "','" + idqs + "','" + rbl.Items(isel).Value.ToString + "','" + rbl.Items(isel).Text + "'," + _
+                                                           "'0','" + icu + "','" + id_qt + "','" + getactualcycle() + "')", sc)
+                                sc.Open()
+                                fain.ExecuteNonQuery()
+                                sc.Close()
+                            End If
+                        Next
+                    Case 2
+                        Dim tbxoq As TextBox = CType(dl_subbase.Items(idq).FindControl("tbx_oq"), TextBox)
+                        Dim fain As New SqlCommand("INSERT INTO cgi_teval_r (alumno,id_cat,id_q,id_a,a_text,idq,icu,id_quiz,ciclo) VALUES " + _
+                                                           "('" + gc(Session("usrcgi200Xstr")) + "','" + idcat + "','" + idqs + "','1','" + tbxoq.Text + "','0','" + icu + "','" + id_qt + "','" + getactualcycle() + "')", sc)
+                        sc.Open()
+                        fain.ExecuteNonQuery()
+                        sc.Close()
+                End Select
+            Next
+        Next
+        Dim final_store As New SqlCommand("INSERT INTO quiz_es (alumno,id_quiz,icu,ciclo,end_date) VALUES " + _
+                                                          "('" + gc(Session("usrcgi200Xstr")) + "','" + id_qt + "','" + icu + "','" + getactualcycle() + "','" + Format(Now, "MM/dd/yyyy hh:mm:ss") + "')", sc)
+        sc.Open()
+        final_store.ExecuteNonQuery()
+        sc.Close()
+
+        mostrar_clases(gg(getcod))
+        mv_encuesta.ActiveViewIndex = 0
+    End Sub
+
+    Protected Sub lb_docente_a_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lb_docente_a.Click
+        do_command(lb_docente_a)
+    End Sub
+
+    Private Sub do_command(ByVal enviador As Object)
+        'Response.Redirect("/cgiapp/sadin_stu/radioquiz.aspx" & "?aywystb=" & Request.QueryString("aywystb"))
+        Response.Redirect("/cgiapp/sadin_stu/moodle_quiz.aspx" & "?aywystb=" & Request.QueryString("aywystb"))
+        'Dim sc As New SqlConnection(Application("strsta"))
+        'Dim cf As New SqlCommand("SELECT pane_id,pane_text FROM cgi_teval_p WHERE eval_id='3' AND ciclo='" + getactualcycle() + "' ORDER BY pane_order", sc)
+        'Dim cfa As New SqlDataAdapter(cf)
+        ' Dim cft As New DataTable
+        'sc.Open()
+        'cfa.Fill(cft)
+        'sc.Close()
+        'dl_base.DataSource = cft
+        'dl_base.DataBind()
+        'Dim ict As Integer
+        'for ict = 0 To dl_base.Items.Count - 1
+        ' Dim idcat As String = CType(dl_base.Items(ict).FindControl("lbl_category"), Label).Attributes("idc").ToString
+        'Dim cfq As New SqlCommand("SELECT q_id,q_string,q_type FROM cgi_teval_q WHERE q_pane='" + idcat + "' " + _
+        '                         "AND ciclo='" + getactualcycle() + "' AND id_quiz='3' ORDER BY q_order", sc)
+        'Dim cfqa As New SqlDataAdapter(cfq)
+        ' Dim cfqt As New DataTable
+        ' sc.Open()
+        ' cfqa.Fill(cfqt)
+        ' sc.Close()
+        ' Dim dl_subbase As DataList = CType(dl_base.Items(ict).FindControl("dl_quiz"), DataList)
+        ' dl_subbase.DataSource = cfqt
+        ' dl_subbase.DataBind()
+        ' Dim idq As Integer
+        ' For idq = 0 To dl_subbase.Items.Count - 1
+        ' Dim idqs As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Text
+        ' Dim qtype As String = CType(dl_subbase.Items(idq).FindControl("lbl_number"), Label).Attributes("toq").ToString
+        ' Dim mvqtype As MultiView = CType(dl_subbase.Items(idq).FindControl("mv_qtype"), MultiView)
+        ' Select Case qtype
+        '     Case 0
+        ' Dim rbl As Object = CType(dl_subbase.Items(idq).FindControl("rbl_answer"), RadioButtonList)
+        ' Dim fa As New SqlCommand("SELECT a_id,a_text FROM cgi_teval_a WHERE a_pane='" + idcat + "' AND a_q='" + idqs + "' " + _
+        '                          "AND ciclo='" + getactualcycle() + "' AND id_quiz='3' ORDER BY a_order", sc)
+        ' Dim faa As New SqlDataAdapter(fa)
+        'Dim fat As New DataTable
+        'sc.Open()
+        'faa.Fill(fat)
+        'sc.Close()
+        'rbl.datasource = fat
+        'rbl.datatextfield = "a_text"
+        'rbl.datavaluefield = "a_id"
+        'rbl.databind()
+        ' mvqtype.ActiveViewIndex = 0
+        '     Case 1
+        ' Dim rbl As Object = CType(dl_subbase.Items(idq).FindControl("cbxl_sm"), CheckBoxList)
+        ' Dim fa As New SqlCommand("SELECT a_id,a_text FROM cgi_teval_a WHERE a_pane='" + idcat + "' AND a_q='" + idqs + "' " + _
+        '                          "AND ciclo='" + getactualcycle() + "' AND id_quiz='3' ORDER BY a_order", sc)
+        ' Dim faa As New SqlDataAdapter(fa)
+        ' Dim fat As New DataTable
+        ' sc.Open()
+        ' faa.Fill(fat)
+        ' sc.Close()
+        ' rbl.datasource = fat
+        ' rbl.datatextfield = "a_text"
+        ' rbl.datavaluefield = "a_id"
+        ' rbl.databind()
+        ' mvqtype.ActiveViewIndex = 1
+        '     Case 2
+        ' mvqtype.ActiveViewIndex = 2
+        ' End Select
+        ' Next
+        ' Next
+        'cmd_send.CommandArgument = enviador.CommandArgument.ToString
+        ' mv_encuesta.ActiveViewIndex = 1
+    End Sub
+
+    Protected Sub lb_materia_a_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lb_materia_a.Click
+        do_command(lb_materia_a)
+    End Sub
+End Class

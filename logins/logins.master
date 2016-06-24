@@ -1,0 +1,110 @@
+﻿<%@ Master Language="VB" CodeFile="logins.master.vb" Inherits="logins" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    
+    <link rel="icon" type="image/gif" href="animated_favicon1.gif" />
+    <link href="logins.css" rel="stylesheet" type="text/css" />
+    <link href="../contents/css/pin.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'/>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="login_form" runat="server">
+        <asp:ToolkitScriptManager ID="tsm_logins" runat="server" EnableScriptGlobalization="True"></asp:ToolkitScriptManager>
+    <div>
+       
+        <table class="cell_spa_0" style="width: 100%; background: rgba(255,255,255,1)"><tr><td colspan="2" style="background-color: #B30430; border: 1px solid #B30430;">
+
+            <table style="margin:auto;"><tr><td style="padding: 5px 15px 5px 15px; vertical-align: middle; white-space: nowrap;"><asp:Label ID="lbl_nombre" runat="server" CssClass="boton_texto_topbar">:( Se ha perdido la sesión.</asp:Label></td>
+                <td><img src="../img/minikey.png" alt="" /></td><td style="padding: 5px 15px 5px 0px; vertical-align: middle; white-space: nowrap;"><asp:LinkButton ID="lb_updpass" runat="server" Text="Actualizar cuenta" CssClass="boton_texto_topbar" OnClick="lb_updpass_Click"/></td>
+                <td><img src="../img/close_coe.png" alt="Cerrar Sesion" style="vertical-align: middle;"/></td>
+                <td style="padding: 5px 15px 5px 0px; vertical-align: middle; white-space: nowrap;"><asp:LinkButton ID="lb_closesession" runat="server" CausesValidation="False" CssClass="boton_texto_topbar">Cerrar la sesion</asp:LinkButton></td>
+                </tr></table>
+
+
+            </td></tr><tr>
+            <td style="vertical-align: top; background: rgba(153,153,153,1); border: 1px solid #666; width: 200px; text-align:center;">
+               
+                <table style="margin:auto;"><tr><td style="vertical-align: top; text-align:center;"><table style="margin:auto;"><tr><td style="padding: 3px; text-align:center;"><asp:Image ID="img_usuario" runat="server" Width="100"/>
+                    </td></tr></table></td></tr><tr><td style="vertical-align: top; padding-bottom: 150px;">
+                        <asp:GridView ID="gv_topmenu" runat="server" AutoGenerateColumns="false" ShowHeader="false" ShowFooter="false" GridLines="None" Width="200px">
+                            <Columns>
+                                <asp:Templatefield><ItemTemplate>
+                                    <div class='<%# DataBinder.Eval(Container.DataItem, "css")%>'>
+                                    <asp:Label ID="lbl_topmenu" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre")%>'></asp:Label>
+                                    <asp:HiddenField ID="hf_cabezalnum" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "cabezal_num")%>' /></div>
+                                    <asp:HiddenField ID="hf_usuario" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "usuario")%>' /></div>
+
+                                    <asp:Accordion ID="acc_menu" runat="server" CssClass="accordion" SelectedIndex="-1" RequireOpenedPane="false" HeaderCssClass="accordeon_menu_cabezal" 
+                                        HeaderSelectedCssClass="accordeon_menu_cabezal_seleccionado" FadeTransitions="true" TransitionDuration="250" FramesPerSecond="40" SuppressHeaderPostbacks="true">
+                                        <Panes>
+                                            <asp:AccordionPane ID="ap_menu" runat="server" >
+                                                <Header>
+                                                   <div id="indicator"></div>
+                                                </Header>
+                                                <Content>
+                                                    <asp:GridView ID="gv_submenu" runat="server" AutoGenerateColumns="false" ShowHeader="false" ShowFooter="false" GridLines="None" Width="100%">
+                                                        <Columns>
+                                                            <asp:TemplateField><ItemTemplate>
+                                                                <table style="width: 100%; margin: 0 auto;"><tr><td class='<%# DataBinder.Eval(Container.DataItem, "css")%>'>
+                                                                <asp:LinkButton ID="lb_submenu" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre")%>' 
+                                                                CommandArgument='<%# DataBinder.Eval(Container.DataItem, "ruta")%>' CssClass="boton_texto_menu"
+                                                                Enable='<%# DataBinder.Eval(Container.DataItem, "enable")%>' visible='<%# DataBinder.Eval(Container.DataItem, "active")%>'
+                                                                Tooltip='<%# DataBinder.Eval(Container.DataItem, "extenso")%>' OnClick="lb_submenu_Click" CommandName='<%# DataBinder.Eval(Container.DataItem, "itembound")%>'></asp:LinkButton>
+                                                                </td></tr></table>
+                                                            </ItemTemplate></asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+
+                                                </Content>
+                                            </asp:AccordionPane>
+                                        </Panes>
+                                    </asp:Accordion>
+                                  
+                                 </ItemTemplate></asp:Templatefield>
+                            </Columns>
+                        </asp:GridView></td></tr></table>
+        </td><td style="vertical-align: top; width: 100%; padding-bottom:200px;">
+        
+        <asp:ContentPlaceHolder id="cph_content" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </td></tr></table>
+    </div>
+        <asp:panel ID="p_foot" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center; top: 12px; left: 0px; position: absolute;" CssClass="bottombar_shadow">
+     <div><table class="centrado"><tr><td><div style="position: relative; bottom:80px; right: 0px; height: 70px;"><img src="../img/logosolo.png" alt="Universidad Tecnologica de Jalisco" width="370"/></div></td>
+         <td>
+
+             <div><ul><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                 <a href="http://www.sep.gob.mx/" target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_sep.png" 
+                     border="0"></a></li><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                         <a href="http://www.jalisco.gob.mx/es/dependencias/secretaria-de-innovacion-ciencia-y-tecnologia" target="_blank">
+                             <img alt="Inovacion" src="http://www.utj.edu.mx/images/imagen_institucional/partners/Inovacion.png" height="50" 
+                                 width="152"></a></li><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                                     <a href="http://www.jaltec.mx/" target="_blank"><img alt="logo jaltec 2013-75" 
+                                         src="http://www.utj.edu.mx/images/banners/logo_jaltec_2013-75.png" height="50" width="65"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.abs-qe.com/es/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_eagle.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.anab.org/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_anab.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.abs-qe.com/es/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_abs.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                     <a href="http://www.inmujeres.gob.mx/index.php/modelo-de-equidad-de-genero" target="_blank"><img alt="logo" 
+                         src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_shape.png"></a></li></ul></div><div class="clearbreak"></div>
+
+         </td></tr></table></div></asp:panel>
+        <asp:AlwaysVisibleControlExtender ID="p_foot_wme" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_foot" VerticalSide="Bottom">
+        </asp:AlwaysVisibleControlExtender>
+    </form>
+</body>
+</html>

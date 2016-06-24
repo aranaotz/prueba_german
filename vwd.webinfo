@@ -1,0 +1,16 @@
+﻿<?xml version="1.0"?>
+<!-- 
+  Visual Studio global web project settings.
+-->
+<VisualWebDeveloper>
+
+  <comReferences>
+    <reference Name="interop.crystalreportviewerwebreportsourcelib" ID="{14173BA7-071D-4216-8C9B-EAB29A55E2D4}\13.0\0"/>
+    <reference Name="interop.crqueryengine" ID="{E4B81D51-FB89-4D07-84A3-00BA9B71D76E}\13.0\0"/>
+    <reference Name="interop.crystalreportviewerexportlib" ID="{5C21A516-C6AC-42F2-A7B7-846FFE1B122A}\13.0\0"/>
+    <reference Name="interop.emfgenlib" ID="{C097B4CF-2CEA-442F-B025-610D2B0C05C8}\13.0\0"/>
+    <reference Name="interop.crystalactivexreportviewerlib13" ID="{B816E96D-D151-4000-BADB-53A2D8F3FC65}\13.0\0"/>
+    <reference Name="interop.crdesignerlib" ID="{C0AA5023-C763-4A4B-AFED-ADCF78D6C08B}\13.0\0"/>
+    <reference Name="interop.crystalreportsdtsagentlib" ID="{3D5D05F6-E97D-43A0-90DC-5D8A6C6C6DB1}\13.0\0"/>
+  </comReferences>
+</VisualWebDeveloper>

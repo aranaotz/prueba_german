@@ -1,0 +1,199 @@
+﻿<%@ Page Title="Informacion del Estudiante de Actual ciclo - SADIN CGI" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="info_student.aspx.vb" Inherits="info_student" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <div style="font-family: verdana; font-size: 7.5pt; color: #000066">
+        <table style="width:100%;">
+            <tr>
+                <td style="color: #CC3300; padding: 10px">
+                    En este apartado podrás revisar tu horario e información importante del ciclo 
+                    actual y anteriores.</td>
+            </tr>
+            <tr>
+                <td style="color: #FFFFFF; padding: 5px; background-color: #666666; font-weight: bold;">
+                    <table align="center" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                INFORMACION IMPORTANTE DEL CICLO
+                            </td>
+                            <td style="padding-right: 10px; padding-left: 10px">
+                                <asp:Label ID="lbl_ciclo_1" runat="server"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top; text-align: center; padding: 10px">
+                    <asp:GridView ID="gv_archivos" runat="server" AutoGenerateColumns="False" 
+                        HorizontalAlign="Center">
+                        <Columns>
+                            <asp:TemplateField HeaderText="Titulo de Documento" ItemStyle-HorizontalAlign="Left"><ItemTemplate>
+                            <asp:Label ID="lbl_nombre" runat="server" Text='<%# DataBinder.Eval(Container.DataItem,"description") %>'></asp:Label>
+                            </ItemTemplate></asp:TemplateField>
+                            <asp:TemplateField HeaderText="Bajar / leer"><ItemTemplate>
+                            <asp:ImageButton ID="ib_download" runat="server" ImageUrl="~/sadin_stu/img/item.gif" CommandArgument='<%# DataBinder.Eval(Container.DataItem,"docid") %>' OnClick="downdoc"/>
+                            </ItemTemplate></asp:TemplateField>
+                        </Columns>
+                        <HeaderStyle BackColor="#3D8696" ForeColor="White" Height="25px" />
+                    </asp:GridView>
+                  </td>
+            </tr>
+            <tr>
+                <td style="color: #FFFFFF; padding: 5px; background-color: #666666; font-weight: bold;">
+                    <table align="center" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                HORARIO DE 
+                            </td>
+                            <td style="padding-right: 10px; padding-left: 10px">
+                                <asp:Label ID="lbl_grupo" runat="server"></asp:Label>
+                            </td>
+                            <td>
+                                DEL CICLO</td>
+                            <td style="padding-right: 10px; padding-left: 10px">
+                                <asp:Label ID="lbl_ciclo" runat="server"></asp:Label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 5px">
+                  <asp:GridView ID="gv_schedgrupo" runat="server" AutoGenerateColumns="False" 
+                        HorizontalAlign="Center">
+                                <Columns>
+                                   <asp:BoundField HeaderText="HORA" DataField="full_alias" >
+                                       <ItemStyle BackColor="#3D8696" ForeColor="White" HorizontalAlign="Left" />
+                                    </asp:BoundField>
+                                    <asp:TemplateField HeaderText="LUNES">
+                                        <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_11" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_12" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_13" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="MARTES">
+                                     <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_21" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_22" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_23" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate></asp:TemplateField>
+                                    <asp:TemplateField HeaderText="MIERCOLES">
+                                     <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_31" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_32" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_33" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate></asp:TemplateField>
+                                    <asp:TemplateField HeaderText="JUEVES">
+                                     <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_41" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_42" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_43" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate></asp:TemplateField>
+                                    <asp:TemplateField HeaderText="VIERNES">
+                                     <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_51" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_52" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_53" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate></asp:TemplateField>
+                                    <asp:TemplateField HeaderText="SABADO">
+                                     <ItemTemplate>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_61" runat="server" Font-Bold="True"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_62" runat="server" Font-Italic="True" ForeColor="#660033"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 1px; vertical-align: middle; text-align: center;">
+                                                        <asp:Label ID="lbl_63" runat="server" Font-Bold="True" ForeColor="Red"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </ItemTemplate></asp:TemplateField>
+                                </Columns>
+                                <HeaderStyle BackColor="#333333" ForeColor="White" Height="24px" />
+                            </asp:GridView>
+                  </td>
+            </tr>
+            </table>
+    </div>
+</asp:Content>
+

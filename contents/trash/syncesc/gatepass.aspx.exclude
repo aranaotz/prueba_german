@@ -1,0 +1,469 @@
+﻿<%@ Page Title="Seguiminto de tramite de Pre-Inscripcion - UTSyn 2014" Language="VB" MasterPageFile="~/syncesc/syncesc.master" AutoEventWireup="false" CodeFile="gatepass.aspx.vb" Inherits="gatepass" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<%@ Register assembly="AjaxControls" namespace="AjaxControls" tagprefix="asp2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div class="div_principal" style="margin-bottom: 40px;">
+        <h1 class="etiqueta_titulo">Consulta de Aspirantes</h1>
+        <%'<asp:UpdatePanel ID="up_recolecting" runat="server"><ContentTemplate> %>
+        <table class="tabla_busqueda"><tr><td class="top_tb">Busca nombre, apellido o numero de solicitud.</td></tr><tr><td>
+                    <table><tr><td><asp:TextBox ID="tbx_buscar" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                        <asp:FilteredTextBoxExtender ID="tbx_buscar_ftbe" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="!&quot;#$%&amp;/()=?¿'+*][}{-:;,." TargetControlID="tbx_buscar">
+                        </asp:FilteredTextBoxExtender>
+                        <asp:RequiredFieldValidator ID="rfv_buscar" runat="server" ControlToValidate="tbx_buscar" Display="None" ErrorMessage="Al menos una letra o numero a buscar" SetFocusOnError="True" ValidationGroup="busqueda"></asp:RequiredFieldValidator>
+                        <asp:ValidatorCalloutExtender ID="rfv_buscar_vcoe" runat="server" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rfv_buscar" WarningIconImageUrl="~/img/alertm.png" CloseImageUrl="~/img/close_coe.png" PopupPosition="BottomRight">
+                        </asp:ValidatorCalloutExtender>
+                        <asp:TextBoxWatermarkExtender ID="tbx_buscar_wme" runat="server" Enabled="True" TargetControlID="tbx_buscar" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                               </td><td style="padding: 0px 10px 0px 5px; margin: auto;">
+                        <asp:ImageButton ID="ib_go" runat="server" ImageUrl="~/img/arrowlogin_.png" Width="80%" style="vertical-align: middle;" ValidationGroup="busqueda"/>
+                    </td></tr></table>
+
+                </td></tr><tr><td>
+        <asp:MultiView ID="mv_generales" runat="server">
+            <asp:View ID="v_busqueda" runat="server">
+                
+            </asp:View>
+            <asp:View ID="v_resultados" runat="server">
+                <div><table class="cell_spa_0"><tr><td style="padding: 10px 0px 0px 0px;">
+                        <table class="cell_spa_0"><tr><td><div class="texto_vertical"><asp:Label ID="lbl_rotate" runat="server"></asp:Label></div></td>
+                        <td style="vertical-align: top;"><asp:GridView ID="gv_resultados" runat="server" EmptyDataText=":( No hemos encontrado resultados" 
+                        EmptyDataRowStyle-CssClass="triste" AutoGenerateColumns="False" GridLines="none" ShowHeader="false" HorizontalAlign="center"
+                        style="position: absolute;">
+                        <Columns>
+                        <asp:TemplateField><ItemTemplate><table class="cell_spa_0"><tr><td style="padding: 2px 1px 0px 1px; font-size: 1.0em;">
+                        <asp:LinkButton ID="lb_select" runat="server" CssClass="boton_texto_dentro_nvo" 
+                        CommandArgument='<%# DataBinder.Eval(Container.DataItem, "codigo_unico")%>'
+                        Text='<%# DataBinder.Eval(Container.DataItem, "nombre_completo")%>' OnClick="lb_thisis_Click"></asp:LinkButton></td></tr></table>
+                        </ItemTemplate></asp:TemplateField>
+                        </Columns>
+                        </asp:GridView>
+                        </td></tr></table>                               
+                                                       
+                        <%'<asp:GridView ID="gv_resultados" runat="server" AutoGenerateColumns="False" ShowHeader="False" GridLines="None" EmptyDataText="...porque no hemos encontrado nada..."><Columns>
+                            '<asp:BoundField DataField="nombre_completo" >
+                            '<ItemStyle HorizontalAlign="Left" />
+                            '</asp:BoundField>
+                            '<asp:TemplateField><ItemTemplate>
+                            '<table><tr><td class="menu_submenu"><asp:LinkButton ID="lb_thisis" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "sexo")%' CssClass="boton_texto_dentro" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "codigo_unico")%' OnClick="lb_thisis_Click"></asp:LinkButton></td></tr></table>
+                            '</ItemTemplate>
+                            '<ItemStyle Font-Size="0.8em" />
+                            '</asp:TemplateField>
+                            '</Columns></asp:GridView> %></td></tr></table>
+                </div>
+            </asp:View>
+            <asp:View ID="v_generales" runat="server">
+                <asp:FormView ID="fv_generales" runat="server" style="margin-top: 20px;"><ItemTemplate>
+                <table class="cell_spa_0"><tr><td style="padding: 10px;">
+                    <asp:Label ID="lbl_fullname" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre_completo")%>' CssClass="titulo_rojo"></asp:Label><br />
+                    <asp:Label ID="lbl_fds" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "fecha", "{0:D}")%>' CssClass="titulo_rojo" style="font-size: 0.8em"></asp:Label><br />
+                    <asp:Label ID="lbl_ingreso" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "ingreso")%>' CssClass="titulo_rojo" style="font-size: 0.8em"></asp:Label>
+                        </td></tr><tr><td><table class="cell_spa_0" style="margin: auto;"><tr><td><asp:Image ID="img_user" runat="server" ImageUrl='<%# Eval("foto")%>' Height="150px" Width="150px" /></td>
+                        <td rowspan="2" style="padding: 5px"><asp:Image ID="img_qr" runat="server" ImageUrl='<%# DataBinder.Eval(Container.DataItem, "qrcode")%>'/></td>
+                        </tr><tr><td>
+                    <asp:FileUpload ID="fu_imagen" runat="server" />
+                                                    <asp:RegularExpressionValidator ID="rev_imagen" runat="server" ControlToValidate="fu_imagen" ErrorMessage="Archivo de imagen inválido!"
+                                                        ValidationExpression= "^([0-9a-zA-Z_\-~ :\\])+(.jpg|.JPG|.jpeg|.JPEG|.bmp|.BMP|.gif|.GIF|.png|.PNG)$" Display="None" ValidationGroup="guardareditar" Enabled="false"></asp:RegularExpressionValidator> 
+                                                    <asp:ValidatorCalloutExtender ID="rev_imagen_vco" runat="server" Enabled="True" TargetControlID="rev_imagen">
+                                                    </asp:ValidatorCalloutExtender>
+                                                    <asp:RequiredFieldValidator ID="rfv_fu" runat="server" ControlToValidate="fu_imagen" Display="None" ErrorMessage="Es necesario que especifique una imagen!" ValidationGroup="guardareditar" Enabled='<%# DataBinder.Eval(Container.DataItem, "enablecheck")%>'></asp:RequiredFieldValidator>
+                                                    <asp:ValidatorCalloutExtender ID="rfv_fu_vco" runat="server" Enabled="True" TargetControlID="rfv_fu">
+                                                    </asp:ValidatorCalloutExtender></td>
+                        </tr></table></td></tr>
+
+                       <tr><td><table><tr><td class="titulo_fila_" colspan="2" style="text-align: left;">
+                           <asp:checkboxlist ID="cbx_documentos" runat="server" CellPadding="2" CellSpacing="2" RepeatColumns="2"></asp:checkboxlist>
+                                          </td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Apellido Paterno</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_apaterno" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "apellido_paterno")%>'></asp:TextBox>
+                                   <asp:FilteredTextBoxExtender ID="tbx_apaterno_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_apaterno">
+                                   </asp:FilteredTextBoxExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_apaterno_wme" runat="server" Enabled="True" TargetControlID="tbx_apaterno" WatermarkCssClass="wmlogin" WatermarkText="...">
+                                   </asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Apellido Materno</td><td class="campos_derecha_"><asp:TextBox ID="tbx_amaterno" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "apellido_materno")%>'></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_amaterno_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_amaterno">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender1" runat="server" Enabled="True" TargetControlID="tbx_amaterno" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Nombres</td><td class="campos_derecha_"><asp:TextBox ID="tbx_nombres" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "nombre")%>'></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_nombres_FilteredTextBoxExtender" runat="server" Enabled="True" FilterMode="InvalidChars" InvalidChars="1234567890!&quot;#$%&amp;/()=?¡'+*}]{[-_.:,;" TargetControlID="tbx_nombres">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender2" runat="server" Enabled="True" TargetControlID="tbx_nombres" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Sexo</td>
+                               <td class="campos_derecha_">
+                                   <asp:DropDownList ID="ddl_sexo" runat="server" CssClass="droptransparent">
+                                   </asp:DropDownList>
+                               </td>
+                           </tr>
+                           <tr><td class="titulo_fila_">CURP</td><td class="campos_derecha_"><asp:TextBox ID="tbx_curp" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "curp")%>'></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender3" runat="server" Enabled="True" TargetControlID="tbx_curp" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Nacimiento</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_fnac" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "fdn","{0:dd/MM/yyyy}")%>'></asp:TextBox>
+                                       <asp:CalendarExtender ID="tbx_fnac_ce" runat="server" Enabled="True" Format="dd/MM/yyyy" PopupPosition="Right" TargetControlID="tbx_fnac">
+                                       </asp:CalendarExtender>
+                                       <asp:RequiredFieldValidator ID="rfv_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="¿Tu fecha de nacimiento?" InitialValue="dd/mm/aaaa" SetFocusOnError="True" validationgroup="v0"></asp:RequiredFieldValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn" TargetControlID="rfv_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                       <asp:RegularExpressionValidator ID="rev_fdn" runat="server" ControlToValidate="tbx_fnac" Display="None" ErrorMessage="No parece una fecha válida!" ValidationExpression="(((0[1-9]|[12][0-9]|3[01])([/])(0[13578]|10|12)([/])(\d{4}))|(([0][1-9]|[12][0-9]|30)([/])(0[469]|11)([/])(\d{4}))|((0[1-9]|1[0-9]|2[0-8])([/])(02)([/])(\d{4}))|((29)(\.|-|\/)(02)([/])([02468][048]00))|((29)([/])(02)([/])([13579][26]00))|((29)([/])(02)([/])([0-9][0-9][0][48]))|((29)([/])(02)([/])([0-9][0-9][2468][048]))|((29)([/])(02)([/])([0-9][0-9][13579][26])))" validationgroup="v0"></asp:RegularExpressionValidator>
+                                       <asp:ValidatorCalloutExtender ID="vco_fdn2" TargetControlID="rev_fdn" runat="server" Enabled="True" CssClass="customCalloutStyle" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_general5_wme" runat="server" Enabled="True" TargetControlID="tbx_fnac" WatermarkText="dd/mm/aaaa" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Estado Civil</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_civil" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "civil")%>' Enabled="False"></asp:TextBox><asp:TextBoxWatermarkExtender ID="tbx_civil_wme" runat="server" Enabled="True" TargetControlID="tbx_civil" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Domicilio: Calle y Número</td><td class="campos_derecha_"><asp:TextBox ID="tbx_domicilio" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "domicilio")%>'></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender4" runat="server" Enabled="True" TargetControlID="tbx_domicilio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Colonia</td><td class="campos_derecha_"><asp:TextBox ID="tbx_colonia" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "colonia")%>'></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender5" runat="server" Enabled="True" TargetControlID="tbx_colonia" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Municipio</td><td class="campos_derecha_"><asp:TextBox ID="tbx_municipio" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "municipio")%>'></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender6" runat="server" Enabled="True" TargetControlID="tbx_municipio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Código postal</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_cp" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                                   <asp:FilteredTextBoxExtender ID="tbx_cp_ftbe" runat="server" Enabled="True" TargetControlID="tbx_cp" ValidChars="0123456789">
+                                   </asp:FilteredTextBoxExtender>
+                                   <asp:TextBoxWatermarkExtender ID="tbx_cp_wme" runat="server" Enabled="True" TargetControlID="tbx_cp" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Telefono</td><td class="campos_derecha_"><asp:TextBox ID="tbx_telefono" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "telefono")%>'></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_telefono_FilteredTextBoxExtender" runat="server" Enabled="True" TargetControlID="tbx_telefono" ValidChars="1234567890">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender7" runat="server" Enabled="True" TargetControlID="tbx_telefono" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Movil</td><td class="campos_derecha_"><asp:TextBox ID="tbx_movil" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "celular")%>'></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_movil_FilteredTextBoxExtender" runat="server" Enabled="True" TargetControlID="tbx_movil" ValidChars="1234567890">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender8" runat="server" Enabled="True" TargetControlID="tbx_movil" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Correo electrónico</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_mail" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "correo")%>'></asp:TextBox>
+                               <asp:RegularExpressionValidator ID="rev_email" runat="server" ControlToValidate="tbx_mail" Display="None" ErrorMessage="No parece un correo valido!" SetFocusOnError="True" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
+                               <asp:ValidatorCalloutExtender ID="rev_email_vcoe" runat="server" CloseImageUrl="~/img/close_coe.png" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rev_email" WarningIconImageUrl="~/img/alertm.png">
+                               </asp:ValidatorCalloutExtender>
+                               <asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender11" runat="server" Enabled="True" TargetControlID="tbx_mail" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Tipo Sangre</td><td class="campos_derecha_">
+                               <asp:DropDownList ID="ddl_sangre" runat="server" CssClass="droptransparent">
+                               </asp:DropDownList>
+                               </td></tr>
+                           <tr>
+                               <td class="titulo_fila_">NSS</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_imss" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "nss")%>'></asp:TextBox>
+                                           <asp:TextBoxWatermarkExtender ID="tbx_imss_wme" runat="server" Enabled="True" TargetControlID="tbx_imss" WatermarkText="XX-XX-XX-XXXX-X" WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Enfermedades</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_enfermedades" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "padecimientos")%>'></asp:TextBox></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Lugar de Naciomiento</td>
+                               <td class="campos_derecha_"><asp:DropDownList ID="ddl_nacimiento" runat="server" CssClass="droptransparent" Width="400px"></asp:DropDownList></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">¿Trabaja?</td>
+                               <td class="campos_derecha_">
+                                   <asp:CheckBox ID="cbx_trabaja" runat="server" Text="Si" />
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">¿Dónde?</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_donde" runat="server" CssClass="tbxlogin_fill" ></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_donde_ftbe" runat="server" Enabled="True" TargetControlID="tbx_donde" InvalidChars="'¿?&quot;#$!-_*+" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_donde_wme" runat="server" Enabled="True" TargetControlID="tbx_donde" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Sede</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_sede" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "sede")%>'></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_sede_ftbe" runat="server" Enabled="True" TargetControlID="tbx_sede" InvalidChars="1234567890!&quot;#$%&/()='?¿¡><,;.:_-{}[]´+¨*" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_sede_wme" runat="server" Enabled="True" TargetControlID="tbx_sede" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr><td class="titulo_fila_">Carrera</td><td class="campos_derecha_"><asp:TextBox ID="tbx_carrera" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "carrera")%>' Enabled="False"></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender9" runat="server" Enabled="True" TargetControlID="tbx_carrera" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr><td class="titulo_fila_">Especialidad</td><td class="campos_derecha_"><asp:TextBox ID="tbx_especialidad" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "especialidad")%>' Enabled="False"></asp:TextBox><asp:TextBoxWatermarkExtender ID="TextBoxWatermarkExtender10" runat="server" Enabled="True" TargetControlID="tbx_especialidad" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td></tr>
+                           <tr>
+                               <td class="titulo_fila_">Turno</td>
+                               <td class="campos_derecha_">
+                                   <asp:DropDownList ID="ddl_turno" runat="server" CssClass="droptransparent">
+                                       
+                                       <asp:ListItem>Matutino</asp:ListItem>
+                                       <asp:ListItem>Vespertino</asp:ListItem>
+                                       
+                                   </asp:DropDownList>
+                               </td>
+                           </tr>
+                           
+                           <tr>
+                               <td class="titulo_fila_">Padre o tutor</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_padre" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "mptutor")%>'></asp:TextBox></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Ocupación tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_tocupacion" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_tocupacion_ftbe" runat="server" Enabled="True" TargetControlID="tbx_tocupacion" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_tocupacion_wme" runat="server" Enabled="True" TargetControlID="tbx_tocupacion" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Dirección tutor</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_tdireccion" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_tdireccion_ftbe" runat="server" Enabled="True" TargetControlID="tbx_tdireccion" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_tdireccion_wme" runat="server" Enabled="True" TargetControlID="tbx_tdireccion" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Colonia</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_tcolonia" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_tcolonia_ftbe" runat="server" Enabled="True" TargetControlID="tbx_tcolonia" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_tcolonia_wme" runat="server" Enabled="True" TargetControlID="tbx_tcolonia" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Municipio</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_tmnpio" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_tmnpio_ftbe" runat="server" Enabled="True" TargetControlID="tbx_tmnpio" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_tmnpio_wme" runat="server" Enabled="True" TargetControlID="tbx_tmnpio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Estado</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_testado" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_testado_ftbe" runat="server" Enabled="True" TargetControlID="tbx_testado" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_testado_wme" runat="server" Enabled="True" TargetControlID="tbx_testado" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Código postal</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_tcp" runat="server" CssClass="tbxlogin_fill"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_tcp_ftbe" runat="server" Enabled="True" TargetControlID="tbx_tcp" InvalidChars="'*-_:][}{" FilterMode="InvalidChars">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_tcp_wme" runat="server" Enabled="True" TargetControlID="tbx_tcp" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Tel. tutor</td>
+                               <td class="campos_derecha_"><asp:TextBox ID="tbx_telpadre" runat="server" CssClass="tbxlogin_fill" Text='<%# DataBinder.Eval(Container.DataItem, "ptelefono")%>'></asp:TextBox></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Preparatoria</td>
+                               <td class="campos_derecha_"><asp:DropDownList ID="ddl_preparatoria" runat="server" CssClass="droptransparent" Width="400px"></asp:DropDownList></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Inicio - final preparatoria</td>
+                               <td class="campos_derecha_"><table class="cell_spa_0"><tr><td>
+                                   <asp:DropDownList ID="ddl_mesde" runat="server" CssClass="droptransparent">
+                                       <asp:ListItem Value="01">Enero</asp:ListItem>
+                                       <asp:ListItem Value="02">Febrero</asp:ListItem>
+                                       <asp:ListItem Value="03">Marzo</asp:ListItem>
+                                       <asp:ListItem Value="04">Abril</asp:ListItem>
+                                       <asp:ListItem Value="05">Mayo</asp:ListItem>
+                                       <asp:ListItem Value="06">Junio</asp:ListItem>
+                                       <asp:ListItem Value="07">Julio</asp:ListItem>
+                                       <asp:ListItem Value="08">Agosto</asp:ListItem>
+                                       <asp:ListItem Value="09">Septiembre</asp:ListItem>
+                                       <asp:ListItem Value="10">Octubre</asp:ListItem>
+                                       <asp:ListItem Value="11">Noviembre</asp:ListItem>
+                                       <asp:ListItem Value="12">Diciembre</asp:ListItem>
+                                   </asp:DropDownList></td><td>
+                                   <asp:DropDownList ID="ddl_anode" runat="server" CssClass="droptransparent">
+                                       <asp:ListItem Value="1970">1970</asp:ListItem>
+                                       <asp:ListItem Value="1971">1971</asp:ListItem>
+                                       <asp:ListItem Value="1972">1972</asp:ListItem>
+                                       <asp:ListItem Value="1973">1973</asp:ListItem>
+                                       <asp:ListItem Value="1974">1974</asp:ListItem>
+                                       <asp:ListItem Value="1975">1975</asp:ListItem>
+                                       <asp:ListItem Value="1976">1976</asp:ListItem>
+                                       <asp:ListItem Value="1977">1977</asp:ListItem>
+                                       <asp:ListItem Value="1978">1978</asp:ListItem>
+                                       <asp:ListItem Value="1979">1979</asp:ListItem>
+                                       <asp:ListItem Value="1980">1980</asp:ListItem>
+                                       <asp:ListItem Value="1981">1981</asp:ListItem>
+                                       <asp:ListItem Value="1982">1982</asp:ListItem>
+                                       <asp:ListItem Value="1983">1983</asp:ListItem>
+                                       <asp:ListItem Value="1984">1984</asp:ListItem>
+                                       <asp:ListItem Value="1985">1985</asp:ListItem>
+                                       <asp:ListItem Value="1986">1986</asp:ListItem>
+                                       <asp:ListItem Value="1987">1987</asp:ListItem>
+                                       <asp:ListItem Value="1988">1988</asp:ListItem>
+                                       <asp:ListItem Value="1989">1989</asp:ListItem>
+                                       <asp:ListItem Value="1990">1990</asp:ListItem>
+                                       <asp:ListItem Value="1991">1991</asp:ListItem>
+                                       <asp:ListItem Value="1992">1992</asp:ListItem>
+                                       <asp:ListItem Value="1993">1993</asp:ListItem>
+                                       <asp:ListItem Value="1994">1994</asp:ListItem>
+                                       <asp:ListItem Value="1995">1995</asp:ListItem>
+                                       <asp:ListItem Value="1996">1996</asp:ListItem>
+                                       <asp:ListItem Value="1997">1997</asp:ListItem>
+                                       <asp:ListItem Value="1998">1998</asp:ListItem>
+                                       <asp:ListItem Value="1999">1999</asp:ListItem>
+                                       <asp:ListItem Value="2000">2000</asp:ListItem>
+                                       <asp:ListItem Value="2001">2001</asp:ListItem>
+                                       <asp:ListItem Value="2002">2002</asp:ListItem>
+                                       <asp:ListItem Value="2003">2003</asp:ListItem>
+                                       <asp:ListItem Value="2004">2004</asp:ListItem>
+                                       <asp:ListItem Value="2005">2005</asp:ListItem>
+                                       <asp:ListItem Value="2006">2006</asp:ListItem>
+                                       <asp:ListItem Value="2007">2007</asp:ListItem>
+                                       <asp:ListItem Value="2008">2008</asp:ListItem>
+                                       <asp:ListItem Value="2009">2009</asp:ListItem>
+                                       <asp:ListItem Value="2010">2010</asp:ListItem>
+                                       <asp:ListItem Value="2011">2011</asp:ListItem>
+                                       <asp:ListItem Value="2012">2012</asp:ListItem>
+                                       <asp:ListItem Value="2013">2013</asp:ListItem>
+                                       <asp:ListItem Value="2014">2014</asp:ListItem>
+                                       
+                                       </asp:DropDownList></td><td> al </td><td>
+                                   <asp:DropDownList ID="ddl_meshasta" runat="server" CssClass="droptransparent">
+                                       <asp:ListItem Value="01">Enero</asp:ListItem>
+                                       <asp:ListItem Value="02">Febrero</asp:ListItem>
+                                       <asp:ListItem Value="03">Marzo</asp:ListItem>
+                                       <asp:ListItem Value="04">Abril</asp:ListItem>
+                                       <asp:ListItem Value="05">Mayo</asp:ListItem>
+                                       <asp:ListItem Value="06">Junio</asp:ListItem>
+                                       <asp:ListItem Value="07">Julio</asp:ListItem>
+                                       <asp:ListItem Value="08">Agosto</asp:ListItem>
+                                       <asp:ListItem Value="09">Septiembre</asp:ListItem>
+                                       <asp:ListItem Value="10">Octubre</asp:ListItem>
+                                       <asp:ListItem Value="11">Noviembre</asp:ListItem>
+                                       <asp:ListItem Value="12">Diciembre</asp:ListItem>
+                                   </asp:DropDownList></td><td>
+                                   <asp:DropDownList ID="ddl_anohasta" runat="server" CssClass="droptransparent">
+                                       <asp:ListItem Value="1970">1970</asp:ListItem>
+                                       <asp:ListItem Value="1971">1971</asp:ListItem>
+                                       <asp:ListItem Value="1972">1972</asp:ListItem>
+                                       <asp:ListItem Value="1973">1973</asp:ListItem>
+                                       <asp:ListItem Value="1974">1974</asp:ListItem>
+                                       <asp:ListItem Value="1975">1975</asp:ListItem>
+                                       <asp:ListItem Value="1976">1976</asp:ListItem>
+                                       <asp:ListItem Value="1977">1977</asp:ListItem>
+                                       <asp:ListItem Value="1978">1978</asp:ListItem>
+                                       <asp:ListItem Value="1979">1979</asp:ListItem>
+                                       <asp:ListItem Value="1980">1980</asp:ListItem>
+                                       <asp:ListItem Value="1981">1981</asp:ListItem>
+                                       <asp:ListItem Value="1982">1982</asp:ListItem>
+                                       <asp:ListItem Value="1983">1983</asp:ListItem>
+                                       <asp:ListItem Value="1984">1984</asp:ListItem>
+                                       <asp:ListItem Value="1985">1985</asp:ListItem>
+                                       <asp:ListItem Value="1986">1986</asp:ListItem>
+                                       <asp:ListItem Value="1987">1987</asp:ListItem>
+                                       <asp:ListItem Value="1988">1988</asp:ListItem>
+                                       <asp:ListItem Value="1989">1989</asp:ListItem>
+                                       <asp:ListItem Value="1990">1990</asp:ListItem>
+                                       <asp:ListItem Value="1991">1991</asp:ListItem>
+                                       <asp:ListItem Value="1992">1992</asp:ListItem>
+                                       <asp:ListItem Value="1993">1993</asp:ListItem>
+                                       <asp:ListItem Value="1994">1994</asp:ListItem>
+                                       <asp:ListItem Value="1995">1995</asp:ListItem>
+                                       <asp:ListItem Value="1996">1996</asp:ListItem>
+                                       <asp:ListItem Value="1997">1997</asp:ListItem>
+                                       <asp:ListItem Value="1998">1998</asp:ListItem>
+                                       <asp:ListItem Value="1999">1999</asp:ListItem>
+                                       <asp:ListItem Value="2000">2000</asp:ListItem>
+                                       <asp:ListItem Value="2001">2001</asp:ListItem>
+                                       <asp:ListItem Value="2002">2002</asp:ListItem>
+                                       <asp:ListItem Value="2003">2003</asp:ListItem>
+                                       <asp:ListItem Value="2004">2004</asp:ListItem>
+                                       <asp:ListItem Value="2005">2005</asp:ListItem>
+                                       <asp:ListItem Value="2006">2006</asp:ListItem>
+                                       <asp:ListItem Value="2007">2007</asp:ListItem>
+                                       <asp:ListItem Value="2008">2008</asp:ListItem>
+                                       <asp:ListItem Value="2009">2009</asp:ListItem>
+                                       <asp:ListItem Value="2010">2010</asp:ListItem>
+                                       <asp:ListItem Value="2011">2011</asp:ListItem>
+                                       <asp:ListItem Value="2012">2012</asp:ListItem>
+                                       <asp:ListItem Value="2013">2013</asp:ListItem>
+                                       <asp:ListItem Value="2014">2014</asp:ListItem>
+                                   </asp:DropDownList></td></tr></table></td>
+                           </tr>
+                           <tr>
+                               <td class="titulo_fila_">Promedio obtenido</td>
+                               <td class="campos_derecha_">
+                                   <asp:TextBox ID="tbx_promedio" runat="server" CssClass="tbxlogin_fill" MaxLength="4"></asp:TextBox>
+                               <asp:FilteredTextBoxExtender ID="tbx_promedio_ftbe" runat="server" Enabled="True" TargetControlID="tbx_promedio" FilterMode="ValidChars" ValidChars="1234567890.">
+                               </asp:FilteredTextBoxExtender>
+                               <asp:TextBoxWatermarkExtender ID="tbx_promedio_wme" runat="server" Enabled="True" TargetControlID="tbx_promedio" WatermarkText="..." WatermarkCssClass="wmlogin"></asp:TextBoxWatermarkExtender>
+                               </td>
+                           </tr>
+                </table></td></tr><tr><td style="text-align: center;">
+                    <table class="cell_spa_0" style="margin:auto;"><tr><td style="padding: 10px; font-size: 1em;" class="menu_submenu">
+                    <asp:Hiddenfield ID="hf_carrera" runat="server" value='<%# DataBinder.Eval(Container.DataItem, "clavec")%>'/>
+                    <asp:Hiddenfield ID="hf_ciclo" runat="server" value='<%# DataBinder.Eval(Container.DataItem, "ciclo")%>'/>
+                    <asp:Hiddenfield ID="hf_programa" runat="server" value='<%# DataBinder.Eval(Container.DataItem, "programa")%>'/>
+                    <asp:Hiddenfield ID="hf_fecha" runat="server" value='<%# DataBinder.Eval(Container.DataItem, "fecha", "{0:D}")%>'/>
+                    <asp:LinkButton ID="lb_guardar" runat="server" Text="Guardar perfil" CssClass="boton_texto_blanco" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "codigo_unico")%>' CommandName="guardar" ValidationGroup="guardareditar"></asp:LinkButton>
+                        <asp:ConfirmButtonExtender ID="lb_guardar_cbe" runat="server" ConfirmText="El alumno quedará registrado y por el momento no se podrá modiicar la información. ¿Desea continuar?" Enabled="True" TargetControlID="lb_guardar">
+                        </asp:ConfirmButtonExtender>
+                        </td></tr></table>
+                                      </td></tr></table></ItemTemplate></asp:FormView>
+            </asp:View>
+            <asp:View ID="v_registrado" runat="server">
+                <table class="cell_spa_0" style="margin: auto; text-align: center;"><tr><td class="etiqueta_titulo">El aspirante ha quedado registrado.</td></tr>
+                    <tr><td style="text-align: center;">
+                        <table style="margin: auto;"><tr><td class="titulo_fila_">Matricula</td><td class="campos_derecha_"><asp:Label ID="lbl_matricula" runat="server" CssClass="titulo_rojo" style="font-size: 1.3em;"></asp:Label></td></tr>
+                            <tr><td class="titulo_fila_">Código único</td><td class="campos_derecha_"><asp:Label ID="lbl_cu" runat="server" CssClass="titulo_rojo" style="font-size: 1.3em;"></asp:Label></td></tr>
+                        </table>
+                        </td></tr>
+                    <tr><td class="menu_submenu" style="padding: 10px; font-size: 1em; text-align: center;"><asp:Linkbutton ID="lb_comprobante" runat="server" Text="Imprima los formatos" CssClass="boton_texto_blanco"></asp:Linkbutton></td></tr>
+                </table>
+            </asp:View>
+        </asp:MultiView>
+     </td></tr></table>
+        <%' </ContentTemplate>
+            '              <Triggers>
+            '                  <asp:PostBackTrigger ControlID="lb_comprobante" />
+            '              </Triggers>
+            '         </asp:UpdatePanel>
+            '
+            '
+            '  <%'----------------------END--------------------------
+            '               <asp:UpdatePanelAnimationExtender ID="up_cursos_aex" runat="server" 
+            '                  Enabled="True" TargetControlID="up_recolecting">
+            '                        <Animations>
+            '                             <OnUpdating>
+            '                                   <Parallel duration="0.5" fps="30">
+            '                                   <FadeOut AnimationTarget="up_recolecting" minimumOpacity="0" ForceLayoutInIE="true"/>
+            '                                   </Parallel>
+            '                            </OnUpdating>
+            '                            <OnUpdated>
+            '                                 <Parallel duration="0.5" fps="30">
+            '                                   <FadeIn Animationtarget="up_recolecting" minimumOpacity="0" ForceLayoutInIE="true"/>
+            '                                   </Parallel>
+            '                              </OnUpdated>
+            '                    </Animations>
+            '             </asp:UpdatePanelAnimationExtender>
+            '             <asp2:ModalUpdateProgress ID="mup_ping" runat="server" 
+            '                        AssociatedUpdatePanelID="up_recolecting" 
+            '                        BackgroundCssClass="background_blanco" CancelControlID="lb_cancel" 
+            '                        DisplayAfter="100"><ProgressTemplate>
+            '                        <div class="centrado_modal">
+            '                            <div id="floatingBarsG">
+            '                            <div class="blockG" id="rotateG_01">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_02">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_03">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_04">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_05">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_06">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_07">
+            '                            </div>
+            '                            <div class="blockG" id="rotateG_08">
+            '                            </div>  
+            '                            </div>
+            '                            <asp:LinkButton ID="lb_cancel" runat="server"></asp:LinkButton>
+            '                        </div>
+            '                        </ProgressTemplate>
+            '            </asp2:ModalUpdateProgress>
+            ' ----------------------END----------------------------- %>
+        </div>
+</asp:Content>
+

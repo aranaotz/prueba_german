@@ -1,0 +1,116 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class student
+    Inherits System.Web.UI.MasterPage
+
+    Private Sub pvalidacion()
+        If Request.QueryString("aywystb") <> "" Then
+            If Session("usrcgi200Xstr") <> "" Then
+                Select Case Request.QueryString("aywystb") = validates(Session("usrcgi200Xstr"))
+                    Case True
+                        lbl_usr.Text = gn(gc(Session("usrcgi200Xstr")))
+                        hf_cod.Value = gc(Session("usrcgi200Xstr"))
+                    Case Else
+                        Response.Redirect("~/glogin.aspx")
+                End Select
+            Else
+                Response.Redirect("~/glogin.aspx")
+            End If
+        Else
+            Response.Redirect("~/glogin.aspx")
+        End If
+        hidepanel()
+    End Sub
+
+    Private Function validates(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT opb FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        validates = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Private Function gn(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT fname FROM alumnos WHERE matr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gn = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Private Function gc(ByVal idu As String) As String
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim aingcomm As New SqlCommand("SELECT reference FROM users_outdoor WHERE usr='" + idu + "'", sqlconn)
+        sqlconn.Open()
+        gc = aingcomm.ExecuteScalar()
+        sqlconn.Close()
+    End Function
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        pvalidacion()
+        If Not IsPostBack Then
+            fillmenu()
+        End If
+    End Sub
+    Private Sub fillmenu()
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim fmc As New SqlCommand("SELECT text,value,img FROM menu_stu WHERE type='1' AND enable=1", sqlconn)
+        Dim fmda As New SqlDataAdapter(fmc)
+        Dim fmdt As New DataTable
+        sqlconn.Open()
+        fmda.Fill(fmdt)
+        sqlconn.Close()
+        dl_menu.DataSource = fmdt
+        dl_menu.DataBind()
+        Dim itms As Integer
+        For itms = 0 To dl_menu.Items.Count - 1
+            Dim it As Integer = CInt(CType(dl_menu.Items(itms).FindControl("hf_cat"), HiddenField).Value)
+            fillsubmenu(itms, it)
+        Next
+    End Sub
+
+    Private Function fillsubmenu(ByVal id As Integer, ByVal it As Integer) As Action
+        Dim gvm As GridView = CType(dl_menu.Items(id).FindControl("gv_menu"), GridView)
+        Dim sqlconn As New SqlConnection(Application("str"))
+        Dim fsbc As New SqlCommand("SELECT text,value,img,enable FROM menu_stu WHERE type='2' AND pert='" + it.ToString + "' AND enable=1", sqlconn)
+        Dim fsbda As New SqlDataAdapter(fsbc)
+        Dim fsbdt As New DataTable
+        sqlconn.Open()
+        fsbda.Fill(fsbdt)
+        sqlconn.Close()
+        gvm.DataSource = fsbdt
+        gvm.DataBind()
+    End Function
+
+    Protected Sub interpreter(ByVal sender As Object, ByVal e As GridViewCommandEventArgs)
+        Select Case e.CommandName
+            Case "gotod"
+                If IsNothing(Request.QueryString("ein_neir")) Then
+                    Response.Redirect(e.CommandArgument & "?aywystb=" & Request.QueryString("aywystb"))
+                Else
+                    Response.Redirect(e.CommandArgument & "?aywystb=" & Request.QueryString("aywystb") & "&uuro=" & Request.QueryString("uuro") & "&ein_neir=" & Request.QueryString("ein_neir"))
+                End If
+
+        End Select
+    End Sub
+
+    Protected Sub cmd_closesession_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ib_closesession.Click
+        Session.Clear()
+        Response.Redirect("~/glogin.aspx")
+    End Sub
+
+    Protected Sub lb_return_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles lb_return.Click
+        Session("usrcgi200Xstr") = Request.QueryString("uuro")
+        Response.Redirect("~/sadmin/evalquery.aspx" & "?aywystb=" & Request.QueryString("ein_neir"))
+    End Sub
+
+    Private Sub hidepanel()
+        If IsNothing(Request.QueryString("ein_neir")) Then
+            p_return.Visible = False
+            'dl_items.Visible = False
+        End If
+    End Sub
+
+End Class
+

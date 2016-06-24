@@ -1,0 +1,309 @@
+<%@ Page Title="Evaluación de Docentes - SADIN CGI" Language="VB" MasterPageFile="~/synstu/stuworking.master" AutoEventWireup="false" CodeFile="eval_doc.aspx.vb" Inherits="eval_doc" %>
+
+<%@ Register assembly="System.Web.DynamicData, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" namespace="System.Web.DynamicData" tagprefix="cc1" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc2" %>
+
+<%@ Register assembly="AjaxControls" namespace="AjaxControls" tagprefix="cc3" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+   
+    <style type="text/css">
+    .style1
+    {
+        color: #0000CC;
+    }
+    .style3
+    {
+        color: #006600;
+    }
+        .style5
+        {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9pt;
+            color: #003366;
+        }
+        .style6
+        {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10pt;
+            color: #CC0000;
+            text-decoration: underline;
+        }
+        .style7
+        {
+            color: #333333;
+        }
+    </style>
+   
+   </asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <cc2:ToolkitScriptManager ID="sm_encuesta" runat="server"></cc2:ToolkitScriptManager>
+    <div style="font-family: verdana; font-size: 7.5pt; color: #003366; text-align: center">
+    
+    <cc3:ModalUpdateProgress ID="mup_this" runat="server" 
+                        AssociatedUpdatePanelID="up_encuesta" 
+                        BackgroundCssClass="modalBackground_gris" CancelControlID="lb_cancel" 
+                        DisplayAfter="100"><ProgressTemplate>
+                        <table align="center" style="border: 1px solid #666666; width:100%; background-color: #FFFFFF;"><tr><td style="vertical-align: middle; text-align: center">
+                            <asp:Image ID="im_progress" runat="server" ImageUrl="~/sadin_stock/img/sadin_loading.gif" />
+                            </td></tr>
+                        <tr><td style="vertical-align: middle; text-align: center">
+                            <asp:LinkButton ID="lb_cancel" runat="server" style="text-decoration:none; white-space:nowrap;">Cancelar carga...</asp:LinkButton>
+                            </td></tr></table>
+                        </ProgressTemplate>
+     </cc3:ModalUpdateProgress>
+       
+    <asp:UpdatePanel ID="up_encuesta" runat="server"><ContentTemplate>
+    <asp:MultiView ID="mv_encuesta" runat="server">
+    <asp:View ID="v_selector" runat="server">
+     <table style="width:100%;">
+            <tr>
+                <td style="padding: 20px 20px 10px 20px">
+                    <strong><span class="style5">Selecciona uno de los maestros que te imparten 
+                    clase actualmente para evaluar su desempeño.<br /> </span><span class="style6">
+                    RECUERDA QUE PARA QUE ÉSTA ACTIVIDAD SE TOME EN CUENTA, DEBES REALIZAR TODAS LAS 
+                    ENCUESTAS.</span></strong></td>
+            </tr>
+            <tr>
+                <td style="font-weight: 700">
+                    <asp:DataList ID="dl_evaluaciones" runat="server" HorizontalAlign="Center" 
+                        RepeatColumns="3" RepeatDirection="Horizontal" CellPadding="3" 
+                        CellSpacing="3">
+                        <ItemTemplate>
+                            <div style="background-image: url('img/bckitem.png'); background-repeat: repeat-x; background-position: center center; font-family: Arial, Helvetica, sans-serif; color: #000000; font-size: 8pt; border: 1px solid #016867; padding-top: 5px; padding-bottom: 5px; width: 200px; height: 130px; vertical-align: middle; text-align: center; font-weight: bold;" 
+                                align="center">
+                                <table style="background-position: center center; width: 90%; background-image: url('~/sadin_stu/img/logobp.png'); background-repeat: no-repeat; vertical-align: middle; height: 90%; text-align: center;" 
+                                    align="center" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td>
+                                            <asp:Image ID="img_docente" runat="server" 
+                                                ImageUrl="~/sadin_stu/img/docenteimg.png"/>
+                                        </td>
+                                        <td style="text-align: center">
+                                            <asp:LinkButton ID="lb_docente" runat="server" Style="color:#000000; text-decoration:none;" CommandName="do_encuesta" CommandArgument='<%# DataBinder.Eval(Container.DataItem,"icu") %>' mat='<%# DataBinder.Eval(Container.DataItem,"mat") %>' tipo='<%# DataBinder.Eval(Container.DataItem,"tipo") %>' prof='<%# DataBinder.Eval(Container.DataItem,"prof") %>' Text='<%# DataBinder.Eval(Container.DataItem,"nombre") %>' OnClick="docommand"></asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                           </td>
+                                        <td style="text-align: center">
+                                            <asp:LinkButton ID="lb_materia" runat="server"  Style="color:#000000; text-decoration:none;" CommandName="do_encuesta" CommandArgument='<%# DataBinder.Eval(Container.DataItem,"icu") %>' mat='<%# DataBinder.Eval(Container.DataItem,"mat") %>' tipo='<%# DataBinder.Eval(Container.DataItem,"tipo") %>' prof='<%# DataBinder.Eval(Container.DataItem,"prof") %>' Text='<%# DataBinder.Eval(Container.DataItem,"materia") %>' OnClick="docommand"></asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align: center">
+                                            <table align="center">
+                                                <tr>
+                                                    <td style="padding: 5px">
+                                                        <asp:Image ID="im_estado" runat="server" />
+                                                    </td>
+                                                    <td style="color: #FFFFFF">
+                                                        <asp:Label ID="lbl_estado" runat="server"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </ItemTemplate>
+                    </asp:DataList>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center; vertical-align: middle;">
+                <table align="center" style="display: none"><tr><td>
+                <div style="margin: auto; background-image: url('img/bkitem_pp.png'); background-repeat: repeat-x; background-position: center center; font-family: verdana; color: #FFFFFF; font-size: 7.5pt; border: 1px solid #482424; padding-top: 5px; padding-bottom: 5px; width: 280px; display:inline;" 
+                        align="center">
+                                <table style="background-position: center center; width: 90%; background-image: url('img/logobp.png'); background-repeat: no-repeat; background-color: #808080;">
+                                    <tr>
+                                        <td>
+                                            <asp:Image ID="img_docente" runat="server" 
+                                                ImageUrl="~/sadin_stu/img/docenteimg.png"/>
+                                        </td>
+                                        <td style="text-align: center; white-space: nowrap">
+                                            <asp:LinkButton ID="lb_docente_a" runat="server" 
+                                                Style="color:#FFFFFF; text-decoration:none; white-space:nowrap;" 
+                                                CommandName="do_encuesta_a" mat="ALUMNO" tipo="ALUMNO" 
+                                                Text="ENCUESTA DE EXAMEN ELECTRÓNICO"></asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            &nbsp;</td>
+                                        <td style="text-align: center; white-space: nowrap">
+                                            <asp:LinkButton ID="lb_materia_a" runat="server"  
+                                                Style="color:#FFFFFF; text-decoration:none;" CommandName="do_encuesta_a" 
+                                                mat="ALUMNO" tipo="ALUMNO"  Text="TODAS LAS MATERIAS"></asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <table>
+                                                <tr>
+                                                    <td style="padding: 2px 5px 2px 5px">
+                                                        <asp:Image ID="im_estado_aa" runat="server" />
+                                                    </td>
+                                                    <td>
+                                                        <asp:Label ID="lbl_estado_a" runat="server"></asp:Label>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                </td><td>
+                        &nbsp;</td></tr></table>
+                    
+                   </td>
+            </tr>
+        </table>
+    </asp:View>
+    <asp:View ID="v_quiz" runat="server">
+    <div>
+        <table style="width:100%; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #000066;">
+            <tr>
+                <td colspan="3" style="text-align: center; vertical-align: top; padding: 15px">
+                    <span class="style1"><strong>Selecciona la respuesta que mas se acerque a tu 
+                    percepción.</strong><br />
+                    </span>
+                    <span class="style7">Al finalizar pulsa ENVIAR ENCUESTA (al final de la página)</span><span 
+                        class="style1"><br />
+                    <br />
+                    </span>
+                    <span class="style3"><strong>ESTAMOS TRABAJANDO PARA MEJORAR CONSTANTEMENTE Y 
+                    CON TU APOYO SERÁ MAS FÁCIL<br /> GRACIAS POR TU COLABORACIÓN</strong></span></td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: left; vertical-align: top; padding: 15px">
+                    <asp:DataList ID="dl_base" runat="server">
+                        <ItemTemplate>
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="border: 1px solid #B25900; background-image: url(img/backcat.png); background-repeat: repeat-x; background-position: center center; vertical-align: middle; text-align: center; color: #FFFFFF; font-family: verdana; font-size: 7.5pt; padding-right: 30px; padding-left: 30px; height: 22px;">
+                                        <asp:Label ID="lbl_category" runat="server" 
+                                            idc='<%# DataBinder.Eval(Container.DataItem,"pane_id") %>' 
+                                            Text='<%# DataBinder.Eval(Container.DataItem,"pane_text") %>'></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:DataList ID="dl_quiz" runat="server">
+                                            <ItemTemplate>
+                                            <table style="border: 1px solid #B5DEE1; background-color: #E9F4F5; width: 100%;">
+                                                    <tr>
+                                                        <td style="padding: 3px 5px 7px 10px; text-align: left; vertical-align: top; white-space: nowrap;">
+                                                            <asp:Label ID="lbl_number" runat="server" Font-Bold="True" ForeColor="#660033" 
+                                                                Text='<%# DataBinder.Eval(Container.DataItem,"q_id") %>' toq='<%# DataBinder.Eval(Container.DataItem,"q_type") %>'></asp:Label>
+                                                            .-</td>
+                                                        <td style="padding-top: 3px; padding-bottom: 7px; padding-left: 10px; text-align: left; vertical-align: top; width: 100%;">
+                                                            <asp:Label ID="lbl_question" runat="server" ForeColor="#660033" 
+                                                                Text='<%# DataBinder.Eval(Container.DataItem,"q_string") %>'></asp:Label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 3px; padding-bottom: 7px; padding-left: 10px; text-align: left; vertical-align: top">
+                                                        </td>
+                                                        <td style="padding-bottom: 7px; text-align: left; vertical-align: top">
+                                                            <asp:MultiView ID="mv_qtype" runat="server">
+                                                                <asp:View ID="v_om" runat="server">
+                                                                    <asp:RadioButtonList ID="rbl_answer" runat="server" ForeColor="#003366" 
+                                                                        RepeatDirection="Horizontal">
+                                                                    </asp:RadioButtonList>
+                                                                    </asp:View>
+                                                                <asp:View ID="v_sm" runat="server">
+                                                                    <asp:CheckBoxList ID="cbxl_sm" runat="server">
+                                                                    </asp:CheckBoxList>
+                                                                </asp:View>
+                                                                <asp:View ID="v_oq" runat="server">
+                                                                    <asp:TextBox ID="tbx_oq" runat="server" MaxLength="500" Rows="4" 
+                                                                        TextMode="MultiLine" Width="400px"></asp:TextBox>
+                                                                </asp:View>
+                                                            </asp:MultiView>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </ItemTemplate>
+                                        </asp:DataList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </ItemTemplate>
+                    </asp:DataList>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <asp:Button ID="cmd_send" runat="server" CssClass="botones" 
+                        Text="Enviar Encuesta" />
+                    <asp:HiddenField ID="hf_errormsg" runat="server" />
+                    <cc2:ModalPopupExtender ID="hf_errormsg_mpe" runat="server" 
+                        BackgroundCssClass="modalBackground_negro" CancelControlID="ib_closewin" 
+                        DynamicServicePath="" Enabled="True" PopupControlID="p_msg" 
+                        TargetControlID="hf_errormsg"></cc2:ModalPopupExtender>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;</td>
+                <td>
+                    <div>
+                    <asp:Panel ID="p_msg" runat="server" style="display:none;">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td style="text-align: right; padding-right: 5px; padding-bottom: 5px;">
+                                                    <asp:ImageButton ID="ib_closewin" runat="server" 
+                                                        ImageUrl="~/img/closewin.png" />
+                                                </td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" 
+                                                        
+                                                        style="border: 1px solid #FF3300; background-color: #FFFFFF; width: 300px;">
+                                                        <tr>
+                                                            <td style="padding: 5px; background-color: #FF3300; color: #FFFFFF; font-weight: bold; font-family: verdana; font-size: 7.5pt;">
+                                                                Faltan de llenar algunos campos...</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="color: #000066; padding: 5px">
+                                                                <asp:Label ID="lbl_msg" runat="server"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td>
+                                                    &nbsp;</td>
+                                            </tr>
+                                        </table>
+                                    </asp:Panel>
+                    </div></td>
+                <td>
+                    &nbsp;</td>
+            </tr>
+        </table>
+        </div>
+    
+    </asp:View>
+    </asp:MultiView>
+    </ContentTemplate></asp:UpdatePanel>
+   
+     </div>
+</asp:Content>
+

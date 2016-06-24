@@ -1,0 +1,41 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/synstu/synstu.master" AutoEventWireup="false" CodeFile="currentstu.aspx.vb" Inherits="currentstu" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div>
+        <table style="width: 100%;"><tr><td style="font-size: 1.5em; padding: 0px 0px 20px 0px;">
+            Evaluación contínua del Estudiante
+                   </td></tr>
+            <tr><td>
+            <asp:FormView ID="fv_generales" runat="server">
+                <ItemTemplate>
+                    <table><tr><td style="padding: 0px 05px 05px 05px; vertical-align: top;"><asp:image ID="img_alumno" runat="server" Width="100" imageurl='<%# DataBinder.Eval(Container.DataItem, "foto")%>'/></td><td><table><tr><td>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Matricula</td><td><asp:Label ID="lbl_matricula" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "matricula")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Codigo único</td><td><asp:Label ID="lbl_codigounico" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "codigo_unico")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Nombre</td><td><asp:Label ID="lbl_apaterno" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "apellido_paterno")%>'/></td><td><asp:Label ID="lbl_amaterno" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "apellido_materno")%>'/></td><td><asp:Label ID="lbl_nombre" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "nombre")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Carrera</td><td><asp:Label ID="lbl_carrera" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "ncarrera")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Especialidad</td><td><asp:Label ID="lbl_especialidad" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "nespecialidad")%>'/></td></tr></table>
+                        <table class="cell_spa_0"><tr><td style="padding-right: 20px;">Situación</td><td><asp:Label ID="lbl_status" runat="server" class="boton_texto_dentro" Text='<%# DataBinder.Eval(Container.DataItem, "status")%>'/></td></tr></table>
+                    </td></tr></table></td></tr></table>
+                </ItemTemplate>
+            </asp:FormView>
+            </td></tr>
+            <tr><td style="padding: 0px 0px 200px 0px;">
+        <asp:DataList ID="dl_current" runat="server" HorizontalAlign="Center" CellPadding="10">
+            <ItemTemplate>
+                <table class="folder_view"><tr><td style="padding: 10px; font-size: 1.5em;"><asp:Label ID="lbl_materia" runat="server" Text='<%# DataBinder.Eval(Container.DataItem, "materia")%>'></asp:Label>
+                           </td></tr><tr><td style="border-radius: 0px 0px 5px 5px; padding: 5px;">
+                    <asp:GridView ID="gv_calificaciones" runat="server" style="background: rgba(0,168,144,1); width: 100%;" AutoGenerateColumns="False" GridLines="None" CellPadding="5" RowStyle-CssClass="gvrow" ShowHeader="false">
+                        <Columns>
+                            <asp:BoundField DataField="nombre_ut" ItemStyle-HorizontalAlign="Left"/>
+                            <asp:BoundField DataField="letra" />
+                            <asp:BoundField DataField="def_letra" />
+                        </Columns>
+                    </asp:GridView>
+                </td></tr></table>
+            </ItemTemplate>
+        </asp:DataList></td></tr></table>
+    </div>
+</asp:Content>
+

@@ -1,0 +1,28 @@
+﻿Imports usuario_alumno
+
+Partial Class currentstu
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            fcurrent()
+        End If
+    End Sub
+
+    Private Sub fcurrent()
+        dl_current.DataSource = currentst_materias(Session("gcu"))
+        dl_current.DataBind()
+        fv_generales.DataSource = generales_kardex(Session("gcu"))
+        fv_generales.DataBind()
+    End Sub
+
+    Protected Sub dl_current_ItemDataBound(sender As Object, e As DataListItemEventArgs) Handles dl_current.ItemDataBound
+        Dim materiaa As String = CType(e.Item.FindControl("lbl_materia"), Label).Text
+        Dim gvcalificaciones As GridView = CType(e.Item.FindControl("gv_calificaciones"), GridView)
+        With gvcalificaciones
+            .DataSource = currentst_calificaciones(Session("gcu"), materiaa)
+            .DataBind()
+            .EmptyDataText = "No se han encontrado registros en éste curso"
+        End With
+    End Sub
+End Class

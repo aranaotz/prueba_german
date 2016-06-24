@@ -1,0 +1,60 @@
+﻿Imports synpin_code
+Imports se_docs
+
+Imports System.IO
+Imports CrystalDecisions.CrystalReports.Engine
+Imports CrystalDecisions.ReportSource
+Imports CrystalDecisions.Reporting
+Imports CrystalDecisions.Shared
+
+Partial Class contents_kardex_se
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Header.Title = "Kardex - SIAAA - UTJ " + versiones()
+
+        If Not IsPostBack Then
+            mv_kardex_se.ActiveViewIndex = 0
+        End If
+    End Sub
+    Protected Sub lb_gvresultado_Click(sender As Object, e As EventArgs)
+        fkardex(sender.CommandArgument.ToString)
+    End Sub
+
+    Private Sub fkardex(ByVal matricula As String)
+        Session("gcu") = matricula
+        dl_kardex.DataSource = cicloskardex(matricula)
+        dl_kardex.DataBind()
+        mv_kardex_se.ActiveViewIndex = 1
+
+    End Sub
+
+    Protected Sub cmd_buscar_Click(sender As Object, e As EventArgs) Handles cmd_buscar.Click
+        gv_resultados.DataSource = resultado_busqueda(tbx_busqueda.Text)
+        gv_resultados.DataBind()
+    End Sub
+    Protected Sub lb_atras_Click(sender As Object, e As EventArgs)
+        mv_kardex_se.ActiveViewIndex = 0
+    End Sub
+    Protected Sub dl_kardex_ItemDataBound(sender As Object, e As DataListItemEventArgs) Handles dl_kardex.ItemDataBound
+        Dim cicloa As String = CType(e.Item.FindControl("lbl_ciclo"), Label).Text
+        Dim gvciclo As GridView = CType(e.Item.FindControl("gv_calificaciones"), GridView)
+
+        With gvciclo
+            .DataSource = kardex_estudiante_kardex(Session("gcu"), cicloa)
+            .DataBind()
+            .EmptyDataText = "No se han encontrado registros en este ciclo"
+        End With
+    End Sub
+    Protected Sub lb_imprime_Click(sender As Object, e As EventArgs)
+
+        Dim matricula As String = Session("gcu")
+
+        Response.Redirect("~/contents/rpt_kardex.aspx?ma=" + matricula)
+
+
+    End Sub
+
+
+
+End Class

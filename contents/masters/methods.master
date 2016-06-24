@@ -1,0 +1,63 @@
+﻿<%@ Master Language="VB" CodeFile="methods.master.vb" Inherits="methods" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-mx">
+<head id="Head1" runat="server">
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/gif" href="animated_favicon1.gif" />
+    <link href="../css/methods.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'/>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body style="margin:0; padding: 0; height: 100%; text-align: center;">
+    <form id="form1" runat="server">
+        <asp:ToolkitScriptManager ID="sm_masterpi" runat="server" EnableScriptGlobalization="True"></asp:ToolkitScriptManager>
+
+        <%
+            '<asp:Panel ID="p_top" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center;">
+            '<div><img src="../img/utzmg_mini.png" alt="Universidad Tecnologica de la Zona Metropolitana de Guadalajara" /></div></asp:Panel>
+            '<asp:AlwaysVisibleControlExtender ID="p_top_avce" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_top" VerticalSide="Bottom">
+            '</asp:AlwaysVisibleControlExtender>
+        %>
+
+    <div>
+        <table class="cell_spa_0" style="width: 100%;"><tr><td>
+            <asp:ContentPlaceHolder id="cph_start" runat="server"></asp:ContentPlaceHolder>
+            </td></tr></table>
+    </div>
+      <asp:panel ID="p_foot" runat="server" style="background-color: #f9fcfc; width: 100%; text-align: center; top: 12px; left: 0px; position: absolute;" CssClass="bottombar_shadow">
+     <div><table class="centrado"><tr><td><div style="position: relative; bottom:80px; right: 0px; height: 70px;"><img src="../img/logosolo.png" alt="Universidad Tecnologica de Jalisco" width="370"/></div></td>
+         <td>
+
+             <div><ul><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                 <a href="http://www.sep.gob.mx/" target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_sep.png" 
+                     border="0"></a></li><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                         <a href="http://www.jalisco.gob.mx/es/dependencias/secretaria-de-innovacion-ciencia-y-tecnologia" target="_blank">
+                             <img alt="Inovacion" src="http://www.utj.edu.mx/images/imagen_institucional/partners/Inovacion.png" height="50" 
+                                 width="152"></a></li><li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                                     <a href="http://www.jaltec.mx/" target="_blank"><img alt="logo jaltec 2013-75" 
+                                         src="http://www.utj.edu.mx/images/banners/logo_jaltec_2013-75.png" height="50" width="65"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.abs-qe.com/es/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_eagle.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.anab.org/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_anab.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;"><a href="http://www.abs-qe.com/es/" 
+                     target="_blank"><img alt="logo" src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_abs.png" border="0"></a></li>
+                 <li style="display: inline-block;display: inline-block;list-style-type: none;padding-right: 20px;">
+                     <a href="http://www.inmujeres.gob.mx/index.php/modelo-de-equidad-de-genero" target="_blank"><img alt="logo" 
+                         src="http://www.utj.edu.mx/images/imagen_institucional/partners/logo_shape.png"></a></li></ul></div><div class="clearbreak"></div>
+
+         </td></tr></table></div></asp:panel>
+        
+        <asp:AlwaysVisibleControlExtender ID="p_foot_wme" runat="server" Enabled="True" HorizontalSide="Center" TargetControlID="p_foot" VerticalSide="Bottom">
+        </asp:AlwaysVisibleControlExtender>
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,98 @@
+﻿<%@ Page Title="Constructor de Reportes - SIAAA 2015" Language="VB" MasterPageFile="~/synadm/admvo.master" AutoEventWireup="false" CodeFile="reportcons.aspx.vb" Inherits="reportcons" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="cph_start" Runat="Server">
+    <div style="padding-left: 20px;"><table style="margin: auto;"><tr><td>
+
+        <asp:MultiView ID="mv_captura" runat="server"><asp:View ID="v_lista" runat="server">
+            <div><table><tr><td style="text-align: left;">Cursos asignados.</td></tr><tr><td style="padding: 20px 0px 0px 0px">
+                <asp:GridView ID="gv_cursos" runat="server" OnRowCommand="gv_cursos_RowCommand" AutoGenerateColumns="False" GridLines="None" HorizontalAlign="Left" ShowHeader="False">
+                <Columns><asp:TemplateField><ItemStyle HorizontalAlign="left" /><ItemTemplate><asp:LinkButton ID="lb_curso" runat="server" CssClass="boton_texto_ampliar" style="white-space: nowrap;" CommandArgument='<%# DataBinder.Eval(Container.DataItem, "icu")%>' Text='<%# DataBinder.Eval(Container.DataItem, "materia")%>' CommandName='<%# DataBinder.Eval(Container.DataItem, "materia")%>'></asp:LinkButton></ItemTemplate></asp:TemplateField></Columns>
+                 </asp:GridView></td></tr></table></div></asp:View>
+            <asp:View ID="v_tematicas" runat="server">
+                <table><tr><td><asp:Hiddenfield ID="hf_icu" runat="server" /> Las siguientes unidades temáticas pertenecen al curso <asp:Label ID="lbl_curso" runat="server"></asp:Label>, elija una para iniciar con su evaluación.</td></tr><tr>
+                    <td style="padding: 20px 0px 20px 0px; text-align: left;">
+                         <asp:DropDownList ID="ddl_tematicas" runat="server" CssClass="droptransparent"></asp:DropDownList>
+                                     </td></tr><tr><td><table style="font-size: 1.5em;"><tr><td style="padding: 0px 20px 0px 0px;"><asp:LinkButton ID="lb_otroc" runat="server" CssClass="boton_texto_dentro">Otro Curso</asp:LinkButton></td><td><asp:LinkButton ID="lb_nextc" runat="server" CssClass="boton_texto_dentro">Ver o evaluar unidad</asp:LinkButton></td>
+                        <td style="padding: 0px 20px 0px 20px;">
+                            <asp:LinkButton ID="lb_preprint" runat="server" CssClass="boton_texto_dentro">Revisar evaluación</asp:LinkButton>
+                        </td>
+                        <td style="padding: 0px 20px 0px 20px;">
+                            <asp:LinkButton ID="lb_asistencia" runat="server" CssClass="boton_texto_dentro">Lista de Asistencia</asp:LinkButton>
+                        </td>
+                        </tr></table></td></tr></table>
+            </asp:View>
+            <asp:View ID="v_captura" runat="server">
+                     <div><table style="margin-bottom: 100px"><tr><td>
+                         <asp:GridView ID="gv_alumnos" runat="server" AutoGenerateColumns="False" DataKeyNames="icu" GridLines="None" HorizontalAlign="Center">
+                             <AlternatingRowStyle CssClass="rows_alternos" />
+                         <Columns>
+                             <asp:BoundField DataField="matricula" HeaderText="Matricula" ><ItemStyle ForeColor="#FFFF99" /></asp:BoundField>
+                             <asp:BoundField DataField="nombre_completo" HeaderText="Alumno" ><ItemStyle HorizontalAlign="Left" CssClass="campos_derecha_" /></asp:BoundField>
+                             <asp:TemplateField><ItemTemplate><table class="cell_spa_0"><tr><td><asp:HiddenField ID="hf_matricula" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "matricula")%>'/><asp:HiddenField ID="hf_icu" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "icu")%>' /><asp:HiddenField ID="hf_utematica" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "utematica")%>' /></td><td><asp:DropDownList ID="ddl_calificacion" runat="server" CssClass="droptransparent" ValidationGroup="calificaciones"></asp:DropDownList><asp:RequiredFieldValidator ID="rfv_calificacion" runat="server" ControlToValidate="ddl_calificacion" Display="None" ErrorMessage="¿Definitiva? Es necesario que cuente con una calificación válida" InitialValue="-" SetFocusOnError="True" ValidationGroup="calificaciones"></asp:RequiredFieldValidator><asp:ValidatorCalloutExtender ID="rfv_calificacion_vcoe" runat="server" CssClass="customCalloutStyle" Enabled="True" TargetControlID="rfv_calificacion" CloseImageUrl="~/img/close_coe.png" WarningIconImageUrl="~/img/alertm.png"></asp:ValidatorCalloutExtender></td></tr></table></ItemTemplate></asp:TemplateField>
+                             
+                             <asp:TemplateField><ItemTemplate><table class="cell_spa_0"><tr><td>
+                                 <asp:DropDownList ID="ddl_tc" runat="server" CssClass="droptransparent" Enabled="true">
+                                     <asp:ListItem Text="Ordinaria" Value="0"></asp:ListItem>
+                                     <asp:ListItem Text="Remedial" Value="1"></asp:ListItem>
+                             </asp:DropDownList></td></tr></table></ItemTemplate></asp:TemplateField>
+                              
+                         </Columns>
+                          </asp:GridView></td></tr><tr><td style="padding: 20px 0px 130px 0px;">
+
+                              <table style="font-size: 1.5em; padding: 10px 0px 10px 0px; margin: auto;"><tr><td style="padding: 10px;" class="boton_tenue"><asp:linkbutton ID="lb_otra" runat="server" CssClass="boton_tenue_linkbutton"><span style="font-size: 0.7em;">Seleccionar</span><br />Otra Unidad</asp:linkbutton></td><td style="padding: 10px;" class="boton_tenue"><asp:linkbutton ID="lb_temporal" runat="server" CssClass="boton_tenue_linkbutton"><span style="font-size: 0.7em;">Guardar en</span><br />Temporal</asp:linkbutton></td><td style="padding: 10px;" class="boton_tenue">
+                                  <asp:linkbutton ID="lb_definitiva" runat="server" CssClass="boton_tenue_linkbutton" ValidationGroup="calificaciones"><span style="font-size: 0.7em;">Enviar como</span><br />Definitivo</asp:linkbutton>
+                                  <asp:ConfirmButtonExtender ID="lb_definitiva_cfe" runat="server" ConfirmText="Después de enviar el reporte como definitivo, NO podrá hacer cambios. ¿Desea continuar?" Enabled="True" TargetControlID="lb_definitiva"></asp:ConfirmButtonExtender>
+                          </td>
+                                  <td style="padding: 10px;" class="boton_tenue"><asp:linkbutton ID="lb_imprimir" runat="server" CssClass="boton_tenue_linkbutton"><span style="font-size: 0.7em;">Descargar PDF para</span><br />Imprimir Unidad</asp:linkbutton></td>
+                                  </tr></table></td></tr></table></div>
+           </asp:View>
+            <asp:View ID="v_msg" runat="server">
+                <div><table style="font-size: 1.5em; padding: 10px 0px 10px 0px; margin: auto;"><tr><td style="padding: 10px 20px 10px 20px;"><asp:Label ID="lbl_msg" runat="server"></asp:Label></td></tr><tr><td>
+                    <table style="margin: auto;"><tr><td style="padding: 0px 20px 0px 0px;"><asp:LinkButton ID="lb_ou" runat="server" CssClass="boton_texto_dentro" Text="Otra Unidad"/></td>
+                        <td style="padding: 0px 20px 0px 0px;"><asp:LinkButton ID="lb_om" runat="server" CssClass="boton_texto_dentro" Text="Otro Curso"/></td>
+                        <td style="padding: 0px 20px 0px 0px;"><asp:LinkButton ID="lb_cs" runat="server" CssClass="boton_texto_dentro" Text="Cerrar Sesión"/></td></tr></table>
+                </td></tr></table></div>
+            </asp:View>
+            <asp:View ID="v_general" runat="server">
+                <div>
+                    <table><tr><td></td></tr><tr><td>
+                        <asp:GridView ID="gv_general" runat="server" AutoGenerateColumns="False" GridLines="None" ShowFooter="True">
+                            <AlternatingRowStyle CssClass="rows_alternos" Height="25px" />
+                            <Columns>
+                                <asp:BoundField DataField="matricula" HeaderText="Matricula" ItemStyle-ForeColor="#FFFF99" />
+                                <asp:BoundField DataField="nombre_completo" HeaderText="Alumno" ItemStyle-HorizontalAlign="Left"/>
+                                <asp:BoundField DataField="letra" HeaderText="Calificación" />
+                                <asp:BoundField DataField="status" HeaderText="Status" />
+                            </Columns>
+                        </asp:GridView>
+                    </td></tr>
+                        <tr>
+                            <td>
+                                <asp:Label ID="lbl_mensaje" runat="server" Font-Size="0.9em" ForeColor="#CC0000"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 20px 0px 120px 0px;">
+                                <table style="font-size: 1.5em; padding: 10px 0px 10px 0px; margin: auto;">
+                                    <tr>
+                                        <td style="padding: 0px 20px 0px 0px;">
+                                            <asp:LinkButton ID="lb_oc" runat="server" CssClass="boton_texto_dentro" Text="Otro Curso" />
+                                        </td>
+                                        <td style="padding: 0px 20px 0px 0px;">
+                                            <asp:LinkButton ID="lb_print" runat="server" CssClass="boton_texto_dentro" Text="Imprimir Reporte" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </asp:View>
+        </asp:MultiView>
+        </td></tr></table></div>
+</asp:Content>
+
