@@ -7,6 +7,8 @@ Partial Class asistlistas
     Inherits System.Web.UI.Page
 
     Private Sub asistlistas_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Me.Title = "ASistencias " + synpin_code.versiones
+
         If Not IsPostBack Then
             gv_listas.DataSource = cargacursos(clavetrabajador(Session("gcu")))
             gv_listas.DataBind()
